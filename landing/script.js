@@ -256,20 +256,27 @@ for (const row of document.querySelectorAll("[data-download]")) {
  * own file instead of a Mac download they cannot open.
  */
 (function () {
-  const hero = document.querySelector("[data-hero-download]");
-  if (!hero) return;
+  const links = document.querySelectorAll("[data-hero-download]");
+  if (!links.length) return;
   const ua = navigator.userAgent;
   const platform = navigator.userAgentData?.platform ?? navigator.platform ?? "";
   const base = "https://github.com/laxmansubedi7/cloudevs/releases/latest/download/";
+  let file = "";
+  let name = "";
   if (!/mac/i.test(platform) && !/Mac OS X/i.test(ua)) {
     if (/win/i.test(platform) || /Windows/i.test(ua)) {
-      hero.href = base + "CloudeIDE-win32-x64.zip";
-      hero.textContent = "Download for Windows";
-    } else if (/linux|cros/i.test(platform) || /Linux|CrOS/i.test(ua)) {
-      if (!/Android/i.test(ua)) {
-        hero.href = base + "CloudeIDE-linux-x64.deb";
-        hero.textContent = "Download for Linux";
-      }
+      file = "CloudeIDE-win32-x64.zip";
+      name = "Windows";
+    } else if ((/linux|cros/i.test(platform) || /Linux|CrOS/i.test(ua)) && !/Android/i.test(ua)) {
+      file = "CloudeIDE-linux-x64.deb";
+      name = "Linux";
     }
   }
+  if (!file) return;
+  links.forEach((link) => {
+    link.href = base + file;
+    // Only the button that names a platform is renamed; "Try it on your
+    // project" is right for everyone.
+    if (/^Download for /.test(link.textContent)) link.textContent = "Download for " + name;
+  });
 })();

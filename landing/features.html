@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Learn about CloudeIDE</title>
+<meta name="description" content="Everything CloudeIDE does: the agent, review with Keep and Undo, Tab, pull requests, team rules, deploys, domains, agent permissions and the CLI." />
+<link rel="canonical" href="https://cloudeide.com/features.html" />
+<meta name="theme-color" content="#0d0c0b" />
+
+<!-- Open Graph / social preview -->
+<meta property="og:site_name" content="CloudeIDE" />
+<meta property="og:title" content="CloudeIDE — AI-Powered Cloud IDE & Developer Workspace" />
+<meta property="og:description" content="Write it and ship it in the same window. CloudeIDE is a desktop editor with an AI agent that reads your real code and a button that publishes it." />
+<meta property="og:image" content="https://cloudeide.com/assets/dashboard-preview.png" />
+<meta property="og:url" content="https://cloudeide.com/features.html" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CloudeIDE — AI-Powered Cloud IDE & Developer Workspace" />
+<meta name="twitter:description" content="Write it and ship it in the same window. A desktop editor with an AI agent and one-button deploys." />
+<meta name="twitter:image" content="https://cloudeide.com/assets/dashboard-preview.png" />
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/logo-180.png" />
+<link rel="manifest" href="site.webmanifest" />
+<link rel="stylesheet" href="styles.css" />
+
+<script>
+  /*
+    Content is only hidden for the reveal animation once we know the script
+    that un-hides it is actually running, and even then not for long.
+
+    Everything below the hero is `.reveal`, which starts at opacity 0 and is
+    turned on by script.js. That file is loaded at the end of the body, behind
+    two films — so on a slow connection it can arrive late or not at all, and
+    the page sits there blank with its content present but invisible. A page
+    with no animation is a far better failure than a page with no content.
+  */
+  (function () {
+    var root = document.documentElement;
+    root.classList.add("js");
+    setTimeout(function () {
+      if (!window.__revealReady) root.classList.remove("js");
+    }, 2500);
+  })();
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html#top" aria-label="CloudeIDE home">
+      <img src="assets/logo.svg" alt="" width="22" height="22" />
+      <span>CloudeIDE</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#agent">Agent</a>
+      <a href="index.html#deploy">Deploy</a>
+      <a href="#top">Features</a>
+    </nav>
+
+    <!--
+      One button, and it is Download.
+      
+      There were two, and the other one opened a browser build of the editor.
+      That build is gone: it could not open a folder on your machine, could
+      not run a terminal, and could not receive the sign-in it offered, so
+      everything the page promises below was true of one of them and not the
+      other. A page with two front doors where one leads somewhere smaller is
+      a page that has to explain itself.
+    -->
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="https://api.cloudeide.com/app/signin">Sign in</a>
+      <a class="btn btn-primary" href="index.html#desktop"><span class="btn-mark" aria-hidden="true"><img src="assets/logo.svg" alt="" width="14" height="14" /></span>Download</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+    <a href="index.html#agent">Agent</a>
+    <a href="index.html#deploy">Deploy</a>
+    <a href="#top">Features</a>
+    <a href="index.html#desktop">Download</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!--
+    Everything the home page leaves out, in one place. The home page shows
+    three things big; this is where each of them, and the rest, is explained.
+    Only what the product does today.
+  -->
+  <section class="doc-hero" id="top">
+    <div class="wrap">
+      <h1>Learn about CloudeIDE</h1>
+      <p>A code editor built on VS Code, with an agent that does the work and a Cloud that puts it live.</p>
+      <nav class="doc-toc" aria-label="On this page">
+        <a href="#agent">Agent</a>
+        <a href="#review">Review</a>
+        <a href="#tab">Tab</a>
+        <a href="#pr">Pull requests</a>
+        <a href="#teams">Team rules</a>
+        <a href="#deploy">Deploys</a>
+        <a href="#cloud">Cloud</a>
+        <a href="#permissions">Permissions</a>
+        <a href="#cli">CLI and MCP</a>
+        <a href="#vscode">VS Code</a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="wrap doc">
+
+    <section class="doc-section" id="agent">
+      <h2>The agent</h2>
+      <p>Open a folder, open Chat, and say what you want. The agent works on your real project, in your editor.</p>
+      <ul>
+        <li><strong>Reads first.</strong> It lists the project, searches it, finds symbols and their uses, and reads the files that matter before it changes anything.</li>
+        <li><strong>Edits across files.</strong> Changes are made in the editor, marked line by line, in as many files as the job needs.</li>
+        <li><strong>Checks its work.</strong> It asks the editor for errors after editing, and can run your tests in the terminal.</li>
+        <li><strong>Understands pictures.</strong> Attach a screenshot and it sees it. Attach files, folders or a selection with #.</li>
+        <li><strong>Agent and Ask.</strong> Agent mode changes code. Ask mode only reads and answers.</li>
+        <li><strong>Sessions.</strong> Every conversation is kept in the sessions list, with what it changed.</li>
+        <li><strong>Your tools.</strong> MCP servers you add in VS Code are offered to the agent. Switch off any tool you don't want it to use.</li>
+      </ul>
+      <div class="painted doc-painted">
+        <div class="shot-window"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><picture><source media="(max-width: 640px)" srcset="assets/shots/check-phone.webp" /><img src="assets/shots/check.webp" alt="The agent has edited pricing.js and a test, and is checking the project for problems." width="1360" height="785" loading="lazy" decoding="async" /></picture></div>
+      </div>
+    </section>
+
+    <section class="doc-section" id="review">
+      <h2>Review with Keep and Undo</h2>
+      <p>Nothing the agent writes stays until you say so.</p>
+      <ul>
+        <li>Every change shows in place in the editor: new lines green, removed lines red.</li>
+        <li>Keep or Undo each change, each file, or everything at once.</li>
+        <li>Checkpoints let you go back to how things were before any request.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="tab">
+      <h2>Tab</h2>
+      <p>Grey suggestions as you type, that follow your team's rules. Press Tab to accept. Finish a function and it offers to write the test for it.</p>
+    </section>
+
+    <section class="doc-section" id="pr">
+      <h2>Pull requests</h2>
+      <p>Type <code>/pr</code> in Chat. Unsaved files are saved, and a branch, a commit and a pull request are made for you. You confirm before anything is pushed.</p>
+    </section>
+
+    <section class="doc-section" id="teams">
+      <h2>Team rules</h2>
+      <ul>
+        <li>An admin writes the rules once, for the whole organisation. Every agent and every suggestion follows them.</li>
+        <li>A project can add its own in <code>AGENTS.md</code> at the root of the folder.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="deploy">
+      <h2>Deploys</h2>
+      <p>Ask the agent to ship it, or press Deploy in the Cloud tab.</p>
+      <ul>
+        <li><strong>Preview first.</strong> The agent deploys a preview, checks it, and only then asks to go to production.</li>
+        <li><strong>Reads the log.</strong> If a deploy fails, the agent reads the build log, fixes the cause and tries again, up to three times, then stops and tells you.</li>
+        <li><strong>Rollback and cancel.</strong> Go back to any earlier deployment, or stop one that is still building.</li>
+        <li><strong>One record.</strong> Whether you deploy or the agent does, both see it: the Cloud tab updates, and the agent knows on its next turn.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="cloud">
+      <h2>Cloud</h2>
+      <p>A tab beside the chat, for the project you have open.</p>
+      <ul>
+        <li><strong>Deployments</strong> for development, preview and production, with their logs.</li>
+        <li><strong>Custom domains.</strong> Add yours, copy the DNS record, check it, and choose the primary one.</li>
+        <li><strong>Environment variables</strong> per environment, with secret values hidden.</li>
+        <li><strong>Analytics</strong> for each environment.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="permissions">
+      <h2>Agent permissions</h2>
+      <p>You decide what the agent may do in Cloud on its own. Choose a preset from the Agent button in the Cloud tab.</p>
+      <div class="doc-table">
+        <div class="doc-row doc-row--head"><span></span><span>Careful</span><span>Balanced</span><span>Autopilot</span></div>
+        <div class="doc-row"><span>Deploy a preview</span><span>Asks</span><span>Allowed</span><span>Allowed</span></div>
+        <div class="doc-row"><span>Deploy to production</span><span>Asks</span><span>Asks</span><span>Allowed</span></div>
+        <div class="doc-row"><span>Roll back</span><span>Asks</span><span>Asks</span><span>Allowed</span></div>
+        <div class="doc-row"><span>Set an environment variable</span><span>Asks</span><span>Asks</span><span>Asks</span></div>
+        <div class="doc-row"><span>Remove a domain</span><span>Never</span><span>Asks</span><span>Asks</span></div>
+      </div>
+      <ul>
+        <li><strong>Secrets stay secret.</strong> When a variable needs a value, you type it into a password box. The agent only ever sees the name.</li>
+        <li><strong>A limit per hour.</strong> The agent can start at most 10 deploys an hour. You can change the number in Settings.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="cli">
+      <h2>CLI and MCP</h2>
+      <p>Deploy from your terminal, or let Claude Code, Cursor and Codex deploy with CloudeIDE over MCP.</p>
+      <div class="copy-chip"><code>npm install -g cloudeide</code><button class="cli-copy" type="button" data-copy="npm install -g cloudeide">Copy</button></div>
+      <pre class="doc-code"><code>cloudeide deploy --env production
+cloudeide install claude-code</code></pre>
+    </section>
+
+    <section class="doc-section" id="vscode">
+      <h2>Built on VS Code</h2>
+      <p>Your extensions, keybindings and themes work as they do in VS Code. The agent works on the folder you opened; what it reads is sent to the model to answer you, as described in the <a href="data-use.html">Data Use Policy</a>.</p>
+    </section>
+
+    <section class="doc-cta">
+      <h2>Start building.</h2>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip" data-hero-download>Download for macOS</a>
+        <a class="btn btn-secondary" href="index.html#desktop">All downloads</a>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  <!--
+    Four columns of places you can actually go, the way every product page
+    lays out its footer, and nothing that is not there yet: no docs, no
+    blog, no social accounts. Every link is a section of this page, a page
+    of the dashboard, a download, or one of the three policies.
+  -->
+  <div class="wrap">
+    <div class="footer-grid">
+      <nav class="footer-col" aria-label="Product">
+        <h2 class="footer-head">Product</h2>
+        <a href="#agent">Agent</a>
+        <a href="#deploy">Deploy</a>
+        <a href="#tab">Tab</a>
+        <a href="#pr">Pull requests</a>
+        <a href="#teams">Team rules</a>
+        <a href="#cli">CLI</a>
+        <a href="https://api.cloudeide.com/app/enterprise">Enterprise</a>
+      </nav>
+      <nav class="footer-col" aria-label="Account">
+        <h2 class="footer-head">Account</h2>
+        <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+        <a href="https://api.cloudeide.com/app/signup">Create an account</a>
+        <a href="https://api.cloudeide.com/app/">Dashboard</a>
+        <a href="https://api.cloudeide.com/app/settings/billing">Billing</a>
+        <a href="https://api.cloudeide.com/app/settings/credits">Credits</a>
+      </nav>
+      <nav class="footer-col" aria-label="Download">
+        <h2 class="footer-head">Download</h2>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Linux (.deb)</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.tar.gz">Linux (.tar.gz)</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip">Windows</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip">macOS (Apple Silicon)</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases">All releases</a>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2 class="footer-head">Legal</h2>
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="data-use.html">Data Use Policy</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.svg" alt="" width="18" height="18" />
+        <span>CloudeIDE</span>
+      </a>
+      <span class="footer-copy">© <span id="year">2026</span> CloudeIDE</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -88,7 +88,8 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="#agent">Agent</a>
-      <a href="#cli">CLI</a>
+      <a href="#deploy">Deploy</a>
+      <a href="features.html">Features</a>
     </nav>
 
     <!--
@@ -113,7 +114,8 @@
   <div class="mobile-menu" id="mobileMenu" hidden>
     <a href="https://api.cloudeide.com/app/signin">Sign in</a>
     <a href="#agent">Agent</a>
-    <a href="#cli">CLI</a>
+    <a href="#deploy">Deploy</a>
+    <a href="features.html">Features</a>
     <a href="#desktop">Download</a>
   </div>
 </header>
@@ -126,92 +128,55 @@
       <h1>CloudeIDE, your coding agent for building ambitious software.</h1>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip" data-hero-download>Download for macOS</a>
-        <a class="btn btn-secondary" href="#agent">See it work <span class="showcase-arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-secondary" href="features.html">Learn about CloudeIDE <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
 
-    <!--
-      The whole product in one picture, on a painted stage: sessions on the
-      left, the conversation in the middle, the app it is building on the
-      right, and a deploy running in the terminal in front. Every label is a
-      string the product shows. On a phone the picture keeps its size and
-      crops at the right edge rather than shrinking into something unreadable.
-    -->
-    <div class="wrap hero-wrap">
-      <div class="art hero-art reveal" role="img" aria-label="CloudeIDE with three agent sessions: one adding yearly billing is working, one setting up a custom domain needs input, three are completed. The open chat asks for yearly billing with a design attached; the agent reads, edits and tests, and the change waits for Keep or Undo. Beside it, the pricing page runs in a browser. In front, a terminal deploys the project to acme.com.">
-        <div class="mock mock--desk"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">acme-app — CloudeIDE</span></div><div class="desk"><div class="mock-pane desk-sessions"><div class="mock-pane-label">In Progress 2</div><div class="ses ses--on"><span class="ses-icon ses-icon--spin" aria-hidden="true"></span><div><div class="ses-title">Add yearly billing</div><div class="ses-sub">Working...</div></div></div><div class="ses"><span class="ses-icon ses-icon--wait" aria-hidden="true"></span><div><div class="ses-title">Custom domain for the shop</div><div class="ses-sub">Needs Input</div></div></div><div class="mock-pane-label">Completed 3</div><div class="ses"><span class="ses-icon ses-icon--done" aria-hidden="true"></span><div><div class="ses-title">Fix the login redirect</div><div class="ses-sub"><span class="mock-add">+42</span> <span class="mock-del">&minus;8</span> · 10m</div></div></div><div class="ses"><span class="ses-icon ses-icon--done" aria-hidden="true"></span><div><div class="ses-title">Dark mode toggle</div><div class="ses-sub"><span class="mock-add">+19</span> <span class="mock-del">&minus;2</span> · 30m</div></div></div><div class="ses"><span class="ses-icon ses-icon--done" aria-hidden="true"></span><div><div class="ses-title">Tests for teamCost()</div><div class="ses-sub"><span class="mock-add">+36</span> · 45m</div></div></div></div><div class="mock-pane mock-body mock-agent desk-chat"><div class="desk-chat-title">Add yearly billing</div><div class="mock-ask">Add yearly billing to the pricing page at 20% off, like this design, and check the tests still pass<span class="att"><span class="att-img" aria-hidden="true"></span>pricing-design.png</span></div><div class="mock-step">Read src/pricing.js</div><div class="mock-step">Searched for price(</div><div class="mock-step">Edited src/pricing.js <span class="mock-add">+7</span> <span class="mock-del">&minus;1</span></div><div class="mock-step">Ran npm test</div><div class="mock-text">Every plan now has a yearly price at 20% off, from a new <code>yearly()</code>. All 12 tests pass.</div><div class="mock-grow"></div><div class="mock-keep"><span>1 file changed <span class="mock-add">+7</span> <span class="mock-del">&minus;1</span></span><div class="mock-actions"><span class="mock-btn mock-btn--primary">Keep</span><span class="mock-btn">Undo</span></div></div><div class="mock-composer"><span>Describe what to build</span><span class="mock-chips"><span class="mock-chip">Agent</span><span class="mock-chip">Sonnet 5</span></span></div></div><div class="mock-pane desk-browser"><div class="desk-url"><span class="desk-nav" aria-hidden="true">&larr; &rarr; &#8635;</span><span class="mock-url-bar">localhost:3000/pricing</span></div><div class="site"><div class="site-name">Pricing</div><div class="site-sub">Simple plans for every team.</div><div class="site-toggle"><span>Monthly</span><span class="site-toggle-on">Yearly · save 20%</span></div><div class="site-item"><span>Starter</span><span>$0/yr</span></div><div class="site-item"><span>Pro</span><span>$192/yr</span></div><div class="site-item"><span>Team</span><span>$384/yr</span></div><div class="site-cta">Start free</div></div></div></div></div>
-        <div class="mock mock--cli"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">Terminal</span></div><div class="mock-body--code mock-term cli-body"><div class="mock-line"><span class="mock-prompt">~/acme-app $</span> cloudeide deploy --env production</div><div class="mock-line cli-dim">42 files, 318 KB</div><div class="mock-line cli-dim">Starting a production deploy…</div><div class="mock-line">✓ Deployment dpl_7f3a accepted</div><div class="mock-line cli-dim">Building… installing · compiling · uploading</div><div class="mock-line">Status     success</div><div class="mock-line">Live at    <span class="cli-url">https://acme.com</span></div><div class="mock-line"><span class="mock-prompt">~/acme-app $</span> <span class="mock-cursor"></span></div></div></div>
+    <!-- A real screenshot: the agent's finished change, waiting for Keep. -->
+    <div class="wrap wrap--wide hero-shot-wrap">
+      <div class="painted hero-painted reveal">
+        <div class="shot-window shot-window--hero"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><picture><source media="(max-width: 640px)" srcset="assets/shots/review-phone.webp" /><img src="assets/shots/review.webp" alt="CloudeIDE: the agent has added yearly billing; the new lines are marked in the editor, the chat says what changed, and 2 files wait for Keep or Undo." width="1360" height="785" loading="eager" decoding="async" /></picture></div>
       </div>
-    </div>
-
-    <div class="wrap" id="integrations">
-      <p class="integrations-label">Works with the tools you already use</p>
-      <ul class="integrations-row">
-        <li class="integration">Claude Code</li>
-        <li class="integration">Cursor</li>
-        <li class="integration">Codex</li>
-        <li class="integration">MCP</li>
-      </ul>
     </div>
   </section>
 
-  <!--
-    Five tiles, one strength each, the way the big product pages do it: a
-    heading and one sentence on the left, a large picture on the right.
-    Deploy is last because it is the thing nobody else here does — the
-    same window that wrote the code puts it on your own domain.
-  -->
-  <section class="section tiles" id="agent">
-    <div class="wrap">
-      <article class="tile reveal">
-        <div class="tile-copy">
-          <h2>Agents turn ideas into code</h2>
-          <p>Ask for a change, attach a picture if it helps. It reads your project, edits across files, runs the tests, and every change waits for Keep or Undo.</p>
+  <!-- Three things, each one real screenshot, shown big. The details are on
+       features.html, one tap away. -->
+  <section class="section feats">
+    <div class="wrap wrap--wide">
+      <article class="feat reveal" id="agent">
+        <div class="feat-head">
+          <div class="feat-copy"><h2>An agent that works in your editor.</h2><p>It reads your project, changes the code across files and checks for errors. Nothing stays until you keep it.</p></div>
+          <a class="learn" href="features.html#agent">Learn about the agent <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="art tile-stage" aria-hidden="true">
-          <div class="mock"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">settings.tsx — CloudeIDE</span></div><div class="mock-split mock-split--agent"><div class="mock-pane mock-body mock-agent"><div class="mock-ask">Add a dark mode toggle to settings, and remember the choice<span class="att"><span class="att-img" aria-hidden="true"></span>settings-dark.png</span></div><div class="mock-step">Searched for theme</div><div class="mock-step">Read src/settings.tsx</div><div class="mock-step">Edited src/settings.tsx <span class="mock-add">+4</span></div><div class="mock-step">Edited src/theme.ts <span class="mock-add">+11</span> <span class="mock-del">&minus;2</span></div><div class="mock-card"><div class="mock-card-head">Run <code class="inline">bash</code> command?</div><div class="mock-command">npm test</div><div class="mock-actions"><span class="mock-btn mock-btn--primary">Allow</span><span class="mock-btn">Skip</span></div></div><div class="mock-grow"></div><div class="mock-keep"><span>2 files changed <span class="mock-add">+15</span> <span class="mock-del">&minus;2</span></span><div class="mock-actions"><span class="mock-btn mock-btn--primary">Keep</span><span class="mock-btn">Undo</span></div></div><div class="mock-composer"><span>Describe what to build</span><span class="mock-chips"><span class="mock-chip">Agent</span><span class="mock-chip">Sonnet 5</span></span></div></div><div class="mock-pane mock-code"><div class="mock-tabs"><span class="mock-tab mock-tab--on">settings.tsx</span><span class="mock-tab">theme.ts</span></div><div class="mock-body--code"><div class="mock-line mock-line--add"><span class="mock-ln">1</span>import { useTheme } from './theme';</div><div class="mock-line"><span class="mock-ln">2</span>import { Page, Profile } from './ui';</div><div class="mock-line"><span class="mock-ln">3</span></div><div class="mock-line"><span class="mock-ln">4</span>export function Settings() {</div><div class="mock-line"><span class="mock-ln">5</span>  const user = useUser();</div><div class="mock-line mock-line--add"><span class="mock-ln">6</span>  const [dark, setDark] = useTheme();</div><div class="mock-line"><span class="mock-ln">7</span>  return (</div><div class="mock-line"><span class="mock-ln">8</span>    &lt;Page title="Settings"&gt;</div><div class="mock-line mock-line--add"><span class="mock-ln">9</span>      &lt;Toggle label="Dark mode"</div><div class="mock-line mock-line--add"><span class="mock-ln">10</span>        on={dark} onChange={setDark} /&gt;</div><div class="mock-line"><span class="mock-ln">11</span>      &lt;Profile user={user} /&gt;</div><div class="mock-line"><span class="mock-ln">12</span>    &lt;/Page&gt;</div><div class="mock-line"><span class="mock-ln">13</span>  );</div><div class="mock-line"><span class="mock-ln">14</span>}</div></div></div></div></div>
-        </div>
+        <div class="painted feat-painted"><div class="shot-window"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><picture><source media="(max-width: 640px)" srcset="assets/shots/edit-phone.webp" /><img src="assets/shots/edit.webp" alt="The agent has edited pricing.js: new lines marked green, the old line red, with Keep and Undo." width="1360" height="785" loading="lazy" decoding="async" /></picture></div></div>
       </article>
-      <article class="tile reveal" id="tab">
-        <div class="tile-copy">
-          <h2>Tab that knows your rules</h2>
-          <p>Grey suggestions as you type, following your team's rules. Finish a function and it offers to write the test.</p>
+      <article class="feat reveal" id="deploy">
+        <div class="feat-head">
+          <div class="feat-copy"><h2>It ships it, too.</h2><p>A preview first. Production only when you allow it.</p></div>
+          <a class="learn" href="features.html#deploy">Learn about deploys <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="art tile-stage" aria-hidden="true">
-          <div class="mock mock--editor"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">pricing.js — CloudeIDE</span></div><div class="mock-tabs"><span class="mock-tab mock-tab--on">pricing.js</span><span class="mock-tab">http.js</span></div><div class="mock-body--code"><div class="mock-line"><span class="mock-ln">1</span>import { http } from './lib/http';</div><div class="mock-line"><span class="mock-ln">2</span></div><div class="mock-line"><span class="mock-ln">3</span>export async function teamCost(plan, seats) {</div><div class="mock-line mock-line--ghost"><span class="mock-ln">4</span>  if (seats &lt;= 0) return 0;</div><div class="mock-line mock-line--ghost"><span class="mock-ln">5</span>  const { price } = await http.get(`/plans/${plan}`);</div><div class="mock-line mock-line--ghost"><span class="mock-ln">6</span>  return price * seats;</div><div class="mock-line"><span class="mock-ln">7</span>}</div><div class="mock-line"><span class="mock-ln">8</span></div><div class="mock-line"><span class="mock-ln">9</span>export function yearly(plan) {</div><div class="mock-line"><span class="mock-ln">10</span>  return plan.monthly * 12 * 0.8;</div><div class="mock-line"><span class="mock-ln">11</span>}</div></div><div class="tab-hint"><span class="tab-key">Tab</span> to accept</div><div class="mock-status"><span>main</span><span>Ln 3, Col 47</span><span>JavaScript</span><span class="mock-status-tab">✓ Tab · follows team rule</span></div></div><div class="mock mock--toast"><div class="toast-text">Write a test for teamCost()?</div><div class="mock-actions"><span class="mock-btn mock-btn--primary">Write the test</span></div></div>
-        </div>
+        <div class="painted feat-painted"><div class="shot-window"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><picture><source media="(max-width: 640px)" srcset="assets/shots/ship-phone.webp" /><img src="assets/shots/ship.webp" alt="The Cloud tab beside the chat; the agent deployed a preview and asks "Deploy to production?" with Allow Once and Skip." width="1360" height="785" loading="lazy" decoding="async" /></picture></div></div>
       </article>
-      <article class="tile reveal" id="pr">
-        <div class="tile-copy">
-          <h2>Pull requests in one line</h2>
-          <p>Type /pr. The branch, the commit and the pull request are made for you.</p>
+      <article class="feat reveal" id="cloud">
+        <div class="feat-head">
+          <div class="feat-copy"><h2>Live on your own domain.</h2><p>Deployments, domains and rollbacks, in a tab beside the chat.</p></div>
+          <a class="learn" href="features.html#cloud">Learn about Cloud <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="art tile-stage" aria-hidden="true">
-          <div class="mock mock--prchat"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">Chat</span></div><div class="mock-body mock-agent pr-chat"><div class="mock-ask">Fix the login redirect after sign-in</div><div class="mock-step">Read src/auth/callback.ts</div><div class="mock-step">Edited src/auth/callback.ts <span class="mock-add">+12</span> <span class="mock-del">&minus;4</span></div><div class="mock-step">Ran npm test</div><div class="mock-text">Sign-in now returns you to the page you started on. All tests pass.</div><div class="mock-ask">/pr</div><div class="mock-text">Opened <span class="mock-link">acme/app#42</span>.</div><div class="mock-grow"></div><div class="mock-composer"><span>Describe what to build</span><span class="mock-chips"><span class="mock-chip">Agent</span><span class="mock-chip">Sonnet 5</span></span></div></div></div><div class="mock mock--dialog"><div class="dialog-title">Open a pull request on acme/app?</div><div class="dialog-body"><p>Return to the page you started on after sign-in</p><p class="dialog-dim">A new branch into main. Unsaved files are saved first.</p><p class="dialog-files">src/auth/callback.ts<br>src/auth/callback.test.ts</p></div><div class="dialog-actions"><span class="mock-btn">Cancel</span><span class="mock-btn mock-btn--primary">Open PR</span></div></div>
-        </div>
+        <div class="painted feat-painted"><div class="shot-window"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><picture><source media="(max-width: 640px)" srcset="assets/shots/live-phone.webp" /><img src="assets/shots/live.webp" alt="Yearly billing live at acme.com, with the deployments and the domain listed in Cloud." width="1360" height="785" loading="lazy" decoding="async" /></picture></div></div>
       </article>
-      <article class="tile reveal" id="teams">
-        <div class="tile-copy">
-          <h2>Rules for the whole team</h2>
-          <p>Written once by an admin, followed by every agent and every suggestion, in every repository.</p>
-        </div>
-        <div class="art tile-stage" aria-hidden="true">
-          <div class="mock"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">Acme — Enterprise</span></div><div class="mock-split mock-split--nav"><div class="mock-pane mock-navs"><div class="mock-nav">Overview</div><div class="mock-nav">Members</div><div class="mock-nav">Teams</div><div class="mock-nav">Workspaces</div><div class="mock-nav mock-nav--on">Agent Rules</div><div class="mock-nav">SSO &amp; Directory</div><div class="mock-nav">Security Policy</div><div class="mock-nav">Audit Log</div><div class="mock-nav">Usage &amp; Analytics</div></div><div class="mock-pane mock-body"><div class="mock-page-head"><span>Agent Rules</span><span class="mock-btn">New rule</span></div><div class="mock-rule"><div class="mock-rule-head"><span>Never commit a file holding a key</span><span class=mock-pill>required</span></div><div class="mock-rule-body">Secrets go in the environment. If you need a new one, add it to .env.example with an empty value.</div><div class="mock-rule-foot"><span class="mock-switch mock-switch--on"></span><span>Sent with every request</span><span class="mock-switch mock-switch--on"></span><span>Overrides a project's own file</span></div></div><div class="mock-rule"><div class="mock-rule-head"><span>Use the shared fetch helper</span></div><div class="mock-rule-body">API calls go through lib/http.js, so retries and auth stay in one place.</div><div class="mock-rule-foot"><span class="mock-switch mock-switch--on"></span><span>Sent with every request</span><span class="mock-switch"></span><span>Overrides a project's own file</span></div></div><div class="mock-rule"><div class="mock-rule-head"><span>Tests live next to the file they test</span></div><div class="mock-rule-body">settings.tsx is tested in settings.test.tsx, in the same folder.</div><div class="mock-rule-foot"><span class="mock-switch mock-switch--on"></span><span>Sent with every request</span><span class="mock-switch"></span><span>Overrides a project's own file</span></div></div></div></div></div>
-        </div>
-      </article>
-      <article class="tile reveal" id="deploy">
-        <div class="tile-copy">
-          <h2>The agent ships it, too</h2>
-          <p>Other editors stop at the diff. Here the agent deploys a preview, reads the log when the build fails, fixes it, and puts it live on your domain once you say yes.</p>
-          <div class="copy-chip" id="cli">
-            <code>npm install -g cloudeide</code>
-            <button class="cli-copy" type="button" data-copy="npm install -g cloudeide">Copy</button>
-          </div>
-        </div>
-        <div class="art tile-stage" aria-hidden="true">
-          <div class="mock"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">acme-app — CloudeIDE</span></div><div class="ship"><div class="mock-pane mock-body mock-agent ship-chat"><div class="mock-ask">Ship yearly billing to production, on shop.acme.com</div><div class="mock-step">Checked what is live</div><div class="mock-step">Deployed to preview <span class="mock-del">failed</span></div><div class="ship-log"><span>vite v6 building for production</span><span class="ship-err">ERROR STRIPE_PUBLIC_KEY is not defined</span></div><div class="mock-text">The build needs <code>STRIPE_PUBLIC_KEY</code>. I asked you for it rather than putting it in the code.</div><div class="mock-step">Set STRIPE_PUBLIC_KEY <span class="ship-dim">· value hidden from the agent</span></div><div class="mock-step">Deployed to preview <span class="mock-add">ready</span></div><div class="mock-card"><div class="mock-card-head">Deploy to production?</div><div class="mock-text">Builds the open folder and puts it on the live site: Yearly billing</div><div class="mock-actions"><span class="mock-btn mock-btn--primary">Allow Once</span><span class="mock-btn">Skip</span></div></div><div class="mock-grow"></div><div class="mock-composer"><span>Describe what to build</span><span class="mock-chips"><span class="mock-chip">Agent</span><span class="mock-chip">Sonnet 5</span></span></div></div><div class="mock-pane mock-body mock-cloud ship-cloud"><div class="mock-cloud-head"><div><div class="mock-cloud-name">acme-app</div><div class="mock-cloud-live"><span class="mock-link">shop.acme.com</span> production</div></div><div class="mock-actions"><span class="mock-btn mock-btn--primary">Deploy</span></div></div><div><div class="mock-pane-label">Deployments</div><div class="mock-row"><span class="mock-dot"></span><span class="mock-row-main">preview · by the agent</span><span class="dom-ok">ready</span></div><div class="mock-row"><span class="mock-dot mock-dot--off"></span><span class="mock-row-main">preview · by the agent</span><span class="dom-wait">failed</span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-row-main">production · yesterday</span><span class="mock-row-dim">live</span></div></div><div><div class="mock-pane-label">Environment variables</div><div class="mock-row"><span class="mock-row-main">STRIPE_PUBLIC_KEY</span><span class="mock-row-dim">preview, production · ••••••</span></div></div><div><div class="mock-pane-label mock-label-row"><span>Domains</span><span class="mock-btn">Add domain</span></div><div class="mock-row"><span class="mock-row-main">shop.acme.com</span><span class="mock-row-dim">production · primary</span><span class="dom-ok">verified</span></div><div class="mock-row"><span class="mock-row-main">acme-app.cloudeide.app</span><span class="dom-ok">verified</span></div></div></div></div></div>
-        </div>
-      </article>
+    </div>
+  </section>
+
+  <!-- Trust, from what is true today: no invented numbers. -->
+  <section class="section trust" id="trust">
+    <div class="wrap wrap--wide">
+      <div class="trust-grid">
+        <div class="trust-item"><h3>Built on VS Code</h3><p>Your extensions, keybindings and themes come with you.</p></div>
+        <div class="trust-item"><h3>Nothing lands without you</h3><p>Every change waits for Keep. Production waits for Allow.</p></div>
+        <div class="trust-item"><h3>Secrets stay secret</h3><p>You type a key's value; the agent only ever sees its name.</p></div>
+        <div class="trust-item"><h3>Your files, your folder</h3><p>The agent works on the folder you opened, on your machine.</p></div>
+      </div>
     </div>
   </section>
 
@@ -305,7 +270,7 @@
   <section class="section" id="mark">
     <div class="wrap">
       <div class="closing reveal">
-        <h2>Try CloudeIDE.</h2>
+        <h2>Start building.</h2>
         <div class="download-row" data-download>
           <a class="btn btn-primary" data-os="linux" data-os-short="Linux"
              href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Download for Linux</a>
@@ -331,12 +296,12 @@
     <div class="footer-grid">
       <nav class="footer-col" aria-label="Product">
         <h2 class="footer-head">Product</h2>
-        <a href="#agent">Agent</a>
-        <a href="#deploy">Deploy</a>
-        <a href="#tab">Tab</a>
-        <a href="#pr">Pull requests</a>
-        <a href="#teams">Team rules</a>
-        <a href="#cli">CLI</a>
+        <a href="features.html#agent">Agent</a>
+        <a href="features.html#deploy">Deploy</a>
+        <a href="features.html#tab">Tab</a>
+        <a href="features.html#pr">Pull requests</a>
+        <a href="features.html#teams">Team rules</a>
+        <a href="features.html#cli">CLI</a>
         <a href="https://api.cloudeide.com/app/enterprise">Enterprise</a>
       </nav>
       <nav class="footer-col" aria-label="Account">
