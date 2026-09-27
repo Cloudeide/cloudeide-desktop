@@ -26,6 +26,15 @@ if (!APP || !TOKEN) {
 }
 await mkdir(OUT, { recursive: true });
 
+// Normally blank, so the test uses the server the release has compiled in,
+// which is the one a person gets. Set to try a release against another host.
+const SERVER = process.env.CLOUDEIDE_SERVER_URL;
+if (SERVER) {
+	await mkdir('/tmp/cloudeide-test-data/User', { recursive: true });
+	await writeFile('/tmp/cloudeide-test-data/User/settings.json', JSON.stringify({ 'cloudeide.serverUrl': SERVER, 'cloudeide.webUrl': SERVER }, null, 2));
+	console.log(`server overridden: ${SERVER}`);
+}
+
 const results = [];
 let shotNo = 0;
 const started = Date.now();
