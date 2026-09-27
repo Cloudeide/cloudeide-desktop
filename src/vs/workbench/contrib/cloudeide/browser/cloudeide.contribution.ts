@@ -31,6 +31,7 @@ import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { AgentHostAnthropicKeySecret, CloudeideTokenSecret } from '../../../../platform/agentHost/common/agentService.js';
 import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
+import { CloudeideTabContribution } from './cloudeideTabCompletion.js';
 import { EditorPaneDescriptor, IEditorPaneRegistry } from '../../../browser/editor.js';
 import { EditorExtensions, IEditorFactoryRegistry, IEditorSerializer } from '../../../common/editor.js';
 import { EditorInput } from '../../../common/editor/editorInput.js';
@@ -363,6 +364,19 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 			description: localize('cloudeide.model',
 				"Which model the agent runs on. Every model here is billed to your CloudeIDE account, and what a turn costs depends on which one you pick — see Credits in the dashboard."),
 		},
+		'cloudeide.tab.enabled': {
+			type: 'boolean',
+			default: true,
+			description: localize('cloudeide.tab.enabled',
+				"Suggest the next lines in grey as you type. Tab keeps a suggestion, Esc dismisses it. Each suggestion is billed to your CloudeIDE account as credits, at the Claude Haiku 4.5 rate."),
+		},
+		'cloudeide.tab.disabledLanguages': {
+			type: 'array',
+			items: { type: 'string' },
+			default: [],
+			description: localize('cloudeide.tab.disabledLanguages',
+				"Languages Tab stays quiet in, by language id — for example \"markdown\" or \"plaintext\"."),
+		},
 		'cloudeide.environment': {
 			type: 'string',
 			enum: ['development', 'preview', 'production'],
@@ -408,6 +422,16 @@ registerWorkbenchContribution2(
 registerWorkbenchContribution2(
 	CloudeideChatAgentContribution.ID,
 	CloudeideChatAgentContribution,
+	WorkbenchPhase.AfterRestored,
+);
+
+/*
+ * CloudeIDE Tab: grey suggestions as you type, and the status bar entry
+ * that turns them off. After restore, like the model — nobody is typing yet.
+ */
+registerWorkbenchContribution2(
+	CloudeideTabContribution.ID,
+	CloudeideTabContribution,
 	WorkbenchPhase.AfterRestored,
 );
 

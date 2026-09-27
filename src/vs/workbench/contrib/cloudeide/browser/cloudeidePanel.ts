@@ -1020,6 +1020,21 @@ export class CloudeidePanel extends ViewPane {
 		}
 	}
 
+	/**
+	 * A request from elsewhere in the editor — Tab's "Write the test" —
+	 * run exactly as if it had been typed here, in Agent mode, because what
+	 * it asks for is a change. Nothing is sent while a run is already going;
+	 * the text is left in the box for the person to send when it finishes.
+	 */
+	async askFromCommand(text: string): Promise<void> {
+		this.mode = 'agent';
+		this.updateModeLabel();
+		this.input.value = text;
+		if (!this.busy) {
+			await this.send();
+		}
+	}
+
 	/** The command's way in. Everything it needs is on this view. */
 	async offerPullRequestFromCommand(): Promise<void> {
 		await this.offerPullRequest();

@@ -442,11 +442,11 @@ export class CloudeideClient {
 	 *
 	 * The caller reads the stream. This only gets it one.
 	 */
-	async anthropicMessages(body: unknown): Promise<Response> {
+	async anthropicMessages(body: unknown, timeoutMs = 600_000): Promise<Response> {
 		return this.send('/anthropic/v1/messages', {
 			method: 'POST',
 			body: JSON.stringify(body),
-		}, 600_000);
+		}, timeoutMs);
 	}
 
 	async agent(

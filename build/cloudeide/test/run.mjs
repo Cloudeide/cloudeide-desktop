@@ -40,6 +40,7 @@ const TESTS = [
 	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideInlinePrompt.test.ts',
 	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideOrgRules.test.ts',
 	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideGallery.test.ts',
+	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideTab.test.ts',
 ];
 
 /*
