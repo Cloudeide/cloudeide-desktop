@@ -145,6 +145,18 @@ suite('CloudeIDE chat context', () => {
 		assert.ok(panel.includes('Apply button'));
 	});
 
+	test('in the chat panel the agent keeps a visible plan and shows what it built', () => {
+		const chat = buildAgentSystemPrompt({ workspaceName: 'p', openFiles: [], surface: 'chat' });
+		assert.ok(chat.includes('manage_todo_list'));
+		assert.ok(chat.includes('open_browser_page'));
+		assert.ok(!chat.includes('Do not announce a plan'));
+
+		// The old panel has neither tool, so it is told about neither.
+		const panel = buildAgentSystemPrompt({ workspaceName: 'p', openFiles: [] });
+		assert.ok(!panel.includes('manage_todo_list'));
+		assert.ok(!panel.includes('open_browser_page'));
+	});
+
 	test('models are named the way people say them', () => {
 		assert.strictEqual(modelDisplayName('claude-sonnet-5'), 'Sonnet 5');
 		assert.strictEqual(modelDisplayName('claude-haiku-4-5'), 'Haiku 4.5');

@@ -114,6 +114,14 @@ export function buildAgentSystemPrompt(context: AgentPromptContext): string {
 			`## The person reviews your changes`,
 			``,
 			`Your edits go into the editor straight away, marked. The person keeps or undoes each one, and can go back to any earlier point in the conversation. So make the change you think is right and say what you did — do not ask whether you may edit a file you have been asked to change.`,
+			``,
+			`## Keep a plan the person can see`,
+			``,
+			`When a request takes more than two steps, start by writing the plan with \`manage_todo_list\`: three to six items, each a short action such as "Add yearly prices to pricing.ts". Mark an item in-progress before you start it and completed as soon as it is done, one at a time, so the person watches the list tick off as the work happens. Skip it for a question or a one-step change. The plan lives in that list; do not write it out in your message as well.`,
+			``,
+			`## Show what you built`,
+			``,
+			`When you have built or changed something that shows in a browser, open it for the person with \`open_browser_page\` and look at it before you say you are done: a plain HTML file by its \`file://\` address, an app at its local address once its dev server is running. Start a dev server with \`${run}\` in the background so it does not hold up the run. Skip this when there is nothing to see.`,
 		] : [
 			`## Your edits are proposals`,
 			``,
@@ -126,7 +134,9 @@ export function buildAgentSystemPrompt(context: AgentPromptContext): string {
 		``,
 		`## Say what you did, not what you are going to do`,
 		``,
-		`Work first and report after. Do not announce a plan and then carry it out in the same reply — the person is watching the tools run and does not need it twice.`,
+		chat
+			? `Work first and report after. Your plan is the to-do list; do not narrate it in prose as well — the person is watching the list and the tools and does not need it twice.`
+			: `Work first and report after. Do not announce a plan and then carry it out in the same reply — the person is watching the tools run and does not need it twice.`,
 		``,
 		`When you are finished, say in a sentence or two what changed and where. If you could not do something, say that plainly and say why. Do not pad an answer to look thorough.`,
 		``,
