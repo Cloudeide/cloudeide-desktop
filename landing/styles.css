@@ -3080,6 +3080,20 @@ a:hover > .learn-arrow {
   height: auto;
 }
 
+/*
+ * Never smaller than the app really is.
+ *
+ * The screenshots are of a 1000-pixel window. Shrunk to fit a narrow page
+ * the text in them turns to grey lines, so below 1150 pixels wide they stop
+ * shrinking and run off the edge of the stage instead, the way a real window
+ * would. --fx says which part stays in view: 0 the left edge, 1 the right.
+ */
+.shot-window[style] img {
+  width: max(100%, 1150px);
+  max-width: none;
+  margin-left: min(0px, calc(var(--fx, 0) * (100% - 1150px)));
+}
+
 /* ── the three features ───────────────────────────────────────────────── */
 
 .section.feats {
@@ -3138,7 +3152,7 @@ a:hover > .learn-arrow {
 /* ── trust ────────────────────────────────────────────────────────────── */
 
 .section.trust {
-  padding: 72px 0;
+  padding: 40px 0 0;
   border-top: 0;
 }
 
@@ -3148,9 +3162,14 @@ a:hover > .learn-arrow {
   gap: 32px;
 }
 
+.trust-grid {
+  gap: 12px;
+}
+
 .trust-item {
-  padding-top: 18px;
-  border-top: 1px solid var(--border-strong);
+  padding: 22px 22px 24px;
+  border-radius: 14px;
+  background: var(--panel);
 }
 
 .trust-item h3 {
@@ -3419,13 +3438,11 @@ a:hover > .learn-arrow {
   .feat-copy p {
     font-size: 16px;
   }
-  /* The whole window at phone width is too small to read. Keep it big and
-     let it run off the edge; --focus (set per screenshot) picks the part
-     that shows. */
+  /* On a phone, the app at its real size: the text reads like it does in
+     the app, and the part that matters is in view. */
   .shot-window[style] img {
-    width: 180%;
-    max-width: none;
-    margin-left: var(--focus, 0%);
+    width: 1000px;
+    margin-left: min(0px, calc(var(--fx, 0) * (100% - 1000px)));
   }
   .trust-grid {
     grid-template-columns: minmax(0, 1fr);
