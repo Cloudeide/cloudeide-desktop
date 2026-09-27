@@ -2376,3 +2376,565 @@ html {
     gap: 6px;
   }
 }
+/* ================================================= v3: art, hero, tiles == */
+/*
+ * The painted stage.
+ *
+ * Big product pages put their screenshots on a painting, so the window reads
+ * as an object in a place rather than a grey box on a grey box. This is that,
+ * drawn from the page's own warm neutrals — the same browns the surface ramp
+ * is made of, lighter where the light falls — with a fine grain over it so it
+ * reads as a surface and not as a gradient. No new hue.
+ */
+.art {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background:
+    radial-gradient(90% 70% at 18% 8%, #4a453f 0%, rgba(74, 69, 63, 0) 62%),
+    radial-gradient(70% 60% at 88% 18%, #3a3631 0%, rgba(58, 54, 49, 0) 60%),
+    radial-gradient(120% 70% at 50% 110%, #2b2824 0%, rgba(43, 40, 36, 0) 70%),
+    linear-gradient(180deg, #34302b 0%, #23201d 55%, #1b1917 100%);
+  isolation: isolate;
+}
+
+.art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.47  0 0 0 0 0.43  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Long soft strokes, like brushwork across the top of the canvas. */
+.art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(172deg, rgba(242, 242, 240, 0.05) 0%, rgba(242, 242, 240, 0) 30%),
+    linear-gradient(8deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.25) 100%);
+}
+
+.art .mock {
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ------------------------------------------------------------- hero ----- */
+
+.hero .hero-actions {
+  margin-top: 28px;
+}
+
+.hero-art {
+  padding: 56px 56px 150px;
+}
+
+.mock--desk {
+  width: 88%;
+  position: relative;
+}
+
+.desk {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1.05fr) minmax(0, 1fr);
+  min-height: 500px;
+}
+
+.desk-sessions {
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.desk-sessions .mock-pane-label {
+  padding: 0 8px;
+  margin: 6px 0 4px;
+}
+
+.desk-sessions .mock-pane-label + .ses { margin-top: 0; }
+.desk-sessions .ses + .mock-pane-label { margin-top: 18px; }
+
+.ses {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.ses--on { background: var(--overlay-4); }
+
+.ses-title {
+  color: var(--text-primary);
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 165px;
+}
+
+.ses-sub {
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+}
+
+.ses-icon {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: 3px;
+  border-radius: 50%;
+}
+
+.ses-icon--spin {
+  border: 1.5px solid var(--border-strong);
+  border-top-color: var(--text-primary);
+  animation: ses-spin 1.2s linear infinite;
+}
+
+.ses-icon--wait {
+  border: 1.5px dashed var(--text-secondary);
+}
+
+.ses-icon--done {
+  border: 1.5px solid var(--text-tertiary);
+  position: relative;
+}
+
+.ses-icon--done::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 3px;
+  height: 6px;
+  border: solid var(--text-secondary);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+@keyframes ses-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ses-icon--spin { animation: none; }
+}
+
+.desk-chat {
+  text-align: left;
+}
+
+.desk-chat-title {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+/* A picture attached to the message, the way the chat shows it. */
+.att {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  margin-top: 8px;
+  padding: 3px 8px 3px 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+}
+
+.att-img {
+  width: 26px;
+  height: 20px;
+  border-radius: 4px;
+  background:
+    linear-gradient(var(--text-tertiary), var(--text-tertiary)) 4px 4px / 12px 2px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) 4px 9px / 18px 2px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) 4px 13px / 14px 2px no-repeat,
+    var(--panel-raised);
+}
+
+.desk-browser {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-raised);
+}
+
+.desk-url {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.desk-url .mock-url-bar {
+  flex: 1;
+  margin: 0;
+}
+
+.desk-browser .site {
+  padding: 28px 26px;
+}
+
+.site-cta {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 7px 14px;
+  border-radius: 7px;
+  background: var(--text-primary);
+  color: var(--bg);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.mock--cli {
+  position: absolute;
+  right: 44px;
+  bottom: 44px;
+  width: 42%;
+  max-width: 540px;
+  border-color: var(--border-strong);
+}
+
+.mock--cli .mock-term { min-height: 0; }
+
+.cli-body {
+  padding: 12px 0 14px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.cli-dim { color: var(--text-tertiary); }
+.cli-url { color: var(--text-primary); border-bottom: 1px solid var(--border-strong); }
+
+/* ------------------------------------------------------------ tiles ----- */
+
+.tiles {
+  padding-top: 24px;
+}
+
+.tiles .wrap {
+  max-width: 1360px;
+}
+
+.tile {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 2fr);
+  align-items: center;
+  gap: 48px;
+  padding: 24px 24px 24px 48px;
+  background: var(--panel);
+  border-radius: 16px;
+}
+
+.tile + .tile {
+  margin-top: 24px;
+}
+
+.tile-copy h2 {
+  color: var(--text-primary);
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.tile-copy p {
+  margin-top: 10px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  max-width: 34ch;
+}
+
+.tile-stage {
+  padding: 48px;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.tile-stage > .mock:first-child {
+  width: 100%;
+}
+
+.mock-card-head code.inline {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.9em;
+  background: var(--overlay-3);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+/* Tab: grey text ahead of the cursor, as the editor draws it. */
+.mock--editor .mock-body--code {
+  padding: 10px 0 14px;
+}
+
+.mock-line--ghost {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.tab-hint {
+  margin: 0 0 14px 42px;
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+}
+
+.tab-key {
+  display: inline-block;
+  padding: 0 6px;
+  margin-right: 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+}
+
+.mock-status {
+  display: flex;
+  gap: 18px;
+  justify-content: flex-end;
+  padding: 5px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+}
+
+.mock-status > span:first-child { margin-right: auto; }
+.mock-status-tab { color: var(--text-primary); }
+
+.mock--toast {
+  position: absolute;
+  right: 28px;
+  bottom: 110px;
+  width: 300px;
+  padding: 14px;
+  background: var(--panel);
+  border-color: var(--border-strong);
+}
+
+.toast-text {
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+/* Pull request: the dialog in front of the chat. */
+.pr-chat {
+  text-align: left;
+  min-height: 460px;
+}
+
+.tile-stage > .mock.mock--prchat {
+  width: 66%;
+}
+
+.mock--dialog {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 360px;
+  background: var(--panel);
+  border-color: var(--border-strong);
+}
+
+.dialog-title {
+  padding: 16px 18px 6px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dialog-body {
+  padding: 0 18px 14px;
+  font-size: 12.5px;
+}
+
+.dialog-body p + p { margin-top: 8px; }
+.dialog-dim { color: var(--text-tertiary); }
+
+.dialog-files {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+}
+
+/* Deploy: domains, and the DNS record to copy. */
+.dom-ok,
+.dom-wait {
+  font-size: 11.5px;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.dom-ok { color: var(--bg); background: var(--text-primary); }
+.dom-wait { color: var(--text-secondary); border: 1px dashed var(--text-tertiary); }
+
+.dns {
+  margin: 8px 0 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.dns-lead {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.dns-line {
+  display: grid;
+  grid-template-columns: 60px 50px minmax(0, 1fr) 16px;
+  gap: 10px;
+  align-items: center;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--text-primary);
+}
+
+.dns-copy {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--text-tertiary);
+  border-radius: 3px;
+  box-shadow: 3px -3px 0 -1.5px var(--panel), 3px -3px 0 0 var(--text-tertiary);
+}
+
+.mock--input {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  transform: translateX(-50%);
+  width: 420px;
+  padding: 8px;
+  background: var(--panel);
+  border-color: var(--border-strong);
+}
+
+.input-prompt {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  padding: 2px 4px 8px;
+}
+
+.input-field {
+  border: 1px solid var(--text-secondary);
+  border-radius: 6px;
+  padding: 6px 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.input-field .mock-cursor {
+  width: 1.5px;
+  height: 14px;
+  margin-left: 1px;
+  vertical-align: -2px;
+}
+
+.tile-copy .copy-chip {
+  margin-top: 26px;
+}
+
+/* ------------------------------------------------------------ narrow ---- */
+
+@media (max-width: 1100px) {
+  .tile {
+    grid-template-columns: minmax(220px, 0.8fr) minmax(0, 2fr);
+    gap: 32px;
+    padding-left: 32px;
+  }
+}
+
+/*
+ * On a phone the pictures keep their size and crop at the right edge, as
+ * before: the copy goes on top, and the stage below shows as much of a real
+ * window as fits rather than a window shrunk until nothing in it can be read.
+ */
+@media (max-width: 819px) {
+  .hero-art {
+    padding: 20px 0 24px 20px;
+    min-height: 0;
+    border-radius: 10px;
+  }
+
+  /* The sessions list gives way on a phone, so the conversation is what
+     shows first; the crop takes the browser off the right edge. */
+  .mock--desk {
+    width: 760px;
+  }
+
+  .desk {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    min-height: 440px;
+  }
+
+  .desk-sessions { display: none; }
+
+  .hero-art { padding-bottom: 130px; }
+
+  .mock--cli {
+    left: 150px;
+    right: auto;
+    bottom: 18px;
+    width: 400px;
+  }
+
+  .tile {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 24px 0 0 0;
+    background: transparent;
+  }
+
+  .tile-copy {
+    padding: 0 4px;
+  }
+
+  .tile-copy h2 { font-size: 22px; }
+  .tile-copy p { font-size: 16px; }
+
+  .tile-stage {
+    padding: 20px 0 20px 20px;
+    min-height: 0;
+    border-radius: 10px;
+  }
+
+  .tile-stage > .mock:first-child {
+    width: 720px;
+    flex-shrink: 0;
+  }
+
+  .mock--toast { left: 250px; right: auto; bottom: 20px; width: 260px; }
+  .mock--dialog { left: 180px; right: auto; width: 300px; }
+  .tile-stage > .mock.mock--prchat { width: 520px; }
+  .mock--input { left: 20px; transform: none; width: 320px; top: 20px; }
+
+  .tile + .tile { margin-top: 36px; }
+}
