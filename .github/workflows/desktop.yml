@@ -272,10 +272,13 @@ jobs:
           tag="v${{ steps.package.outputs.version }}"
           asset="CloudeIDE-linux-x64.tar.gz"
           cp "${{ steps.package.outputs.name }}.tar.gz" "$asset"
-          gh release create "$tag" \
-            --title "CloudeIDE ${{ steps.package.outputs.version }}" \
-            --notes "Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app" \
-            || echo "release $tag already exists"
+          notes="Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app"
+          title="CloudeIDE ${{ steps.package.outputs.version }}"
+          # A release that already exists gets its title and notes brought up
+          # to date too, not only its files: rebuilding the same version used to
+          # replace every download and leave notes that predated half of them.
+          gh release create "$tag" --title "$title" --notes "$notes" \
+            || gh release edit "$tag" --title "$title" --notes "$notes"
           gh release upload "$tag" "$asset" CloudeIDE-linux-x64.deb --clobber
 
   # Windows, once Linux was known to build. Same two gulp tasks with the other
@@ -507,10 +510,13 @@ jobs:
           tag="v${{ steps.package.outputs.version }}"
           asset="CloudeIDE-win32-x64.zip"
           cp "${{ steps.package.outputs.name }}.zip" "$asset"
-          gh release create "$tag" \
-            --title "CloudeIDE ${{ steps.package.outputs.version }}" \
-            --notes "Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app" \
-            || echo "release $tag already exists"
+          notes="Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app"
+          title="CloudeIDE ${{ steps.package.outputs.version }}"
+          # A release that already exists gets its title and notes brought up
+          # to date too, not only its files: rebuilding the same version used to
+          # replace every download and leave notes that predated half of them.
+          gh release create "$tag" --title "$title" --notes "$notes" \
+            || gh release edit "$tag" --title "$title" --notes "$notes"
           gh release upload "$tag" "$asset" --clobber
 
   # macOS, and Apple Silicon only to begin with.
@@ -714,8 +720,11 @@ jobs:
           tag="v${{ steps.package.outputs.version }}"
           asset="CloudeIDE-darwin-arm64.zip"
           cp "${{ steps.package.outputs.name }}.zip" "$asset"
-          gh release create "$tag" \
-            --title "CloudeIDE ${{ steps.package.outputs.version }}" \
-            --notes "Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app" \
-            || echo "release $tag already exists"
+          notes="Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app"
+          title="CloudeIDE ${{ steps.package.outputs.version }}"
+          # A release that already exists gets its title and notes brought up
+          # to date too, not only its files: rebuilding the same version used to
+          # replace every download and leave notes that predated half of them.
+          gh release create "$tag" --title "$title" --notes "$notes" \
+            || gh release edit "$tag" --title "$title" --notes "$notes"
           gh release upload "$tag" "$asset" --clobber

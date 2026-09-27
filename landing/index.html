@@ -271,6 +271,8 @@
                href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Download for Linux</a>
             <a class="btn btn-secondary" data-os="windows" data-os-short="Windows"
                href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip">Download for Windows</a>
+            <a class="btn btn-secondary" data-os="mac" data-os-short="macOS"
+               href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip">Download for macOS</a>
           </div>
 
           <p class="showcase-note" data-note="linux">
@@ -281,15 +283,9 @@
           <p class="showcase-note" data-note="windows">
             64-bit Windows 10 or newer. Unzip it and run CloudeIDE.exe.
           </p>
-          <!--
-            No Mac button yet, and it is out rather than pointing at nothing.
-
-            The markup for it is written and the build that fills it is not
-            green: the desktop workflow has been failing since the .deb change,
-            and a download button whose file 404s is worse than a page that
-            does not offer one. It comes back in one commit — an <a> with
-            data-os="mac" and a note beside it — the day that build passes.
-          -->
+          <p class="showcase-note" data-note="mac">
+            Apple Silicon (M1 or newer). Unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time.
+          </p>
         </div>
 
         <div class="install-stage" aria-hidden="true"><div class="mock"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">acme-app — CloudeIDE</span></div><div class="mock-split mock-split--tree"><div class="mock-pane mock-tree"><div class="mock-pane-label">Explorer</div><div class="mock-file mock-file--dir"><span>src</span></div><div class="mock-file mock-file--open"><span>pricing.js</span></div><div class="mock-file "><span>pricing.test.js</span></div><div class="mock-file mock-file--top"><span>index.html</span></div><div class="mock-file mock-file--top"><span>styles.css</span></div><div class="mock-file mock-file--top"><span>package.json</span></div><div class="mock-file mock-file--top"><span>README.md</span></div></div><div class="mock-pane mock-code"><div class="mock-tabs"><span class="mock-tab mock-tab--on">pricing.js</span><span class="mock-tab">pricing.test.js</span></div><div class="mock-body--code"><div class="mock-line"><span class="mock-ln">1</span>export const plans = [</div><div class="mock-line"><span class="mock-ln">2</span>  { name: 'Starter', monthly: 0 },</div><div class="mock-line"><span class="mock-ln">3</span>  { name: 'Pro',     monthly: 20 },</div><div class="mock-line"><span class="mock-ln">4</span>  { name: 'Team',    monthly: 40 },</div><div class="mock-line"><span class="mock-ln">5</span>];</div><div class="mock-line"><span class="mock-ln">6</span></div><div class="mock-line"><span class="mock-ln">7</span>export function price(plan, billing) {</div><div class="mock-line"><span class="mock-ln">8</span>  if (billing === 'yearly') {</div><div class="mock-line"><span class="mock-ln">9</span>    return `$${yearly(plan)}/yr`;</div><div class="mock-line"><span class="mock-ln">10</span>  }</div><div class="mock-line"><span class="mock-ln">11</span>  return `$${plan.monthly}/mo`;</div><div class="mock-line"><span class="mock-ln">12</span>}</div><div class="mock-line"><span class="mock-ln">13</span></div><div class="mock-line"><span class="mock-ln">14</span>export function yearly(plan) {</div><div class="mock-line"><span class="mock-ln">15</span>  return plan.monthly * 12 * 0.8;</div><div class="mock-line"><span class="mock-ln">16</span>}</div></div></div></div></div></div>
@@ -315,6 +311,8 @@
              href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Download for Linux</a>
           <a class="btn btn-secondary" data-os="windows" data-os-short="Windows"
              href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip">Download for Windows</a>
+          <a class="btn btn-secondary" data-os="mac" data-os-short="macOS"
+             href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip">Download for macOS</a>
         </div>
       </div>
     </div>
@@ -354,6 +352,7 @@
         <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Linux (.deb)</a>
         <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.tar.gz">Linux (.tar.gz)</a>
         <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip">Windows</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip">macOS (Apple Silicon)</a>
         <a href="https://github.com/laxmansubedi7/cloudevs/releases">All releases</a>
       </nav>
       <nav class="footer-col" aria-label="Legal">
