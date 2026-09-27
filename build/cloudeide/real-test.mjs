@@ -26,14 +26,22 @@ if (!APP || !TOKEN) {
 }
 await mkdir(OUT, { recursive: true });
 
-// Normally blank, so the test uses the server the release has compiled in,
-// which is the one a person gets. Set to try a release against another host.
+// Dialogs drawn in the window rather than by the OS: a native dialog is a
+// separate window the test cannot see or press, and it holds the app until
+// someone answers it.
+//
+// The server is normally left alone, so the test uses the one the release has
+// compiled in, which is the one a person gets. Set CLOUDEIDE_SERVER_URL to try
+// a release against another host.
 const SERVER = process.env.CLOUDEIDE_SERVER_URL;
+const settings = { 'window.dialogStyle': 'custom' };
 if (SERVER) {
-	await mkdir('/tmp/cloudeide-test-data/User', { recursive: true });
-	await writeFile('/tmp/cloudeide-test-data/User/settings.json', JSON.stringify({ 'cloudeide.serverUrl': SERVER, 'cloudeide.webUrl': SERVER }, null, 2));
+	settings['cloudeide.serverUrl'] = SERVER;
+	settings['cloudeide.webUrl'] = SERVER;
 	console.log(`server overridden: ${SERVER}`);
 }
+await mkdir('/tmp/cloudeide-test-data/User', { recursive: true });
+await writeFile('/tmp/cloudeide-test-data/User/settings.json', JSON.stringify(settings, null, 2));
 
 const results = [];
 let shotNo = 0;
