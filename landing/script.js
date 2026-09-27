@@ -280,3 +280,97 @@ for (const row of document.querySelectorAll("[data-download]")) {
     if (/^Download for /.test(link.textContent)) link.textContent = "Download for " + name;
   });
 })();
+
+/* The agent demo on the home page. */
+
+(() => {
+  const stage = document.querySelector(".ad-stage");
+  if (!stage) return;
+  const END = 10.4, LOOP = 12.4;
+  const TASK = "Add a pricing page with yearly billing at 20% off, and tests";
+  const TERM = [
+    [4.9, '<span class="ad-p0">~/acme-app $</span> npm test'],
+    [5.3, ' PASS  lib/pricing.test.ts'],
+    [5.6, '<span class="ad-okl">✓ 12 passed</span> in 1.8s'],
+    [5.7, '<span class="ad-p0">~/acme-app $</span> npm run build'],
+    [6.1, '<span class="ad-okl">✓ Build passed</span> · 14 routes'],
+    [9.0, '<span class="ad-p0">~/acme-app $</span> cloudeide deploy --env production'],
+    [9.6, '<span class="ad-okl">✓ Live</span> at https://acme.com/pricing'],
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const chat = $("ad-chat"), scroll = $("ad-chatScroll");
+  const timed = [...stage.querySelectorAll("[data-at]")];
+  const items = [...document.querySelectorAll(".ad-item")];
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, playing = false;
+  const at = (s) => t >= s;
+
+  function render() {
+    const n = Math.max(0, Math.min(TASK.length, Math.round((t / 0.6) * TASK.length)));
+    $("ad-typed").textContent = TASK.slice(0, n);
+
+    timed.forEach((el) => {
+      const on = at(+el.dataset.at);
+      if (chat.contains(el)) { el.classList.remove("ad-off"); el.classList.toggle("ad-gone", !on); }
+      else el.classList.toggle("ad-off", !on);
+    });
+    items.forEach((el) => {
+      const d = at(+el.dataset.done);
+      el.classList.toggle("ad-done", d);
+      el.querySelector(".ad-ico").className = "ad-ico " + (d ? "ad-tick" : "ad-box");
+    });
+
+    $("ad-term").innerHTML = TERM.filter(([s]) => at(s)).slice(-5).map(([, l]) => `<div>${l}</div>`).join("");
+
+    const yearly = at(6.3);
+    $("ad-tgM").classList.toggle("ad-on", !yearly);
+    $("ad-tgY").classList.toggle("ad-on", yearly);
+    $("ad-pro").textContent = yearly ? "$16" : "$20";
+    $("ad-team").textContent = yearly ? "$32" : "$40";
+    $("ad-proPer").textContent = $("ad-teamPer").textContent = yearly ? "per month, billed yearly" : "per month";
+
+    $("ad-keepBtn").classList.toggle("ad-press", at(7.2) && !at(7.5));
+    $("ad-keepText").innerHTML = at(7.5) ? '<span class="ad-add">✓</span> Kept 4 files' : '4 files changed <span class="ad-add">+200</span> <span class="ad-del">−4</span>';
+    $("ad-allow").classList.toggle("ad-press", at(9.0) && !at(9.3));
+    $("ad-confirm").classList.toggle("ad-gone", !at(8.6) || at(9.4));
+    $("ad-urlText").textContent = at(9.6) ? "acme.com/pricing" : "localhost:3000/pricing";
+
+    $("ad-sesIco").className = "ad-ico " + (at(9.6) ? "ad-ok" : "ad-spin");
+    $("ad-sesSub").innerHTML = at(9.6) ? '<span class="ad-add">+200</span> <span class="ad-del">−4</span> · Live' : at(6.5) ? "Ready for review" : at(2.6) ? "Building…" : at(1.5) ? "Planning…" : "Reading…";
+    $("ad-sesWhen").textContent = at(9.6) ? "now" : "";
+
+    const over = chat.scrollHeight - scroll.clientHeight;
+    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+
+  }
+
+  // Runs only while it is on screen, and starts from the beginning each
+  // time it comes into view, so the visitor sees the whole job.
+  function frame(now) {
+    if (playing) {
+      t += Math.min(0.1, (now - last) / 1000);
+      if (t > LOOP) t = 0;
+      render();
+    }
+    last = now;
+    if (playing) requestAnimationFrame(frame);
+  }
+
+  function start() {
+    if (playing || still) return;
+    playing = true; t = 0; render();
+    last = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  if (still) { t = END; render(); return; }
+  t = END; render();
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) start(); else playing = false; });
+    }, { threshold: 0.3 }).observe(stage);
+  } else {
+    start();
+  }
+})();
