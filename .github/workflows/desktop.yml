@@ -525,7 +525,14 @@ jobs:
   # be opened because Apple cannot check it for malicious software" dialog. It
   # does not buy the ability to run. That is what the ad-hoc signature in the
   # packaging step is for, and that is free.
+  # Only when publishing. The free macos-latest runner has 3 cores and 7 GB
+  # against Linux's and Windows' 4 and 16, and the same compile that takes 7
+  # minutes on Linux takes 1 h 45 min here — run 32 built, started and
+  # photographed it fine, it is just slow. A test build that waits two hours
+  # for macOS is a test build nobody waits for, so pushes build Linux and
+  # Windows and the manual release run builds all three.
   macos:
+    if: inputs.release
     runs-on: macos-latest
     timeout-minutes: 150
 
@@ -579,16 +586,10 @@ jobs:
           npm run gulp compile-build-without-mangling
           npm run gulp vscode-darwin-arm64
         env:
-          # 6 GB here, not the 12 GB the other two use.
-          #
-          # This step took 1 h 36 min on macOS against 9 min on Linux and 12
-          # on Windows, for the same command on the same sources — 91 min of it
-          # inside compile-src alone. The free macos-latest runner has 7 GB of
-          # memory where the Linux and Windows ones have 16, and a 12 GB heap
-          # ceiling lets the compiler grow past physical memory into swap
-          # instead of collecting garbage. The whole-source typecheck fits in
-          # 6 GB (it runs with that locally), so the heap stays in RAM.
-          NODE_OPTIONS: --max-old-space-size=6144
+          # 12 GB, like the others. A 6 GB ceiling was tried on the theory that
+          # the slowness was swap: run 32 took 1 h 44 min with it against
+          # 1 h 36 min with 12 GB. The runner is slow, not swapping.
+          NODE_OPTIONS: --max-old-space-size=12288
           # The build downloads the js-debug extensions from the GitHub API,
           # which rate limits unauthenticated callers by runner IP — shared, so
           # the budget can already be gone on arrival. build/lib/fetch.ts sends
