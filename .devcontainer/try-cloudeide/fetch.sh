@@ -14,23 +14,28 @@ sudo apt-get install -y --no-install-recommends \
 
 repo="${GITHUB_REPOSITORY:-laxmansubedi7/cloudevs}"
 
-echo "--- the most recent run of the desktop workflow that finished green ---"
-run="$(gh run list --repo "$repo" --workflow desktop.yml --status success \
-	--limit 1 --json databaseId --jq '.[0].databaseId')"
-if [ -z "$run" ]; then
-	echo "No successful desktop build to download yet. Run the 'Desktop app'"
-	echo "workflow, then re-run: ./.devcontainer/try-cloudeide/fetch.sh"
-	exit 0
-fi
-echo "run ${run}"
-
 rm -rf ~/dl && mkdir -p ~/dl
-gh run download "$run" --repo "$repo" --name cloudeide-linux-x64 --dir ~/dl
+echo "--- the latest release: the file the download button gives people ---"
+if ! gh release download --repo "$repo" --pattern 'CloudeIDE-linux-x64.tar.gz' --dir ~/dl; then
+	echo "--- no release to download; the most recent green desktop build instead ---"
+	run="$(gh run list --repo "$repo" --workflow desktop.yml --status success \
+		--limit 1 --json databaseId --jq '.[0].databaseId')"
+	if [ -z "$run" ]; then
+		echo "Nothing to download yet. Run the 'Desktop app' workflow, then re-run:"
+		echo "  ./.devcontainer/try-cloudeide/fetch.sh"
+		exit 0
+	fi
+	gh run download "$run" --repo "$repo" --name cloudeide-linux-x64 --dir ~/dl
+fi
 
 echo "--- unpacking ---"
+rm -rf ~/VSCode-linux-x64
 tar -xzf ~/dl/*.tar.gz -C ~
 rm -rf ~/dl
 test -x ~/VSCode-linux-x64/cloudeide
+
+echo "--- a small project to open it on ---"
+./build/cloudeide/sample-project.sh ~/cafe >/dev/null
 
 # Fluxbox reads this at startup; without it the desktop is an empty grey field
 # with no obvious way in.
@@ -39,7 +44,7 @@ cat > ~/Desktop/CloudeIDE.desktop <<'DESKTOP'
 [Desktop Entry]
 Type=Application
 Name=CloudeIDE
-Exec=/home/vscode/VSCode-linux-x64/cloudeide --no-sandbox --disable-gpu
+Exec=/home/vscode/VSCode-linux-x64/cloudeide --no-sandbox --disable-gpu --password-store=basic /home/vscode/cafe
 Terminal=false
 DESKTOP
 chmod +x ~/Desktop/CloudeIDE.desktop

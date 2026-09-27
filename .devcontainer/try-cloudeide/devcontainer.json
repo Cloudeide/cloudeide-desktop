@@ -4,7 +4,8 @@
 // The configuration next door builds the source: it wants a Dockerfile, nine
 // gigabytes and a long first start. This one wants none of that. It takes a
 // stock Ubuntu, adds a desktop that is reachable from a browser, and pulls the
-// finished Linux package down from the last green run of the desktop workflow.
+// finished Linux package down from the latest release: the same file the
+// landing page's download button gives people.
 // That makes it usable from a phone, which is the whole point — a desktop
 // application needs a desktop, and this borrows one from GitHub.
 {
@@ -14,7 +15,9 @@
 		// Fluxbox plus a VNC server plus noVNC, which serves the desktop over
 		// plain HTTP on 6080. The password is the feature's default, and this
 		// container holds nothing worth protecting.
-		"ghcr.io/devcontainers/features/desktop-lite:1": {}
+		"ghcr.io/devcontainers/features/desktop-lite:1": {},
+		// fetch.sh downloads the release with gh; the base image has no gh.
+		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
 	"forwardPorts": [6080],
 	"portsAttributes": {
@@ -23,7 +26,12 @@
 			"onAutoForward": "openBrowserOnce"
 		}
 	},
+	"hostRequirements": { "cpus": 2 },
 	"onCreateCommand": "./.devcontainer/try-cloudeide/fetch.sh",
+	// Every time the Codespace starts, not only the first: it opens CloudeIDE
+	// on the desktop, so the person who opens port 6080 finds it already
+	// running instead of an empty grey screen.
+	"postStartCommand": "./.devcontainer/try-cloudeide/start.sh",
 	"remoteEnv": {
 		"DISPLAY": ":1"
 	}
