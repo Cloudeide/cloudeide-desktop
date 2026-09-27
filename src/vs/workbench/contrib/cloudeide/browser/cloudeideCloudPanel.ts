@@ -23,12 +23,9 @@ import { IThemeService } from '../../../../platform/theme/common/themeService.js
 import { ViewPane } from '../../../browser/parts/views/viewPane.js';
 import { IViewletViewOptions } from '../../../browser/parts/views/viewsViewlet.js';
 import { IViewDescriptorService } from '../../../common/views.js';
-import { IFileService } from '../../../../platform/files/common/files.js';
 import { ITextFileService } from '../../../services/textfile/common/textfiles.js';
-import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
-import { CloudeideClient, type DeployDomain, type DeployEnvironment, type DeploymentSummary, type DeployStatus } from './cloudeideClient.js';
-import { onDidChangeCloud } from './cloudeideCloudTools.js';
-import { collectWorkspaceFiles } from './cloudeideWorkspace.js';
+import { CloudeideClient, type DeployDomain, type DeployEnvironment, type DeploymentSummary } from './cloudeideClient.js';
+import { ICloudeideCloudService } from './cloudeideCloudService.js';
 
 const $ = DOM.$;
 
@@ -88,13 +85,13 @@ export class CloudeideCloudPanel extends ViewPane {
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
 		@IDialogService private readonly dialogService: IDialogService,
 		@ITextFileService private readonly textFileService: ITextFileService,
-		@IFileService private readonly fileService: IFileService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		@ICloudeideCloudService private readonly cloud: ICloudeideCloudService,
 	) {
 		super(options, keybindingService, contextMenuService, configurationService, contextKeyService,
 			viewDescriptorService, instantiationService, openerService, themeService, hoverService);
 
-		this.client = new CloudeideClient(secretStorageService, configurationService);
+		void secretStorageService;
+		this.client = cloud.client;
 	}
 
 	protected override renderBody(container: HTMLElement): void {
@@ -148,7 +145,7 @@ export class CloudeideCloudPanel extends ViewPane {
 		}));
 
 		// The agent deploys and adds domains from the chat.
-		this._register(onDidChangeCloud(() => {
+		this._register(this.cloud.onDidChange(() => {
 			if (this.loaded) {
 				void this.refresh();
 			}
@@ -350,7 +347,7 @@ export class CloudeideCloudPanel extends ViewPane {
 		}
 
 		try {
-			const domain = await this.client.addDomain(hostname.trim().toLowerCase(), this.client.environment);
+			const domain = await this.cloud.addDomain(hostname.trim().toLowerCase(), this.client.environment, 'you');
 			await this.refreshDomains();
 			const check = await this.client.verifyDomain(domain.id);
 			if (check.validationRecord) {
@@ -375,7 +372,7 @@ export class CloudeideCloudPanel extends ViewPane {
 			return;
 		}
 		try {
-			await this.client.removeDomain(domain.id);
+			await this.cloud.removeDomain(domain, 'you');
 		} catch (err) {
 			await this.dialogService.error(
 				localize('cloudeide.cloud.removeFailed', "Could not remove that domain"),
@@ -399,17 +396,11 @@ export class CloudeideCloudPanel extends ViewPane {
 		this.setDeployStatus(localize('cloudeide.collecting', "Reading the folder…"), 'muted');
 
 		try {
-			const files = await collectWorkspaceFiles(this.fileService, this.contextService);
-			if (files.length === 0) {
-				this.setDeployStatus(localize('cloudeide.nothingToDeploy',
-					"Nothing to deploy — open a folder with files in it first."), 'error');
-				return;
-			}
-
-			this.setDeployStatus(localize('cloudeide.deployingN',
-				"Building {0} file{1}…", files.length, files.length === 1 ? '' : 's'), 'muted');
-			const started = await this.client.deploy(files);
-			const finished = await this.pollDeployment(started.deploymentId);
+			const outcome = await this.cloud.deploy(this.client.environment, {
+				by: 'you',
+				onStep: status => this.setDeployStatus(localize('cloudeide.deployStatus', "Building… ({0})", status), 'muted'),
+			});
+			const finished = outcome.final;
 
 			if (finished.liveUrl) {
 				this.setDeployStatus(finished.liveUrl.replace(/^https?:\/\//, ''), 'ok', finished.liveUrl);
@@ -426,37 +417,6 @@ export class CloudeideCloudPanel extends ViewPane {
 			// not exist when the pane last drew.
 			await this.refreshDeployments();
 		}
-	}
-
-	/**
-	 * Waits for the build to settle.
-	 *
-	 * Polls rather than streams because the deploy endpoints are plain REST and
-	 * a socket for one button is not worth the reconnection logic. Gives up
-	 * after ten minutes with the last status it saw, instead of spinning
-	 * forever on a build that will never report.
-	 */
-	/*
-	 * The statuses the server actually writes. An earlier version waited for
-	 * "ready" or "live", which it never writes, and spelled cancelled with two
-	 * letters l — so a finished deployment kept being reported as building
-	 * until the poll timed out.
-	 */
-	private static readonly IN_PROGRESS = ['queued', 'building', 'deploying'];
-
-	private async pollDeployment(deploymentId: string): Promise<DeployStatus> {
-		const deadline = Date.now() + 10 * 60 * 1000;
-		let last: DeployStatus = { id: deploymentId, status: 'queued' };
-
-		while (Date.now() < deadline) {
-			last = await this.client.deploymentStatus(deploymentId);
-			if (!CloudeideCloudPanel.IN_PROGRESS.includes(last.status)) {
-				return last;
-			}
-			this.setDeployStatus(localize('cloudeide.deployStatus', "Building… ({0})", last.status), 'muted');
-			await new Promise(resolve => setTimeout(resolve, 3000));
-		}
-		return last;
 	}
 
 	private setDeploying(deploying: boolean): void {

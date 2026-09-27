@@ -16,10 +16,12 @@ import { ISecretStorageService } from '../../../../../platform/secrets/common/se
 import { IWorkspaceContextService } from '../../../../../platform/workspace/common/workspace.js';
 import { IEditorService } from '../../../../services/editor/common/editorService.js';
 import { ILanguageModelToolsService, IToolData, IToolImpl, IToolResult } from '../../../chat/common/tools/languageModelToolsService.js';
+import { InMemoryStorageService } from '../../../../../platform/storage/common/storage.js';
 import {
 	CLOUD_READ_TOOL_NAMES, CLOUD_TOOLS, CloudeideCloudToolsContribution, confirmationFor, formatDeployment,
-	formatEnvironments, onDidChangeCloud,
+	formatEnvironments,
 } from '../../browser/cloudeideCloudTools.js';
+import { CloudeideCloudService } from '../../browser/cloudeideCloudService.js';
 
 /**
  * The agent's hands on Cloud.
@@ -61,7 +63,7 @@ suite('CloudeIDE Cloud tools', () => {
 		globalThis.fetch = realFetch;
 	});
 
-	function setUp(options: { typed?: string } = {}) {
+	function setUp(options: { typed?: string; settings?: Record<string, unknown> } = {}) {
 		const impls = new Map<string, IToolImpl>();
 		const datas = new Map<string, IToolData>();
 		const toolsService = {
@@ -82,14 +84,17 @@ suite('CloudeIDE Cloud tools', () => {
 		const prompts: unknown[] = [];
 		const quickInput = { input: async (o: unknown) => { prompts.push(o); return options.typed; } } as unknown as IQuickInputService;
 
-		store.add(new CloudeideCloudToolsContribution(toolsService, secrets, new TestConfigurationService({ 'cloudeide.serverUrl': SERVER }), fileService, contextService, editorService, quickInput));
+		const configuration = new TestConfigurationService({ 'cloudeide.serverUrl': SERVER, ...options.settings });
+		const storage = store.add(new InMemoryStorageService());
+		const cloud = store.add(new CloudeideCloudService(secrets, configuration, fileService, contextService, editorService, storage));
+		store.add(new CloudeideCloudToolsContribution(toolsService, cloud, quickInput));
 
 		const run = async (name: string, parameters: Record<string, unknown>): Promise<{ text: string; result: IToolResult }> => {
 			const result = await impls.get(name)!.invoke({ callId: 'c', toolId: name, parameters, context: undefined }, async () => 0, { report: () => { } }, CancellationToken.None);
 			const text = result.content.map(p => p.kind === 'text' ? p.value : '').join('');
 			return { text, result };
 		};
-		return { impls, datas, run, prompts };
+		return { impls, datas, run, prompts, cloud };
 	}
 
 	test('every tool is registered, with a description the model can act on', () => {
@@ -110,9 +115,9 @@ suite('CloudeIDE Cloud tools', () => {
 			errorSummary: 'STRIPE_PUBLIC_KEY is not defined',
 			logs: [{ text: 'vite building', level: 'info' }, { text: 'STRIPE_PUBLIC_KEY is not defined', level: 'error' }],
 		};
-		const { run } = setUp();
+		const { run, cloud } = setUp();
 		let changed = 0;
-		const listener = onDidChangeCloud(() => changed++);
+		const listener = cloud.onDidChange(() => changed++);
 		try {
 			const { text } = await run('cloud_deploy', { environment: 'preview', message: 'Yearly billing' });
 			const start = calls.find(c => c.path === '/deploy/run')!;
@@ -125,6 +130,10 @@ suite('CloudeIDE Cloud tools', () => {
 			assert.ok(text.includes('ERROR STRIPE_PUBLIC_KEY is not defined'), text);
 			assert.ok(text.includes('fix its cause'), text);
 			assert.ok(changed >= 1, 'the Cloud views are told');
+			assert.deepStrictEqual(cloud.activity().map(a => [a.by, a.summary]), [
+				['agent', 'started deployment dpl_1 to preview ("Yearly billing")'],
+				['agent', 'deployment dpl_1 to preview failed: STRIPE_PUBLIC_KEY is not defined'],
+			]);
 		} finally {
 			listener.dispose();
 		}
@@ -138,9 +147,10 @@ suite('CloudeIDE Cloud tools', () => {
 		assert.strictEqual(text, 'Deployed 1 file to preview as dpl_2. Live at https://acme-app-preview.cloudeide.app');
 	});
 
-	test('what changes the public site asks first; previews and reading do not', () => {
-		assert.ok(confirmationFor('cloud_deploy', { environment: 'production' }));
-		assert.strictEqual(confirmationFor('cloud_deploy', { environment: 'preview' }), undefined);
+	test('every action that can ask has a question to ask; reading has none', () => {
+		assert.strictEqual(confirmationFor('cloud_deploy', { environment: 'production' })?.title, 'Deploy to production?');
+		assert.strictEqual(confirmationFor('cloud_deploy', { environment: 'preview' })?.title, 'Deploy to preview?');
+		assert.ok(confirmationFor('cloud_cancel', { deploymentId: 'dpl_1' }));
 		assert.ok(confirmationFor('cloud_rollback', { deploymentId: 'dpl_1' }));
 		assert.ok(confirmationFor('cloud_domain_add', { hostname: 'shop.acme.com', environment: 'production' }));
 		assert.ok(confirmationFor('cloud_domain_remove', { hostname: 'shop.acme.com' }));
@@ -149,15 +159,48 @@ suite('CloudeIDE Cloud tools', () => {
 		assert.strictEqual(confirmationFor('cloud_logs', {}), undefined);
 	});
 
-	test('the confirmation is attached when the call is prepared', async () => {
+	test('Balanced asks before production and lets a preview go, once each time', async () => {
 		const { impls } = setUp();
-		const prepared = await impls.get('cloud_deploy')!.prepareToolInvocation!({ parameters: { environment: 'production' }, toolCallId: 'c', chatSessionResource: undefined }, CancellationToken.None);
-		assert.strictEqual(prepared?.confirmationMessages?.title, 'Deploy to production?');
+		const prod = await impls.get('cloud_deploy')!.prepareToolInvocation!({ parameters: { environment: 'production' }, toolCallId: 'c', chatSessionResource: undefined }, CancellationToken.None);
+		assert.strictEqual(prod?.confirmationMessages?.title, 'Deploy to production?');
+		assert.strictEqual(prod?.confirmationMessages?.allowAutoConfirm, false);
+		const preview = await impls.get('cloud_deploy')!.prepareToolInvocation!({ parameters: { environment: 'preview' }, toolCallId: 'c', chatSessionResource: undefined }, CancellationToken.None);
+		assert.strictEqual(preview?.confirmationMessages, undefined);
+	});
+
+	test('Careful asks before a preview; Autopilot does not ask before production', async () => {
+		const careful = setUp({ settings: { 'cloudeide.agent.cloudPermissions': 'careful' } });
+		const preview = await careful.impls.get('cloud_deploy')!.prepareToolInvocation!({ parameters: { environment: 'preview' }, toolCallId: 'c', chatSessionResource: undefined }, CancellationToken.None);
+		assert.strictEqual(preview?.confirmationMessages?.title, 'Deploy to preview?');
+
+		const autopilot = setUp({ settings: { 'cloudeide.agent.cloudPermissions': 'autopilot' } });
+		const prod = await autopilot.impls.get('cloud_deploy')!.prepareToolInvocation!({ parameters: { environment: 'production' }, toolCallId: 'c', chatSessionResource: undefined }, CancellationToken.None);
+		assert.strictEqual(prod?.confirmationMessages, undefined);
+	});
+
+	test('"never" is refused when the tool runs, not only left unconfirmed', async () => {
+		routes['GET /deploy/domains'] = { domains: [{ id: 'd1', hostname: 'shop.acme.com', environment: 'production', status: 'verified', primary: false }] };
+		const { run } = setUp({ settings: { 'cloudeide.agent.cloudPermissions': 'careful' } });
+		const { result, text } = await run('cloud_domain_remove', { hostname: 'shop.acme.com' });
+		assert.ok(result.toolResultError);
+		assert.ok(text.includes('do not let you remove a domain'), text);
+		assert.ok(!calls.some(c => c.method === 'DELETE'));
+	});
+
+	test('the agent stops at the hourly deploy limit', async () => {
+		routes['POST /deploy/run'] = { deploymentId: 'dpl_5', status: 'queued' };
+		routes['GET /deploy/deployments/dpl_5'] = { id: 'dpl_5', status: 'success' };
+		const { run } = setUp({ settings: { 'cloudeide.agent.maxDeploysPerHour': 1 } });
+		await run('cloud_deploy', { environment: 'preview' });
+		const { result, text } = await run('cloud_deploy', { environment: 'preview' });
+		assert.ok(result.toolResultError);
+		assert.ok(text.includes('the limit (1)'), text);
+		assert.strictEqual(calls.filter(c => c.path === '/deploy/run').length, 1);
 	});
 
 	test('a secret is typed by the person, sent to the server, and never returned to the model', async () => {
 		routes['GET /deploy/env-vars'] = { envVars: [] };
-		const { run, prompts } = setUp({ typed: 'pk_live_SECRET123' });
+		const { run, prompts, cloud } = setUp({ typed: 'pk_live_SECRET123' });
 		const { text } = await run('cloud_env_set', { key: 'STRIPE_PUBLIC_KEY', environments: ['preview', 'production'], reason: 'Your Stripe publishable key, from the Stripe dashboard.' });
 		const post = calls.find(c => c.method === 'POST' && c.path === '/deploy/env-vars')!;
 		assert.strictEqual(post.body?.value, 'pk_live_SECRET123');
@@ -165,6 +208,8 @@ suite('CloudeIDE Cloud tools', () => {
 		assert.deepStrictEqual(post.body?.environments, ['preview', 'production']);
 		assert.ok(!text.includes('SECRET123'), text);
 		assert.strictEqual((prompts[0] as { password: boolean }).password, true);
+		assert.ok(!JSON.stringify(cloud.activity()).includes('SECRET123'), 'the activity the model reads never holds a value');
+		assert.ok(cloud.describeForModel().length > 0);
 	});
 
 	test('an existing variable is updated per environment', async () => {

@@ -49,7 +49,7 @@ interface Setup {
 	readonly agent: CloudeideChatAgent;
 }
 
-function setUp(readOnly: boolean, turns: string[], options: { signedIn?: boolean } = {}): Setup {
+function setUp(readOnly: boolean, turns: string[], options: { signedIn?: boolean; cloud?: unknown } = {}): Setup {
 	const bodies: Setup['bodies'] = [];
 	const invoked: IToolInvocation[] = [];
 	const progress: IChatProgress[] = [];
@@ -74,6 +74,7 @@ function setUp(readOnly: boolean, turns: string[], options: { signedIn?: boolean
 		modelService: { getModel: () => null },
 		fileService: { readFile: async () => { throw new Error('none'); }, resolve: async () => ({ children: [] }) },
 		contextService: { getWorkspace: () => ({ folders: [{ uri: URI.file('/proj'), name: 'proj' }] }) },
+		cloud: options.cloud,
 	} as unknown as ChatAgentServices;
 	return { bodies, invoked, progress, agent: new CloudeideChatAgent(readOnly, services) };
 }
@@ -147,6 +148,19 @@ suite('CloudeIDE chat agent', () => {
 		await s.agent.invoke(request({ modeInstructions: { name: 'Plan', content: 'Only plan, do not edit.', toolReferences: [] } }), () => { }, [], CancellationToken.None);
 		assert.ok(s.bodies[0].system.includes('No secrets'));
 		assert.ok(s.bodies[0].system.includes('## The mode the person chose: Plan\n\nOnly plan, do not edit.'));
+	});
+
+	test('what the person did in Cloud is known on the next turn, with the permissions', async () => {
+		const cloud = {
+			activity: () => [{ at: Date.now() - 2 * 60_000, by: 'you', kind: 'deploy', summary: 'deployment dpl_9 to production failed: build error' }],
+			describeForModel: () => 'The person\'s Cloud permissions are "careful".',
+		};
+		const s = setUp(false, [saying('I see the failed production deploy.')], { cloud });
+		await s.agent.invoke(request(), () => { }, [], CancellationToken.None);
+		const system = s.bodies[0].system;
+		assert.ok(system.includes('## Cloud right now'), system);
+		assert.ok(system.includes('permissions are "careful"'));
+		assert.ok(system.includes('- 2 min ago, the person: deployment dpl_9 to production failed: build error'), system);
 	});
 
 	test('earlier turns come along, alternating', async () => {

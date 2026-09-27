@@ -23,6 +23,9 @@ import { CHAT_OPEN_ACTION_ID } from '../../chat/browser/actions/chatActions.js';
 import { ChatModeKind } from '../../chat/common/constants.js';
 import { CloudeideChatToolsContribution } from './cloudeideChatTools.js';
 import { CloudeideCloudToolsContribution } from './cloudeideCloudTools.js';
+import { CloudeideCloudService, ICloudeideCloudService } from './cloudeideCloudService.js';
+import './cloudeideCloudPermissionsUi.js';
+import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { CloudeideClient } from './cloudeideClient.js';
 import { CloudeideCloudPanel } from './cloudeideCloudPanel.js';
 import { CloudeideAccountPanel } from './cloudeideAccountPanel.js';
@@ -483,6 +486,12 @@ registerWorkbenchContribution2(
 	CloudeideChatToolsContribution,
 	WorkbenchPhase.BlockRestore,
 );
+
+/*
+ * One Cloud for the window: the tab, the pane and the agent all change it
+ * through this, so each knows what the others did.
+ */
+registerSingleton(ICloudeideCloudService, CloudeideCloudService, InstantiationType.Delayed);
 
 /*
  * Cloud for the agent: deploy, logs, rollback, variables and domains, as

@@ -45,6 +45,7 @@ const TESTS = [
 	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideChatContext.test.ts',
 	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideChatAgent.test.ts',
 	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideCloudTools.test.ts',
+	'src/vs/workbench/contrib/cloudeide/test/browser/cloudeideCloudPermissions.test.ts',
 ];
 
 /*

@@ -62,6 +62,8 @@ import { AgentToolResult } from './cloudeideAgentTools.js';
 import { attachmentsToBlocks, AttachmentReader, ChatAttachment, clipToolResult, isToolForTheModel, toolSchemasFor } from './cloudeideChatContext.js';
 import { READ_TOOL_NAMES } from './cloudeideChatTools.js';
 import { CLOUD_READ_TOOL_NAMES } from './cloudeideCloudTools.js';
+import { formatActivity } from './cloudeideCloudPermissions.js';
+import { ICloudeideCloudService } from './cloudeideCloudService.js';
 import { CloudeideClient } from './cloudeideClient.js';
 import { DEFAULT_MODEL, MODEL_SETTING, VENDOR } from './cloudeideLanguageModel.js';
 import { CloudeidePullRequests, describeChange } from './cloudeidePullRequest.js';
@@ -98,6 +100,8 @@ export interface ChatAgentServices {
 	readonly quickInputService: IQuickInputService;
 	readonly dialogService: IDialogService;
 	readonly commandService: ICommandService;
+	/** Absent in tests that are not about Cloud. */
+	readonly cloud?: ICloudeideCloudService;
 }
 
 export class CloudeideChatAgent implements IChatAgentImplementation {
@@ -166,6 +170,18 @@ export class CloudeideChatAgent implements IChatAgentImplementation {
 			mode: this.readOnly ? 'ask' : 'agent',
 			surface: 'chat',
 		});
+
+		// Cloud as it stands: what the agent may do, and what anybody did in
+		// it lately — so "I just deployed from the Cloud tab" is known, not
+		// something the person has to say.
+		const cloud = this.s.cloud;
+		if (cloud) {
+			const recent = formatActivity(cloud.activity(), Date.now());
+			system += `\n\n## Cloud right now\n\n${cloud.describeForModel()}`;
+			if (recent) {
+				system += `\n\nRecent Cloud activity in this project, oldest first:\n${recent}`;
+			}
+		}
 
 		// A custom mode — VS Code's Plan, or one the project defines in a
 		// `.agent.md` — arrives as instructions of its own. They describe
@@ -426,13 +442,14 @@ export class CloudeideChatAgentContribution extends Disposable implements IWorkb
 		@IQuickInputService quickInputService: IQuickInputService,
 		@IDialogService dialogService: IDialogService,
 		@ICommandService commandService: ICommandService,
+		@ICloudeideCloudService cloud: ICloudeideCloudService,
 	) {
 		super();
 
 		const services: ChatAgentServices = {
 			client: new CloudeideClient(secretStorageService, configurationService),
 			toolsService, configurationService, editorService, modelService, fileService,
-			contextService, chatService, quickInputService, dialogService, commandService,
+			contextService, chatService, quickInputService, dialogService, commandService, cloud,
 		};
 
 		const base = {

@@ -30,7 +30,6 @@ import { IClipboardService } from '../../../../platform/clipboard/common/clipboa
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
 import { IEditorOptions } from '../../../../platform/editor/common/editor.js';
-import { IFileService } from '../../../../platform/files/common/files.js';
 import { IOpenerService } from '../../../../platform/opener/common/opener.js';
 import { IProgressService, ProgressLocation } from '../../../../platform/progress/common/progress.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
@@ -45,10 +44,11 @@ import { IEditorOpenContext } from '../../../common/editor.js';
 import { IEditorGroup } from '../../../services/editor/common/editorGroupsService.js';
 import { IOutputService } from '../../../services/output/common/output.js';
 import { ITextFileService } from '../../../services/textfile/common/textfiles.js';
-import { CloudeideClient, DEPLOY_IN_PROGRESS, type DeployDomain, type DeployEnvironment, type DeploymentSummary, type DeployStatus } from './cloudeideClient.js';
+import { CloudeideClient, type DeployDomain, type DeployEnvironment, type DeploymentSummary } from './cloudeideClient.js';
 import { CloudeideCloudInput } from './cloudeideCloudInput.js';
-import { collectWorkspaceFiles } from './cloudeideWorkspace.js';
-import { onDidChangeCloud } from './cloudeideCloudTools.js';
+import { ICloudeideCloudService } from './cloudeideCloudService.js';
+import { CLOUDEIDE_CLOUD_PERMISSIONS_COMMAND, presetLabel } from './cloudeideCloudPermissionsUi.js';
+import { ICommandService } from '../../../../platform/commands/common/commands.js';
 
 const $ = DOM.$;
 
@@ -58,9 +58,6 @@ const ENVIRONMENTS: readonly { id: DeployEnvironment; label: string; detail: str
 	{ id: 'preview', label: localize('cloudeide.cloud.env.preview', "Preview"), detail: localize('cloudeide.cloud.env.previewDetail', "A shareable URL for review.") },
 	{ id: 'production', label: localize('cloudeide.cloud.env.production', "Production"), detail: localize('cloudeide.cloud.env.productionDetail', "The real one, on your domain.") },
 ];
-
-/** The statuses the server writes while a build is still going. */
-const IN_PROGRESS = DEPLOY_IN_PROGRESS;
 
 /** How many past deployments the list shows. */
 const DEPLOYMENTS_SHOWN = 5;
@@ -90,6 +87,7 @@ export class CloudeideCloudEditor extends EditorPane {
 	private deployStatus!: HTMLElement;
 	private deployButton!: Button;
 	private environmentButton!: Button;
+	private agentButton!: Button;
 
 	private deploying = false;
 
@@ -100,7 +98,6 @@ export class CloudeideCloudEditor extends EditorPane {
 		@IStorageService storageService: IStorageService,
 		@ISecretStorageService secretStorageService: ISecretStorageService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@IFileService private readonly fileService: IFileService,
 		@ITextFileService private readonly textFileService: ITextFileService,
 		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
@@ -109,9 +106,13 @@ export class CloudeideCloudEditor extends EditorPane {
 		@IClipboardService private readonly clipboardService: IClipboardService,
 		@IProgressService private readonly progressService: IProgressService,
 		@IOutputService private readonly outputService: IOutputService,
+		@ICloudeideCloudService private readonly cloud: ICloudeideCloudService,
+		@ICommandService private readonly commandService: ICommandService,
 	) {
 		super(CloudeideCloudEditor.ID, group, telemetryService, themeService, storageService);
-		this.client = new CloudeideClient(secretStorageService, configurationService);
+		void secretStorageService;
+		// One client, shared with the agent, so both see the same Cloud.
+		this.client = cloud.client;
 	}
 
 	// ── the page ──────────────────────────────────────────────────────────────
@@ -135,9 +136,15 @@ export class CloudeideCloudEditor extends EditorPane {
 
 		// The agent deploys and adds domains from the chat; this page shows
 		// the result without anybody pressing Refresh.
-		this._register(onDidChangeCloud(() => {
-			void this.refreshDeployments();
-			void this.refreshDomains();
+		this._register(this.cloud.onDidChange(activity => {
+			this.setAgentLabel();
+			if (activity) {
+				void this.refreshDeployments();
+				void this.refreshDomains();
+				if (activity.by === 'agent') {
+					this.log(`agent: ${activity.summary}`);
+				}
+			}
 		}));
 	}
 
@@ -163,6 +170,17 @@ export class CloudeideCloudEditor extends EditorPane {
 		this.environmentButton.element.title = localize('cloudeide.cloud.environmentTitle',
 			"Where Deploy publishes");
 		this._register(this.environmentButton.onDidClick(() => void this.pickEnvironment()));
+
+		/*
+		 * What the agent may do here without asking, where the person
+		 * deploying can see it. A setting nobody can find is a permission
+		 * nobody knows they gave.
+		 */
+		this.agentButton = this._register(new Button(actions, { ...defaultButtonStyles, secondary: true }));
+		this.agentButton.element.classList.add('cloudeide-cloud-environment');
+		this.agentButton.element.title = localize('cloudeide.cloud.agentTitle', "What the agent may do in Cloud without asking");
+		this.setAgentLabel();
+		this._register(this.agentButton.onDidClick(() => void this.commandService.executeCommand(CLOUDEIDE_CLOUD_PERMISSIONS_COMMAND)));
 
 		const line = DOM.append(header, $('.cloudeide-cloud-status-line'));
 		this.deployStatus = DOM.append(line, $('span.cloudeide-cloud-deploy-status'));
@@ -243,6 +261,12 @@ export class CloudeideCloudEditor extends EditorPane {
 
 	// ── deploying ─────────────────────────────────────────────────────────────
 
+	private setAgentLabel(): void {
+		if (this.agentButton) {
+			this.agentButton.label = localize('cloudeide.cloud.agentLabel', "Agent: {0}", presetLabel(this.cloud.preset()));
+		}
+	}
+
 	private projectName(): string {
 		const folders = this.contextService.getWorkspace().folders;
 		return folders.length > 0
@@ -305,20 +329,12 @@ export class CloudeideCloudEditor extends EditorPane {
 					this.log(message);
 				};
 
-				step(localize('cloudeide.cloud.collecting', "Reading the folder…"));
-				const files = await collectWorkspaceFiles(this.fileService, this.contextService);
-				if (files.length === 0) {
-					this.fail(localize('cloudeide.cloud.nothingToDeploy',
-						"Nothing to deploy — open a folder with files in it first."));
-					return;
-				}
-
-				step(localize('cloudeide.cloud.deployingN',
-					"Building {0} file{1}…", files.length, files.length === 1 ? '' : 's'));
-
-				const started = await this.client.deploy(files);
-				this.log(`deployment ${started.deploymentId}`);
-				const finished = await this.pollDeployment(started.deploymentId, step);
+				const outcome = await this.cloud.deploy(this.environment(), {
+					by: 'you',
+					onStep: status => step(localize('cloudeide.cloud.deployStatus', "Building… ({0})", status)),
+				});
+				this.log(`deployment ${outcome.deploymentId}`);
+				const finished = outcome.final;
 
 				if (finished.liveUrl) {
 					this.log(`live at ${finished.liveUrl}`);
@@ -372,21 +388,6 @@ export class CloudeideCloudEditor extends EditorPane {
 	 * after ten minutes with the last status it saw, rather than spinning on a
 	 * build that will never report.
 	 */
-	private async pollDeployment(deploymentId: string, step: (message: string) => void): Promise<DeployStatus> {
-		const deadline = Date.now() + 10 * 60 * 1000;
-		let last: DeployStatus = { id: deploymentId, status: 'queued' };
-
-		while (Date.now() < deadline) {
-			last = await this.client.deploymentStatus(deploymentId);
-			if (!IN_PROGRESS.includes(last.status)) {
-				return last;
-			}
-			step(localize('cloudeide.cloud.deployStatus', "Building… ({0})", last.status));
-			await new Promise(resolve => setTimeout(resolve, 3000));
-		}
-		return last;
-	}
-
 	private setDeploying(deploying: boolean): void {
 		this.deploying = deploying;
 		this.deployButton.enabled = !deploying;
@@ -666,7 +667,7 @@ export class CloudeideCloudEditor extends EditorPane {
 		const environment = (ENVIRONMENTS.find(e => e.id === current) ?? ENVIRONMENTS[2]).id;
 
 		try {
-			await this.client.addDomain(hostname.trim(), environment);
+			await this.cloud.addDomain(hostname.trim(), environment, 'you');
 			await this.refreshDomains();
 		} catch (err) {
 			this.placeholder(this.domainsList, err instanceof Error ? err.message : String(err), true);
@@ -675,7 +676,7 @@ export class CloudeideCloudEditor extends EditorPane {
 
 	private async makePrimary(domain: DeployDomain): Promise<void> {
 		try {
-			await this.client.setPrimaryDomain(domain.id);
+			await this.cloud.setPrimaryDomain(domain, 'you');
 			await this.refreshDomains();
 		} catch (err) {
 			this.placeholder(this.domainsList, err instanceof Error ? err.message : String(err), true);
@@ -694,7 +695,7 @@ export class CloudeideCloudEditor extends EditorPane {
 			return;
 		}
 		try {
-			await this.client.removeDomain(domain.id);
+			await this.cloud.removeDomain(domain, 'you');
 			await this.refreshDomains();
 		} catch (err) {
 			this.placeholder(this.domainsList, err instanceof Error ? err.message : String(err), true);

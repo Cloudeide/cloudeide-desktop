@@ -21,42 +21,26 @@
 
 import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { Codicon } from '../../../../base/common/codicons.js';
-import { Emitter, Event } from '../../../../base/common/event.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { ThemeIcon } from '../../../../base/common/themables.js';
 import { localize } from '../../../../nls.js';
-import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
-import { IFileService } from '../../../../platform/files/common/files.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
-import { ISecretStorageService } from '../../../../platform/secrets/common/secrets.js';
-import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { IWorkbenchContribution } from '../../../common/contributions.js';
-import { IEditorService } from '../../../services/editor/common/editorService.js';
 import {
 	CountTokensCallback, ILanguageModelToolsService, IPreparedToolInvocation, IToolData, IToolImpl,
 	IToolInvocation, IToolInvocationPreparationContext, IToolResult, ToolDataSource, ToolProgress,
 } from '../../chat/common/tools/languageModelToolsService.js';
 import {
-	CloudeideClient, DEPLOY_IN_PROGRESS, DeployDomain, DeployEnvironment, DeploymentDetail, DeploymentSummary,
+	DEPLOY_IN_PROGRESS, DeployDomain, DeployEnvironment, DeploymentDetail, DeploymentSummary,
 	EnvironmentState, EnvVarSummary, SiteAnalytics,
 } from './cloudeideClient.js';
-import { collectWorkspaceFiles } from './cloudeideWorkspace.js';
+import { actionFor, actionLabel } from './cloudeideCloudPermissions.js';
+import { ICloudeideCloudService, OVERRIDES_SETTING, PERMISSIONS_SETTING } from './cloudeideCloudService.js';
 
 const ENVIRONMENTS: readonly DeployEnvironment[] = ['development', 'preview', 'production'];
 
-/** How long the agent waits on one deploy before handing back what it knows. */
-const DEPLOY_WAIT_MS = 10 * 60 * 1000;
-const POLL_MS = 3000;
-
 /** How much of a build log goes back to the model. The end is where the error is. */
 const LOG_TAIL_LINES = 150;
-
-/**
- * Fired whenever the agent changes something in Cloud, so the Cloud tab and
- * pane redraw instead of showing the state from before the agent acted.
- */
-const onDidChangeEmitter = new Emitter<void>();
-export const onDidChangeCloud: Event<void> = onDidChangeEmitter.event;
 
 // ---- the tools --------------------------------------------------------------
 
@@ -270,13 +254,11 @@ export function formatAnalytics(environment: string, a: SiteAnalytics): string {
 }
 
 /**
- * Whether this call waits for the person's yes, and what it says.
+ * What the question says, for a call the permissions say must ask.
  *
- * Anything that changes what the public sees asks: production, rollback,
- * and every change to a domain. Previews and reading do not — a preview is
- * a private URL, and stopping for it would turn "ship it" into a string of
- * clicks. Setting a variable asks by its nature: the person has to type the
- * value.
+ * Whether to ask at all is the permissions' decision (Careful, Balanced,
+ * Autopilot); this is only the wording. Setting a variable has no separate
+ * question: the box the person types the value into is the question.
  */
 export function confirmationFor(name: string, input: Record<string, unknown>): { title: string; message: string } | undefined {
 	const s = (k: string) => (typeof input[k] === 'string' ? input[k] as string : '');
@@ -289,7 +271,17 @@ export function confirmationFor(name: string, input: Record<string, unknown>): {
 						? localize('cloudeide.cloudTool.confirmProdMsg', "Builds the open folder and puts it on the live site: {0}", s('message'))
 						: localize('cloudeide.cloudTool.confirmProdPlain', "Builds the open folder and puts it on the live site."),
 				}
-				: undefined;
+				: {
+					title: localize('cloudeide.cloudTool.confirmDeploy', "Deploy to {0}?", s('environment') || 'development'),
+					message: s('message')
+						? localize('cloudeide.cloudTool.confirmDeployMsg', "Builds the open folder and publishes it: {0}", s('message'))
+						: localize('cloudeide.cloudTool.confirmDeployPlain', "Builds the open folder and publishes it."),
+				};
+		case 'cloud_cancel':
+			return {
+				title: localize('cloudeide.cloudTool.confirmCancel', "Cancel {0}?", s('deploymentId')),
+				message: localize('cloudeide.cloudTool.confirmCancelMsg', "Stops the build. What is live stays live."),
+			};
 		case 'cloud_rollback':
 			return {
 				title: localize('cloudeide.cloudTool.confirmRollback', "Roll back to {0}?", s('deploymentId')),
@@ -349,19 +341,12 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 
 	static readonly ID = 'workbench.contrib.cloudeideCloudTools';
 
-	private readonly client: CloudeideClient;
-
 	constructor(
 		@ILanguageModelToolsService toolsService: ILanguageModelToolsService,
-		@ISecretStorageService secretStorageService: ISecretStorageService,
-		@IConfigurationService configurationService: IConfigurationService,
-		@IFileService private readonly fileService: IFileService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@IEditorService private readonly editorService: IEditorService,
+		@ICloudeideCloudService private readonly cloud: ICloudeideCloudService,
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
 	) {
 		super();
-		this.client = new CloudeideClient(secretStorageService, configurationService);
 
 		for (const spec of CLOUD_TOOLS) {
 			const data: IToolData = {
@@ -378,7 +363,8 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 			const impl: IToolImpl = {
 				prepareToolInvocation: async (context: IToolInvocationPreparationContext): Promise<IPreparedToolInvocation> => {
 					const input = (context.parameters ?? {}) as Record<string, unknown>;
-					const confirm = confirmationFor(spec.name, input);
+					const action = actionFor(spec.name, input);
+					const confirm = action && this.cloud.decision(action) === 'ask' ? confirmationFor(spec.name, input) : undefined;
 					// Once, every time. VS Code would otherwise offer "Allow in
 					// this Session", and one yes to a preview-looking question
 					// would let every later production deploy through unasked.
@@ -393,15 +379,22 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 
 	private async invoke(name: string, input: Record<string, unknown>, progress: ToolProgress, token: CancellationToken): Promise<IToolResult> {
 		try {
-			const text = await this.run(name, input, progress, token);
-			if (!CLOUD_READ_TOOL_NAMES.includes(name)) {
-				onDidChangeEmitter.fire();
+			// Refused here as well as left unconfirmed: a person's "never" is
+			// not something a model should be able to talk its way past.
+			const action = actionFor(name, input);
+			if (action && this.cloud.decision(action) === 'never') {
+				throw new Error(`The person's Cloud permissions do not let you ${actionLabel(action)}. Say what is needed and ask them to do it in Cloud, or to change ${PERMISSIONS_SETTING} / ${OVERRIDES_SETTING}.`);
 			}
+			const text = await this.run(name, input, progress, token);
 			return { content: [{ kind: 'text', value: text }] };
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err);
 			return { content: [{ kind: 'text', value: message }], toolResultError: message };
 		}
+	}
+
+	private get client() {
+		return this.cloud.client;
 	}
 
 	private async run(name: string, input: Record<string, unknown>, progress: ToolProgress, token: CancellationToken): Promise<string> {
@@ -427,11 +420,11 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 				return this.deploy(environmentOf(input.environment), str('message'), progress, token);
 
 			case 'cloud_cancel':
-				await this.client.cancelDeployment(str('deploymentId'));
+				await this.cloud.cancel(str('deploymentId'), 'agent');
 				return `Cancelled ${str('deploymentId')}. What was live is still live.`;
 
 			case 'cloud_rollback': {
-				const d = await this.client.rollback(str('deploymentId'));
+				const d = await this.cloud.rollback(str('deploymentId'), 'agent');
 				return `Rolling back: new deployment ${d.id} puts ${str('deploymentId')} back live. Check it with cloud_logs or cloud_status.`;
 			}
 
@@ -446,7 +439,7 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 
 			case 'cloud_domain_add': {
 				const hostname = str('hostname').toLowerCase();
-				const added = await this.client.addDomain(hostname, environmentOf(input.environment));
+				const added = await this.cloud.addDomain(hostname, environmentOf(input.environment), 'agent');
 				const check = await this.client.verifyDomain(added.id).catch(() => undefined);
 				const record = check?.validationRecord;
 				return record
@@ -465,13 +458,13 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 
 			case 'cloud_domain_primary': {
 				const domain = await this.domain(str('hostname'));
-				await this.client.setPrimaryDomain(domain.id);
+				await this.cloud.setPrimaryDomain(domain, 'agent');
 				return `${domain.hostname} is now the primary domain for ${domain.environment}.`;
 			}
 
 			case 'cloud_domain_remove': {
 				const domain = await this.domain(str('hostname'));
-				await this.client.removeDomain(domain.id);
+				await this.cloud.removeDomain(domain, 'agent');
 				return `Removed ${domain.hostname}.`;
 			}
 
@@ -504,34 +497,18 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 	 * anybody asking twice.
 	 */
 	private async deploy(environment: DeployEnvironment, message: string, progress: ToolProgress, token: CancellationToken): Promise<string> {
-		// What the editor shows is what goes out.
-		await this.editorService.saveAll().catch(() => undefined);
-
-		progress.report({ message: localize('cloudeide.cloudTool.collecting', "Reading the folder") });
-		const files = await collectWorkspaceFiles(this.fileService, this.contextService);
-		if (!files.length) {
-			throw new Error('Nothing to deploy: no folder is open, or it has no files.');
-		}
-
-		const started = await this.client.startDeploy(files, { environment, commitMessage: message || undefined, trigger: 'agent' });
-		onDidChangeEmitter.fire();
-
-		const deadline = Date.now() + DEPLOY_WAIT_MS;
-		let last: DeploymentDetail = { id: started.deploymentId, status: started.status };
-		while (Date.now() < deadline && !token.isCancellationRequested) {
-			last = await this.client.deployment(started.deploymentId);
-			if (!DEPLOY_IN_PROGRESS.includes(last.status)) {
-				break;
-			}
-			progress.report({ message: localize('cloudeide.cloudTool.building', "{0}: {1}", started.deploymentId, last.status) });
-			await new Promise(resolve => setTimeout(resolve, POLL_MS));
-		}
-
+		const outcome = await this.cloud.deploy(environment, {
+			by: 'agent',
+			message,
+			token,
+			onStep: status => progress.report({ message: localize('cloudeide.cloudTool.building', "{0}", status) }),
+		});
+		const last = outcome.final;
 		if (DEPLOY_IN_PROGRESS.includes(last.status)) {
-			return `Deployment ${started.deploymentId} to ${environment} is still ${last.status} after ${DEPLOY_WAIT_MS / 60000} minutes. Check it later with cloud_logs.`;
+			return `Deployment ${outcome.deploymentId} to ${environment} is still ${last.status} after 10 minutes. Check it later with cloud_logs.`;
 		}
 		if (last.status === 'success') {
-			return `Deployed ${files.length} ${files.length === 1 ? 'file' : 'files'} to ${environment} as ${started.deploymentId}.${last.liveUrl ? ` Live at ${last.liveUrl}` : ''}`;
+			return `Deployed ${outcome.files} ${outcome.files === 1 ? 'file' : 'files'} to ${environment} as ${outcome.deploymentId}.${last.liveUrl ? ` Live at ${last.liveUrl}` : ''}`;
 		}
 		return `${formatDeployment(last, 60)}\n\nThe deploy did not succeed. Read the error above, fix its cause in the project, and deploy again.`;
 	}
@@ -562,14 +539,7 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 			return `The person did not set ${key}. Do not ask for the value in the conversation; say what it is for and continue without it.`;
 		}
 
-		const existing = (await this.client.listEnvVars()).find(v => v.key === key);
-		if (existing) {
-			for (const environment of environments) {
-				await this.client.setEnvVarValue(existing.id, environment, value);
-			}
-		} else {
-			await this.client.addEnvVar(key, value, input.secret !== false, environments);
-		}
+		await this.cloud.setEnvVar(key, value, environments, input.secret !== false, 'agent');
 		return `${key} is set for ${environments.join(', ')}. Its value was typed by the person and is not shown to you. It takes effect on the next deploy.`;
 	}
 }
