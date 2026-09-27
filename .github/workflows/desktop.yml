@@ -539,6 +539,8 @@ jobs:
   # Windows and the manual release run builds all three.
   macos:
     if: inputs.release
+    # The type check happens there; see the Build step.
+    needs: linux
     runs-on: macos-latest
     timeout-minutes: 150
 
@@ -587,10 +589,18 @@ jobs:
           # GITHUB_TOKEN when it is set, as the Build step's download does.
           GITHUB_TOKEN: ${{ github.token }}
 
+      # Only the package task, not compile-build-without-mangling first.
+      #
+      # That task is a full TypeScript compile of the source into out-build,
+      # and the package does not use it: vscode-darwin-arm64 bundles straight
+      # from src with esbuild (useEsbuildTranspile in build/buildConfig.ts)
+      # and packages that bundle. What the compile does add is a type check,
+      # and the Linux job already runs it on the same commit — so this job
+      # waits for Linux, and a commit that does not type-check never reaches
+      # a Mac. On this runner the compile alone took 58 minutes of run 38,
+      # which then ran out of time; bundling takes a few.
       - name: Build
-        run: |
-          npm run gulp compile-build-without-mangling
-          npm run gulp vscode-darwin-arm64
+        run: npm run gulp vscode-darwin-arm64
         env:
           # 12 GB, like the others. A 6 GB ceiling was tried on the theory that
           # the slowness was swap: run 32 took 1 h 44 min with it against
