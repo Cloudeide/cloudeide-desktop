@@ -2862,6 +2862,36 @@ html {
   margin-top: 26px;
 }
 
+/* Deploy: the agent shipping, beside Cloud following along. */
+.ship {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  min-height: 520px;
+}
+
+.ship-chat { text-align: left; }
+.ship-dim { color: var(--text-tertiary); }
+
+.ship-log {
+  display: flex;
+  flex-direction: column;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.ship-err { color: #f0928b; }
+
+.ship-cloud {
+  text-align: left;
+  background: var(--panel-raised);
+  gap: 14px;
+}
+
 /* ------------------------------------------------------------ narrow ---- */
 
 @media (max-width: 1100px) {
@@ -2935,6 +2965,7 @@ html {
   .mock--dialog { left: 180px; right: auto; width: 300px; }
   .tile-stage > .mock.mock--prchat { width: 520px; }
   .mock--input { left: 20px; transform: none; width: 320px; top: 20px; }
+  .ship { grid-template-columns: 380px 340px; }
 
   .tile + .tile { margin-top: 36px; }
 }
