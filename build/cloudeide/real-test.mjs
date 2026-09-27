@@ -76,6 +76,9 @@ const app = await electron.launch({
 		'--skip-release-notes',
 		'--disable-telemetry',
 		'--disable-updates',
+		// This machine has no OS keyring. Without this, storing the token stops
+		// on the question of which weaker store to use, and sign-in never ends.
+		'--password-store=basic',
 		'--user-data-dir', '/tmp/cloudeide-test-data',
 		'--extensions-dir', '/tmp/cloudeide-test-ext',
 	],
@@ -175,7 +178,10 @@ signedIn = await step(page, 'sign-in', async () => {
 	await page.keyboard.type(TOKEN, { delay: 3 });
 	await page.keyboard.press('Enter');
 	const dialog = page.locator('.monaco-dialog-box');
-	await dialog.waitFor({ timeout: 90_000 });
+	await dialog.waitFor({ timeout: 90_000 }).catch(async err => {
+		const notes = await page.locator('.notifications-toasts, .notification-list-item').allInnerTexts().catch(() => []);
+		throw new Error(`${err.message.split('\n')[0]} · notifications: ${notes.join(' | ') || 'none'}`);
+	});
 	const text = await dialog.innerText();
 	await page.locator('.monaco-dialog-box .monaco-button').first().click();
 	if (!/Signed in/i.test(text)) { throw new Error(`the server said: ${text}`); }
