@@ -3351,6 +3351,13 @@ a:hover > .learn-arrow {
   .trust-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  /* Less stage, more screenshot. */
+  .painted {
+    padding: 28px;
+  }
+  .hero-painted {
+    padding: 36px 36px 0;
+  }
 }
 
 @media (max-width: 820px) {
@@ -3411,6 +3418,14 @@ a:hover > .learn-arrow {
   }
   .feat-copy p {
     font-size: 16px;
+  }
+  /* The whole window at phone width is too small to read. Keep it big and
+     let it run off the edge; --focus (set per screenshot) picks the part
+     that shows. */
+  .shot-window[style] img {
+    width: 180%;
+    max-width: none;
+    margin-left: var(--focus, 0%);
   }
   .trust-grid {
     grid-template-columns: minmax(0, 1fr);
