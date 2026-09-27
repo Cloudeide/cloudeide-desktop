@@ -521,7 +521,13 @@ export const CloudeideTokenSecret = 'cloudeide.apiToken';
 
 export const CloudeideServerUrlSetting = 'cloudeide.serverUrl';
 
-export const CloudeideDefaultServerUrl = 'https://cloudeide.com';
+/**
+ * The API host, not the website. cloudeide.com is the landing page, served as
+ * static files, and has no /api behind it; every call sent there comes back
+ * as a 404 page. The application — API, dashboard and sign-in — answers on
+ * api.cloudeide.com.
+ */
+export const CloudeideDefaultServerUrl = 'https://api.cloudeide.com';
 
 /** The Anthropic-shaped endpoint the harness is pointed at, under the server. */
 export const CloudeideAnthropicPath = '/api/anthropic';

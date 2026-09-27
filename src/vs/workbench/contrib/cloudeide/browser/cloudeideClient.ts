@@ -232,16 +232,14 @@ export class CloudeideClient {
 	) { }
 
 	/**
-	 * cloudeide.com — the landing page, the dashboard and the API, one host.
+	 * api.cloudeide.com — the API, the dashboard and sign-in.
 	 *
-	 * It was api.cloudeide.com, because the apex was static hosting with no
-	 * /ai/chat and no /deploy/run behind it: every call from this panel would
-	 * have come back as the landing page's 404. The apex is served by the
-	 * application now, so the subdomain is no longer the answer to anything.
-	 *
-	 * api.cloudeide.com keeps working and should keep working: every copy of
-	 * this editor installed before today has it compiled in, and a default is
-	 * only read when nobody has set the value.
+	 * Not cloudeide.com: that is the landing page, static files with no /api
+	 * behind it, so every call sent there comes back as its 404 page. For a
+	 * while the default was the apex, on the understanding that the
+	 * application served it; it does not, and a release with that default
+	 * could not sign in. A real run of the released app against the real
+	 * server is what found it (build/cloudeide/real-test.mjs).
 	 */
 	get serverUrl(): string {
 		const configured = this.configurationService.getValue<string>('cloudeide.serverUrl');

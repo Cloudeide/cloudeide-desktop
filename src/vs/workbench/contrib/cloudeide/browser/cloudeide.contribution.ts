@@ -37,7 +37,7 @@ import { IQuickInputService } from '../../../../platform/quickinput/common/quick
 import { ISecretStorageService } from '../../../../platform/secrets/common/secrets.js';
 import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
-import { AgentHostAnthropicKeySecret, CloudeideTokenSecret } from '../../../../platform/agentHost/common/agentService.js';
+import { AgentHostAnthropicKeySecret, CloudeideDefaultServerUrl, CloudeideTokenSecret } from '../../../../platform/agentHost/common/agentService.js';
 import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
 import { CloudeideTabContribution } from './cloudeideTabCompletion.js';
 import { ASK_AGENT_COMMAND } from './cloudeideTab.js';
@@ -397,13 +397,13 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 	properties: {
 		'cloudeide.serverUrl': {
 			type: 'string',
-			default: 'https://cloudeide.com',
+			default: CloudeideDefaultServerUrl,
 			description: localize('cloudeide.serverUrl',
 				"The CloudeIDE server this editor talks to. Change it to point at a self-hosted install."),
 		},
 		'cloudeide.webUrl': {
 			type: 'string',
-			default: 'https://cloudeide.com',
+			default: CloudeideDefaultServerUrl,
 			description: localize('cloudeide.webUrl',
 				"The CloudeIDE dashboard this editor opens to sign in. The same host as the server URL unless you have split them. Change both together for a self-hosted install."),
 		},
