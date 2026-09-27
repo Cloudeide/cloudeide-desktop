@@ -294,6 +294,17 @@ const supportsAllAttachments: Required<Omit<IChatAgentAttachmentCapabilities, 't
 
 const DISCLAIMER = localize('chatDisclaimer', "AI responses may be inaccurate");
 
+/*
+ * CloudeIDE: an empty chat is empty.
+ *
+ * Upstream fills a new conversation with a large icon, a title, a disclaimer
+ * and a link to generate instructions. The input box already says what to do
+ * ("Describe what to build"), so the rest was reading as clutter in the
+ * middle of the panel. Off, rather than removed, so it is one constant to
+ * bring back.
+ */
+const SHOW_EMPTY_STATE = false;
+
 /** Set on the container when {@link IChatWidgetViewOptions.persistentContentHeight} is, floating the persistent content. */
 export const chatFloatingPersistentContentClass = 'chat-floating-persistent-content';
 
@@ -1575,7 +1586,7 @@ export class ChatWidget extends Disposable implements IChatWidget {
 			}
 
 			const numItems = this.viewModel?.getItems().length ?? 0;
-			if (!numItems) {
+			if (!numItems && SHOW_EMPTY_STATE) {
 				const defaultAgent = this.chatAgentService.getDefaultAgent(this.location, this.input.currentModeKind);
 				let additionalMessage: string | IMarkdownString | undefined;
 				if (this.chatEntitlementService.anonymous && !this.chatEntitlementService.sentiment.completed) {
@@ -1723,14 +1734,13 @@ export class ChatWidget extends Disposable implements IChatWidget {
 		} else if (this.input.currentModeKind === ChatModeKind.Edit) {
 			title = localize('editsTitle', "Edit in context");
 		} else {
-			title = localize('agentTitle', "Build with CloudeIDE");
+			title = localize('agentTitle', "Build with Agent");
 		}
 
 		return {
 			title,
 			message: new MarkdownString(DISCLAIMER),
-			// The product's mark, not the generic sparkle every assistant uses.
-			icon: Codicon.rocket,
+			icon: Codicon.chatSparkle,
 			additionalMessage,
 		};
 	}

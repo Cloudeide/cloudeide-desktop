@@ -17,7 +17,11 @@ import {
 	IViewsRegistry,
 	ViewContainerLocation,
 } from '../../../common/views.js';
-import { CloudeidePanel } from './cloudeidePanel.js';
+import { ChatViewPane } from '../../chat/browser/widgetHosts/viewPane/chatViewPane.js';
+import { ChatViewId } from '../../chat/browser/chat.js';
+import { CHAT_OPEN_ACTION_ID } from '../../chat/browser/actions/chatActions.js';
+import { ChatModeKind } from '../../chat/common/constants.js';
+import { CloudeideChatToolsContribution } from './cloudeideChatTools.js';
 import { CloudeideClient } from './cloudeideClient.js';
 import { CloudeideCloudPanel } from './cloudeideCloudPanel.js';
 import { CloudeideAccountPanel } from './cloudeideAccountPanel.js';
@@ -37,7 +41,6 @@ import { EditorPaneDescriptor, IEditorPaneRegistry } from '../../../browser/edit
 import { EditorExtensions, IEditorFactoryRegistry, IEditorSerializer } from '../../../common/editor.js';
 import { EditorInput } from '../../../common/editor/editorInput.js';
 import { IEditorService } from '../../../services/editor/common/editorService.js';
-import { IViewsService } from '../../../services/views/common/viewsService.js';
 import { ICodeEditorService } from '../../../../editor/browser/services/codeEditorService.js';
 import { EditorContextKeys } from '../../../../editor/common/editorContextKeys.js';
 import { KeyCode, KeyMod } from '../../../../base/common/keyCodes.js';
@@ -70,6 +73,23 @@ const cloudeideIcon = FileAccess.asBrowserUri('vs/workbench/contrib/cloudeide/br
  * the editor still visible, which is the auxiliary bar's whole purpose. It is
  * also where every comparable panel has settled, so muscle memory carries over.
  */
+/*
+ * A clean start.
+ *
+ * Out of the box the editor opened a "Get Started" walkthrough on first
+ * launch and filled the chat with tips. The explorer already offers Open
+ * Folder and Open Recent, which is what somebody arriving needs; everything
+ * else was text to read before doing anything. These change defaults only —
+ * anyone who wants the Welcome page back can set it, and Help still opens it.
+ */
+Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerDefaultConfigurations([{
+	overrides: {
+		'workbench.startupEditor': 'none',
+		'workbench.welcomePage.walkthroughs.openOnInstall': false,
+		'chat.tips.enabled': false,
+	},
+}]);
+
 const container = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry)
 	.registerViewContainer(
 		{
@@ -93,16 +113,32 @@ const container = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.V
 		{ isDefault: true },
 	);
 
+/*
+ * VS Code's own chat panel, in this container.
+ *
+ * It had been switched off in favour of a panel this product drew itself.
+ * That panel's agent now answers here instead, because the chat panel has
+ * what a hand-drawn one would take years to match: pictures, `#` references,
+ * the tool picker, MCP, Keep and Undo on every change, and checkpoints.
+ *
+ * Put in this container rather than in the chat's own, so there is one
+ * "Chat" on the right and not two — the chat's container stays unregistered
+ * (see `REGISTER_BUILTIN_CHAT_VIEW`), and Cloud and Account stay under it.
+ */
 const viewDescriptor: IViewDescriptor = {
-	id: CloudeidePanel.ID,
+	id: ChatViewId,
 	name: localize2('cloudeide.view', "Chat"),
 	containerIcon: cloudeideIcon,
-	ctorDescriptor: new SyncDescriptor(CloudeidePanel),
+	ctorDescriptor: new SyncDescriptor(ChatViewPane),
 	canToggleVisibility: false,
 	canMoveView: true,
 	openCommandActionDescriptor: {
 		id: 'workbench.action.cloudeide.focus',
-		title: localize2('cloudeide.focus', "Focus CloudeIDE"),
+		title: localize2('cloudeide.focus', "Focus Chat"),
+		keybindings: {
+			primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KeyI,
+			mac: { primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.KeyI },
+		},
 	},
 };
 
@@ -303,12 +339,9 @@ registerAction2(class extends Action2 {
 	}
 
 	async run(accessor: ServicesAccessor): Promise<void> {
-		// Through the view rather than a service, because what is being
-		// offered is the run that is on screen — there is no such thing as
-		// "the last change" without the panel that made it.
-		const views = accessor.get(IViewsService);
-		const view = await views.openView<CloudeidePanel>(CloudeidePanel.ID, false);
-		await view?.offerPullRequestFromCommand();
+		// Through the chat, because what is being offered is the change the
+		// conversation on screen made — `/pr` is where that lives.
+		await accessor.get(ICommandService).executeCommand(CHAT_OPEN_ACTION_ID, { query: '/pr', mode: ChatModeKind.Agent });
 	}
 });
 
@@ -326,8 +359,9 @@ registerAction2(class extends Action2 {
 		if (typeof text !== 'string' || !text.trim()) {
 			return;
 		}
-		const view = await accessor.get(IViewsService).openView<CloudeidePanel>(CloudeidePanel.ID, true);
-		await view?.askFromCommand(text);
+		// Agent mode, because what arrives here is a job — write the test —
+		// not a question.
+		await accessor.get(ICommandService).executeCommand(CHAT_OPEN_ACTION_ID, { query: text, mode: ChatModeKind.Agent });
 	}
 });
 
@@ -426,23 +460,33 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
  * The panel calls `/ai/chat` itself and that is enough to answer a question.
  * It is not enough for anything that has to act on the answer: the agent host
  * and every tool-using surface here take their model from
- * `ILanguageModelsService`. Registering it after restore keeps it off the
- * startup path — nothing needs a model before the window is up.
+ * `ILanguageModelsService`. Before restore, because the chat panel restores
+ * with the window and its model picker wants a model when it draws.
  */
 registerWorkbenchContribution2(
 	CloudeideLanguageModelContribution.ID,
 	CloudeideLanguageModelContribution,
-	WorkbenchPhase.AfterRestored,
+	WorkbenchPhase.BlockRestore,
 );
 
 /*
- * The participant behind the chat panel. Without one, chat has nobody to
- * hand a request to and sending does nothing at all — no turn, no error.
+ * The agent behind the chat panel, and its file tools. Without an agent,
+ * chat has nobody to hand a request to and sending does nothing at all.
+ *
+ * Before restore, with the model above, because the chat panel restores with
+ * the window: registered any later, a panel that was open when the window
+ * closed comes back asking for a default agent that does not exist yet.
  */
+registerWorkbenchContribution2(
+	CloudeideChatToolsContribution.ID,
+	CloudeideChatToolsContribution,
+	WorkbenchPhase.BlockRestore,
+);
+
 registerWorkbenchContribution2(
 	CloudeideChatAgentContribution.ID,
 	CloudeideChatAgentContribution,
-	WorkbenchPhase.AfterRestored,
+	WorkbenchPhase.BlockRestore,
 );
 
 /*
@@ -524,7 +568,7 @@ registerAction2(class extends Action2 {
 			const me = await client.whoami();
 			await dialogs.info(
 				localize('cloudeide.signInWithToken.ok', "Signed in as {0}", me.email),
-				localize('cloudeide.signInWithToken.okDetail', "Open the CloudeIDE panel to ask something."),
+				localize('cloudeide.signInWithToken.okDetail', "Open Chat to ask something."),
 			);
 		} catch (err) {
 			await client.clearToken();

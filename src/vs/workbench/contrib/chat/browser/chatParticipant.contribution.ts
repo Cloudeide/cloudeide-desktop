@@ -53,6 +53,16 @@ import { ChatViewPane } from './widgetHosts/viewPane/chatViewPane.js';
  * flip, not a feature torn out.
  */
 /*
+ * Off here, and on in the CloudeIDE container.
+ *
+ * The chat view itself is registered by `contrib/cloudeide`, in that
+ * product's own container on the right, with its agent behind it. Turning
+ * this on as well would put a second, empty container beside it — the
+ * warning below — so this stays false and the view lives in one place.
+ *
+ * What follows is the history of the earlier decision, kept because the
+ * reasoning about two containers still holds.
+ *
  * Off, now that there is something to put in its place.
  *
  * It was turned on for a while and named CloudeIDE, on the reasoning that its

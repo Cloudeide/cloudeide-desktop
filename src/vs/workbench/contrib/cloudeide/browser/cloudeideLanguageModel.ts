@@ -21,9 +21,46 @@ import {
 	IChatResponsePart,
 } from '../../chat/common/languageModels.js';
 import { ChatMessage, CloudeideClient } from './cloudeideClient.js';
+import { Registry } from '../../../../platform/registry/common/platform.js';
+import { Extensions as ConfigurationExtensions, IConfigurationRegistry } from '../../../../platform/configuration/common/configurationRegistry.js';
 
-const VENDOR = 'cloudeide';
-const MODEL_ID = 'cloudeide-agent';
+export const VENDOR = 'cloudeide';
+
+/** The setting that names the models this product offers, and the default one. */
+export const MODEL_SETTING = 'cloudeide.model';
+export const DEFAULT_MODEL = 'claude-sonnet-5';
+
+/**
+ * The models, from the setting that declares them.
+ *
+ * Not a second list. The setting's `enum` is already the answer to "which
+ * models", and a copy here would drift until the picker offered a model the
+ * server had stopped accepting.
+ */
+export function offeredModels(): { id: string; detail?: string }[] {
+	const schema = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
+		.getConfigurationProperties()[MODEL_SETTING];
+	const ids = Array.isArray(schema?.enum) ? schema.enum.filter((v): v is string => typeof v === 'string') : [];
+	const details = Array.isArray(schema?.enumDescriptions) ? schema.enumDescriptions : [];
+	const list = ids.map((id, i) => ({ id, detail: typeof details[i] === 'string' ? details[i] : undefined }));
+	return list.length ? list : [{ id: DEFAULT_MODEL }];
+}
+
+/** "claude-haiku-4-5" → "Haiku 4.5", "gpt-5.6-sol" → "GPT-5.6 Sol". */
+export function modelDisplayName(id: string): string {
+	const gpt = /^gpt-([\d.]+)(?:-(.+))?$/.exec(id);
+	if (gpt) {
+		return `GPT-${gpt[1]}${gpt[2] ? ` ${capitalise(gpt[2])}` : ''}`;
+	}
+	const parts = id.replace(/^claude-/, '').split('-');
+	const words = parts.filter(p => !/^\d+$/.test(p)).map(capitalise);
+	const version = parts.filter(p => /^\d+$/.test(p)).join('.');
+	return [...words, version].filter(Boolean).join(' ') || id;
+}
+
+function capitalise(word: string): string {
+	return word.charAt(0).toUpperCase() + word.slice(1);
+}
 
 /**
  * Presents the CloudeIDE server as a language model to the rest of the
@@ -36,41 +73,72 @@ const MODEL_ID = 'cloudeide-agent';
  * the server behind that interface is what lets those surfaces run on this
  * account instead of on a key the person has to supply themselves.
  *
- * Text only, for now. The server streams `text` frames and nothing else, so
- * this advertises no tool support; a model that claimed tools it cannot call
- * would fail at the first tool call rather than at selection time.
+ * Each model the product offers is listed, so the chat panel's own model
+ * picker is the one a person uses. What is sent through this provider is
+ * text only — titles, summaries, anything else in the workbench that wants a
+ * quick answer. The agent in the chat panel does not come through here: it
+ * calls the server's messages endpoint itself, with tools and pictures, on
+ * whichever of these models was picked.
  */
 export class CloudeideLanguageModelProvider extends Disposable implements ILanguageModelChatProvider {
 
 	private readonly _onDidChange = this._register(new Emitter<void>());
 	readonly onDidChange: Event<void> = this._onDidChange.event;
 
-	constructor(private readonly client: CloudeideClient) {
+	constructor(
+		private readonly client: CloudeideClient,
+		private readonly configurationService?: IConfigurationService,
+	) {
 		super();
+		if (configurationService) {
+			this._register(configurationService.onDidChangeConfiguration(e => {
+				if (e.affectsConfiguration(MODEL_SETTING)) {
+					this._onDidChange.fire();
+				}
+			}));
+		}
+	}
+
+	/**
+	 * Ask the workbench to read the list again. Registering a provider does
+	 * not make it read the list — only a change does — so without this the
+	 * model picker stayed empty and offered nothing but "Auto".
+	 */
+	refresh(): void {
+		this._onDidChange.fire();
 	}
 
 	async provideLanguageModelChatInfo(): Promise<ILanguageModelChatMetadataAndIdentifier[]> {
 		// Advertised whether or not a token is stored. Selection happens long
 		// before a request does, and a model that vanishes when the token is
-		// missing would take the CloudeIDE entry out of the picker rather than
-		// explain itself — the request is where "not connected" belongs.
-		return [{
-			identifier: MODEL_ID,
+		// missing would take the entry out of the picker rather than explain
+		// itself — the request is where "not connected" belongs.
+		const configured = this.configurationService?.getValue<string>(MODEL_SETTING) || DEFAULT_MODEL;
+		const models = offeredModels();
+		const fallback = models.some(m => m.id === configured) ? configured : models[0].id;
+		return models.map(m => ({
+			identifier: `${VENDOR}/${m.id}`,
 			metadata: {
 				extension: new ExtensionIdentifier('cloudeide'),
-				id: MODEL_ID,
+				id: m.id,
 				vendor: VENDOR,
-				name: 'CloudeIDE',
-				family: 'cloudeide',
+				name: modelDisplayName(m.id),
+				family: m.id,
 				version: '1',
-				// The server decides the model and its limits; these are the
+				detail: m.detail,
+				// The server decides each model's limits; these are the
 				// figures the workbench needs for trimming, not a promise.
 				maxInputTokens: 180_000,
 				maxOutputTokens: 16_000,
-				isDefaultForLocation: { [ChatAgentLocation.Chat]: true },
+				isDefaultForLocation: { [ChatAgentLocation.Chat]: m.id === fallback },
 				isUserSelectable: true,
+				// What the chat panel checks before it offers Agent mode and
+				// the picture button. The agent behind the panel calls tools
+				// and sends pictures itself, through the server's messages
+				// endpoint, so these are true of the agent the person talks to.
+				capabilities: { vision: true, toolCalling: true, agentMode: true },
 			},
-		}];
+		}));
 	}
 
 	async sendChatRequest(
@@ -182,10 +250,11 @@ export class CloudeideLanguageModelContribution extends Disposable implements IW
 		);
 
 		const client = new CloudeideClient(secretStorageService, configurationService);
-		const provider = this._register(new CloudeideLanguageModelProvider(client));
+		const provider = this._register(new CloudeideLanguageModelProvider(client, configurationService));
 
 		try {
 			this._register(languageModelsService.registerLanguageModelProvider(VENDOR, provider));
+			provider.refresh();
 		} catch (error) {
 			logService.error('[CloudeIDE] could not register the language model provider', error);
 		}

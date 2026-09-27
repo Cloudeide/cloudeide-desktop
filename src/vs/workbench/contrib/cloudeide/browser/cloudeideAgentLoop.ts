@@ -27,7 +27,12 @@ import { AgentToolResult, AgentToolSchema } from './cloudeideAgentTools.js';
 
 /** What the loop needs from a tool set. `CloudeideAgentTools` satisfies it. */
 export interface IAgentToolHost {
-	run(name: string, input: Record<string, unknown>, token: CancellationToken): Promise<AgentToolResult>;
+	/**
+	 * `id` is the provider's id for this call. The panel's tools ignore it;
+	 * the chat panel's hand it on, so the call shown on screen and the call
+	 * the model made are the same one.
+	 */
+	run(name: string, input: Record<string, unknown>, token: CancellationToken, id?: string): Promise<AgentToolResult>;
 }
 
 export type AgentLoopEvent =
@@ -41,12 +46,14 @@ export type AgentLoopEvent =
 	| { readonly type: 'done'; readonly reason: 'finished' | 'stepLimit' | 'cancelled' };
 
 /** An Anthropic content block, in the shapes this loop produces or reads. */
-type ContentBlock =
+export type ContentBlock =
 	| { type: 'text'; text: string }
+	/** A picture the person attached. Only ever in a user message. */
+	| { type: 'image'; source: { type: 'base64'; media_type: string; data: string } }
 	| { type: 'tool_use'; id: string; name: string; input: Record<string, unknown> }
 	| { type: 'tool_result'; tool_use_id: string; content: string; is_error?: boolean };
 
-interface Message {
+export interface Message {
 	role: 'user' | 'assistant';
 	content: string | ContentBlock[];
 }
@@ -91,6 +98,9 @@ const MAX_OUTPUT_TOKENS = 8192;
  * come.
  */
 const MAX_CONVERSATION_CHARS = 360_000;
+
+/** A picture, in the budget's units. See `weigh`. */
+const IMAGE_CHARS = 6000;
 
 /** What an elided tool result says in place of what it held. */
 const DROPPED = '(This output was dropped to stay inside the context window. Read it again if you still need it.)';
@@ -143,6 +153,13 @@ function weigh(content: Message['content']): number {
 		if (block.type === 'tool_use') {
 			return n + JSON.stringify(block.input ?? {}).length + block.name.length;
 		}
+		if (block.type === 'image') {
+			// What a picture costs the model, not what it weighs in bytes: a
+			// screenshot is on the order of fifteen hundred tokens however
+			// large the file, and four characters to a token is the rule the
+			// rest of this budget uses.
+			return n + IMAGE_CHARS;
+		}
 		return n;
 	}, 0);
 }
@@ -181,7 +198,7 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<void> {
 		const results: ContentBlock[] = [];
 		for (const call of calls) {
 			options.onEvent({ type: 'toolStart', id: call.id, name: call.name, input: call.input });
-			const result = await options.toolHost.run(call.name, call.input, options.token);
+			const result = await options.toolHost.run(call.name, call.input, options.token, call.id);
 			options.onEvent({ type: 'toolEnd', id: call.id, name: call.name, result });
 			results.push({
 				type: 'tool_result',
