@@ -45,9 +45,10 @@ import { IEditorOpenContext } from '../../../common/editor.js';
 import { IEditorGroup } from '../../../services/editor/common/editorGroupsService.js';
 import { IOutputService } from '../../../services/output/common/output.js';
 import { ITextFileService } from '../../../services/textfile/common/textfiles.js';
-import { CloudeideClient, type DeployDomain, type DeployEnvironment, type DeploymentSummary, type DeployStatus } from './cloudeideClient.js';
+import { CloudeideClient, DEPLOY_IN_PROGRESS, type DeployDomain, type DeployEnvironment, type DeploymentSummary, type DeployStatus } from './cloudeideClient.js';
 import { CloudeideCloudInput } from './cloudeideCloudInput.js';
 import { collectWorkspaceFiles } from './cloudeideWorkspace.js';
+import { onDidChangeCloud } from './cloudeideCloudTools.js';
 
 const $ = DOM.$;
 
@@ -59,7 +60,7 @@ const ENVIRONMENTS: readonly { id: DeployEnvironment; label: string; detail: str
 ];
 
 /** The statuses the server writes while a build is still going. */
-const IN_PROGRESS = ['queued', 'building', 'deploying'];
+const IN_PROGRESS = DEPLOY_IN_PROGRESS;
 
 /** How many past deployments the list shows. */
 const DEPLOYMENTS_SHOWN = 5;
@@ -131,6 +132,13 @@ export class CloudeideCloudEditor extends EditorPane {
 		this.buildHeader(page);
 		this.buildDeployments(page);
 		this.buildDomains(page);
+
+		// The agent deploys and adds domains from the chat; this page shows
+		// the result without anybody pressing Refresh.
+		this._register(onDidChangeCloud(() => {
+			void this.refreshDeployments();
+			void this.refreshDomains();
+		}));
 	}
 
 	private buildHeader(page: HTMLElement): void {

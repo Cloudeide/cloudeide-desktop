@@ -22,6 +22,7 @@ import { ChatViewId } from '../../chat/browser/chat.js';
 import { CHAT_OPEN_ACTION_ID } from '../../chat/browser/actions/chatActions.js';
 import { ChatModeKind } from '../../chat/common/constants.js';
 import { CloudeideChatToolsContribution } from './cloudeideChatTools.js';
+import { CloudeideCloudToolsContribution } from './cloudeideCloudTools.js';
 import { CloudeideClient } from './cloudeideClient.js';
 import { CloudeideCloudPanel } from './cloudeideCloudPanel.js';
 import { CloudeideAccountPanel } from './cloudeideAccountPanel.js';
@@ -481,6 +482,16 @@ registerWorkbenchContribution2(
 	CloudeideChatToolsContribution.ID,
 	CloudeideChatToolsContribution,
 	WorkbenchPhase.BlockRestore,
+);
+
+/*
+ * Cloud for the agent: deploy, logs, rollback, variables and domains, as
+ * tools in the chat. After restore — nothing deploys before the window is up.
+ */
+registerWorkbenchContribution2(
+	CloudeideCloudToolsContribution.ID,
+	CloudeideCloudToolsContribution,
+	WorkbenchPhase.AfterRestored,
 );
 
 registerWorkbenchContribution2(

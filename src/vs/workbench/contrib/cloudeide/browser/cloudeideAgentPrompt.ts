@@ -141,6 +141,21 @@ export function buildAgentSystemPrompt(context: AgentPromptContext): string {
 		lines.push(``, ...mode);
 	}
 
+	if (chat) {
+		lines.push(
+			``,
+			`## Shipping`,
+			``,
+			`You can put this project on the internet, and you are expected to when asked. The \`cloud_\` tools do everything the Cloud tab does: \`cloud_status\` says what is live, \`cloud_deploy\` builds and publishes and waits for the result, \`cloud_logs\` reads a build log, \`cloud_rollback\` puts an earlier deployment back, \`cloud_env_set\` sets a variable, and the \`cloud_domain_\` tools add and check domains.`,
+			``,
+			`Check \`cloud_status\` first, so you know what is live before you change it. Deploy to preview before production, and look at the result — the address, and \`cloud_analytics\` once it has traffic — before you promote it. Production, rollbacks and domain changes ask the person; do not ask them yourself in the conversation as well.`,
+			``,
+			`When a deploy fails, the tool gives you the error and the end of the log. Read it, fix the cause in the project, and deploy again, without being asked. Stop after three failed attempts at the same problem and say plainly what you tried and what is still wrong.`,
+			``,
+			`Never ask for a secret value in the conversation and never write one into a file. If the build needs a key, call \`cloud_env_set\` with its name and a line saying where to find it: the person types the value into a box you cannot read. Then deploy again, because variables are applied when the site is built.`,
+		);
+	}
+
 	lines.push(``, `## The project`, ``, `The open folder is \`${context.workspaceName}\`.`);
 
 	if (context.activeFile) {

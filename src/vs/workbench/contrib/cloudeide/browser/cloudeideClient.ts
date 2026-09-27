@@ -176,6 +176,48 @@ export interface DeployStatus {
 	readonly failedPhase?: string;
 }
 
+/** One deployment fetched on its own: everything in the list, plus its log. */
+export interface DeploymentDetail extends DeployStatus {
+	readonly environment?: string;
+	readonly trigger?: string;
+	readonly commitMessage?: string;
+	readonly author?: string;
+	readonly createdAt?: string;
+	readonly durationSeconds?: number;
+	readonly inFlight?: boolean;
+	readonly logs?: readonly { readonly text: string; readonly level?: string }[];
+}
+
+/** A variable as the server lists it: its name and where it applies, never its value. */
+export interface EnvVarSummary {
+	readonly id: string;
+	readonly key: string;
+	readonly secret: boolean;
+	readonly environments: readonly DeployEnvironment[];
+	readonly updatedAt?: string;
+}
+
+/** What one environment is serving right now. */
+export interface EnvironmentState {
+	readonly environment: DeployEnvironment;
+	readonly liveUrl: string | null;
+	readonly latestDeployment: DeploymentDetail | null;
+}
+
+/** Traffic on one environment's live site, from its CDN. */
+export interface SiteAnalytics {
+	readonly totals: {
+		readonly totalRequests: number;
+		readonly bandwidthBytes: number;
+		readonly errorRate4xxPct: number;
+		readonly errorRate5xxPct: number;
+	};
+	readonly hasDeployed: boolean;
+}
+
+/** Statuses a deployment is still moving through. */
+export const DEPLOY_IN_PROGRESS: readonly string[] = ['queued', 'building', 'deploying'];
+
 export class CloudeideRequestError extends Error {
 	constructor(message: string, readonly status: number) {
 		super(message);
@@ -535,14 +577,75 @@ export class CloudeideClient {
 	 * from the account, and named only when the account has more than one.
 	 */
 	async deploy(files: { path: string; content: string }[], commitMessage?: string): Promise<DeployStarted> {
-		return this.request<DeployStarted>('/deploy/run', {
+		return this.startDeploy(files, { environment: this.environment, commitMessage, trigger: 'manual' });
+	}
+
+	/**
+	 * Starts a deployment and answers with its id, without waiting for it.
+	 *
+	 * `detach: true` is what makes the answer JSON. Without it the server
+	 * streams the whole build as server-sent events on this one response —
+	 * which is what the web dashboard wants, and what this client could never
+	 * read: the Deploy button parsed an event stream as JSON and failed on its
+	 * first byte. The command-line tool has always sent it.
+	 */
+	async startDeploy(
+		files: { path: string; content: string }[],
+		options: { environment: DeployEnvironment; commitMessage?: string; trigger?: 'manual' | 'agent' },
+	): Promise<DeployStarted> {
+		return this.request<DeployStarted>(`/deploy/run${this.projectQuery()}`, {
 			method: 'POST',
 			body: JSON.stringify({
-				environment: this.environment,
+				environment: options.environment,
 				files,
-				trigger: 'manual',
-				...(commitMessage ? { commitMessage } : {}),
+				trigger: options.trigger ?? 'manual',
+				detach: true,
+				...(options.commitMessage ? { commitMessage: options.commitMessage } : {}),
 			}),
+		});
+	}
+
+	/** One deployment, with its build log. */
+	async deployment(deploymentId: string): Promise<DeploymentDetail> {
+		return this.request<DeploymentDetail>(`/deploy/deployments/${encodeURIComponent(deploymentId)}${this.projectQuery()}`);
+	}
+
+	async cancelDeployment(deploymentId: string): Promise<void> {
+		await this.request(`/deploy/deployments/${encodeURIComponent(deploymentId)}/cancel${this.projectQuery()}`, { method: 'POST', body: '{}' });
+	}
+
+	/** Puts an earlier deployment back live. The server records it as a new deployment. */
+	async rollback(deploymentId: string): Promise<DeploymentDetail> {
+		return this.request<DeploymentDetail>(`/deploy/deployments/${encodeURIComponent(deploymentId)}/rollback${this.projectQuery()}`, { method: 'POST', body: '{}' });
+	}
+
+	async environments(): Promise<EnvironmentState[]> {
+		const body = await this.request<{ environments?: EnvironmentState[] }>(`/deploy/environments${this.projectQuery()}`);
+		return body.environments ?? [];
+	}
+
+	async analytics(environment: DeployEnvironment): Promise<SiteAnalytics> {
+		return this.request<SiteAnalytics>(`/deploy/analytics${this.projectQuery({ environment })}`);
+	}
+
+	/** Names and scopes only. The server never sends a stored value back. */
+	async listEnvVars(): Promise<EnvVarSummary[]> {
+		const body = await this.request<{ envVars?: EnvVarSummary[] }>(`/deploy/env-vars${this.projectQuery()}`);
+		return body.envVars ?? [];
+	}
+
+	async addEnvVar(key: string, value: string, secret: boolean, environments: readonly DeployEnvironment[]): Promise<EnvVarSummary> {
+		return this.request<EnvVarSummary>(`/deploy/env-vars${this.projectQuery()}`, {
+			method: 'POST',
+			body: JSON.stringify({ key, value, secret, environments }),
+		});
+	}
+
+	/** One environment's value of an existing variable. */
+	async setEnvVarValue(id: string, environment: DeployEnvironment, value: string): Promise<void> {
+		await this.request(`/deploy/env-vars/${encodeURIComponent(id)}${this.projectQuery()}`, {
+			method: 'PUT',
+			body: JSON.stringify({ environment, value }),
 		});
 	}
 

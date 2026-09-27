@@ -27,6 +27,7 @@ import { IFileService } from '../../../../platform/files/common/files.js';
 import { ITextFileService } from '../../../services/textfile/common/textfiles.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { CloudeideClient, type DeployDomain, type DeployEnvironment, type DeploymentSummary, type DeployStatus } from './cloudeideClient.js';
+import { onDidChangeCloud } from './cloudeideCloudTools.js';
 import { collectWorkspaceFiles } from './cloudeideWorkspace.js';
 
 const $ = DOM.$;
@@ -142,6 +143,13 @@ export class CloudeideCloudPanel extends ViewPane {
 		// collapsed pane should cost nothing, and these are network calls.
 		this._register(this.onDidChangeBodyVisibility(visible => {
 			if (visible && !this.loaded) {
+				void this.refresh();
+			}
+		}));
+
+		// The agent deploys and adds domains from the chat.
+		this._register(onDidChangeCloud(() => {
+			if (this.loaded) {
 				void this.refresh();
 			}
 		}));

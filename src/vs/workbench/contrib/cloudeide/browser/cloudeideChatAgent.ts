@@ -61,6 +61,7 @@ import { buildAgentSystemPrompt } from './cloudeideAgentPrompt.js';
 import { AgentToolResult } from './cloudeideAgentTools.js';
 import { attachmentsToBlocks, AttachmentReader, ChatAttachment, clipToolResult, isToolForTheModel, toolSchemasFor } from './cloudeideChatContext.js';
 import { READ_TOOL_NAMES } from './cloudeideChatTools.js';
+import { CLOUD_READ_TOOL_NAMES } from './cloudeideCloudTools.js';
 import { CloudeideClient } from './cloudeideClient.js';
 import { DEFAULT_MODEL, MODEL_SETTING, VENDOR } from './cloudeideLanguageModel.js';
 import { CloudeidePullRequests, describeChange } from './cloudeidePullRequest.js';
@@ -233,7 +234,7 @@ export class CloudeideChatAgent implements IChatAgentImplementation {
 		const all = [...this.s.toolsService.getTools(undefined)]
 			.filter(t => isToolForTheModel(t))
 			.filter(t => this.readOnly
-				? READ_TOOL_NAMES.includes(t.id)
+				? READ_TOOL_NAMES.includes(t.id) || CLOUD_READ_TOOL_NAMES.includes(t.id)
 				: request.userSelectedTools?.[t.id] !== false);
 		return toolSchemasFor(all.map(t => ({ id: t.id, modelDescription: t.modelDescription, inputSchema: t.inputSchema })));
 	}
