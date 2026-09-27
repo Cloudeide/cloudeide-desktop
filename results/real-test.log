@@ -1,0 +1,7 @@
+FAIL server-accepts-the-token (5s) https://api.cloudeide.com/api/user/profile answered 404 (not JSON: <!DOCTYPE html> <html lang="en"> <head> <title>This app isn&#39;t live yet</t)
+PASS app-starts (11s) window: ws - CloudeIDE
+PASS folder-is-open (12s) node_modules, src, .env, index.html, README.md
+FAIL sign-in (17s) the server said: OK That token did not work Could not reach https://cloudeide.com.
+PASS chat-opens (19s) input: Sonnet 5 · Local · Default permissions
+
+3 passed, 2 failed

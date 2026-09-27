@@ -1,0 +1,48 @@
+{
+  "run": "36343939809",
+  "passed": 3,
+  "failed": 2,
+  "seconds": 19,
+  "results": [
+    {
+      "step": "server-accepts-the-token",
+      "ok": false,
+      "detail": "https://api.cloudeide.com/api/user/profile answered 404 (not JSON: <!DOCTYPE html> <html lang=\"en\"> <head> <title>This app isn&#39;t live yet</t)",
+      "picture": "01-server-accepts-the-token-FAILED.png",
+      "seconds": 0.432
+    },
+    {
+      "step": "app-starts",
+      "ok": true,
+      "detail": "window: ws - CloudeIDE",
+      "picture": "02-app-starts.png",
+      "seconds": 5.521
+    },
+    {
+      "step": "folder-is-open",
+      "ok": true,
+      "detail": "node_modules, src, .env, index.html, README.md",
+      "picture": "03-folder-is-open.png",
+      "seconds": 1.578
+    },
+    {
+      "step": "sign-in",
+      "ok": false,
+      "detail": "the server said: OK That token did not work Could not reach https://cloudeide.com.",
+      "picture": "04-sign-in-FAILED.png",
+      "seconds": 4.555
+    },
+    {
+      "step": "chat-opens",
+      "ok": true,
+      "detail": "input: Sonnet 5 · Local · Default permissions",
+      "picture": "05-chat-opens.png",
+      "seconds": 2.641
+    }
+  ],
+  "pageErrors": [],
+  "console": [
+    "error: Access to fetch at 'https://cloudeide.com/api/user/profile' from origin 'vscode-file://vscode-app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "error: Failed to load resource: net::ERR_FAILED"
+  ]
+}
