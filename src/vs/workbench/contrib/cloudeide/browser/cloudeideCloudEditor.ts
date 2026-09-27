@@ -331,7 +331,9 @@ export class CloudeideCloudEditor extends EditorPane {
 
 				const outcome = await this.cloud.deploy(this.environment(), {
 					by: 'you',
-					onStep: status => step(localize('cloudeide.cloud.deployStatus', "Building… ({0})", status)),
+					onStep: status => step(status === 'collecting'
+						? localize('cloudeide.cloud.collecting', "Reading the folder…")
+						: localize('cloudeide.cloud.deployStatus', "Building… ({0})", status)),
 				});
 				this.log(`deployment ${outcome.deploymentId}`);
 				const finished = outcome.final;

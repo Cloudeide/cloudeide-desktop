@@ -398,7 +398,9 @@ export class CloudeideCloudPanel extends ViewPane {
 		try {
 			const outcome = await this.cloud.deploy(this.client.environment, {
 				by: 'you',
-				onStep: status => this.setDeployStatus(localize('cloudeide.deployStatus', "Building… ({0})", status), 'muted'),
+				onStep: status => this.setDeployStatus(status === 'collecting'
+					? localize('cloudeide.collecting', "Reading the folder…")
+					: localize('cloudeide.deployStatus', "Building… ({0})", status), 'muted'),
 			});
 			const finished = outcome.final;
 

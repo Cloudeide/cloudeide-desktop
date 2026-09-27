@@ -501,7 +501,14 @@ export class CloudeideCloudToolsContribution extends Disposable implements IWork
 			by: 'agent',
 			message,
 			token,
-			onStep: status => progress.report({ message: localize('cloudeide.cloudTool.building', "{0}", status) }),
+			// Worded as the call's own line, because the chat keeps the last
+			// progress message on screen: "reading the folder" was left
+			// standing where "Deployed to preview" belonged.
+			onStep: status => progress.report({
+				message: status === 'collecting'
+					? localize('cloudeide.cloudTool.deployingTo', "Deploying to {0}", environment)
+					: localize('cloudeide.cloudTool.deployingStatus', "Deploying to {0} ({1})", environment, status),
+			}),
 		});
 		const last = outcome.final;
 		if (DEPLOY_IN_PROGRESS.includes(last.status)) {

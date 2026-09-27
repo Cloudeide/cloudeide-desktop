@@ -147,7 +147,7 @@ export class CloudeideCloudService extends Disposable implements ICloudeideCloud
 		// What the editor shows is what goes out.
 		await this.editorService.saveAll().catch(() => undefined);
 
-		options.onStep?.('reading the folder');
+		options.onStep?.('collecting');
 		const files = await collectWorkspaceFiles(this.fileService, this.contextService);
 		if (!files.length) {
 			throw new Error('Nothing to deploy: no folder is open, or it has no files.');
