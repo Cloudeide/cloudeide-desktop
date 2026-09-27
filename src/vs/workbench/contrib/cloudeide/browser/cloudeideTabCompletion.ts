@@ -27,6 +27,7 @@ import { InlineCompletion, InlineCompletionContext, InlineCompletions, InlineCom
 import { ITextModel } from '../../../../editor/common/model.js';
 import { ILanguageFeaturesService } from '../../../../editor/common/services/languageFeatures.js';
 import { Action2, registerAction2 } from '../../../../platform/actions/common/actions.js';
+import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { ConfigurationTarget, IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
 import { IFileService } from '../../../../platform/files/common/files.js';
 import { ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
@@ -39,11 +40,9 @@ import { IWorkspaceContextService } from '../../../../platform/workspace/common/
 import { IWorkbenchContribution } from '../../../common/contributions.js';
 import { IEditorService } from '../../../services/editor/common/editorService.js';
 import { IStatusbarEntry, IStatusbarEntryAccessor, IStatusbarService, StatusbarAlignment } from '../../../services/statusbar/browser/statusbar.js';
-import { IViewsService } from '../../../services/views/common/viewsService.js';
 import { CloudeideClient } from './cloudeideClient.js';
-import { CloudeidePanel } from './cloudeidePanel.js';
 import {
-	addUsage, buildTabRequest, dayKey, describeUsage, parseTabReply, readUsage,
+	addUsage, ASK_AGENT_COMMAND, buildTabRequest, dayKey, describeUsage, parseTabReply, readUsage,
 	TAB_PREFIX_CHARS, TAB_SUFFIX_CHARS, TabRule, TabUsage, testOfferFor, testRequestFor,
 } from './cloudeideTab.js';
 
@@ -181,7 +180,7 @@ export class CloudeideTabContribution extends Disposable implements IWorkbenchCo
 		if (!suggestion) {
 			return undefined;
 		}
-		const testFor = testOfferFor(lineBefore, suggestion.text, languageId);
+		const testFor = testOfferFor(lineBefore, suggestion.text, languageId, suffix);
 		return {
 			items: [{
 				insertText: suggestion.text,
@@ -372,16 +371,13 @@ registerAction2(class extends Action2 {
 		if (typeof name !== 'string' || typeof path !== 'string') {
 			return;
 		}
-		const views = accessor.get(IViewsService);
+		const commands = accessor.get(ICommandService);
 		accessor.get(INotificationService).prompt(
 			Severity.Info,
 			localize('cloudeide.tab.testOffer', "Write a test for {0}()?", name),
 			[{
 				label: localize('cloudeide.tab.writeTest', "Write the test"),
-				run: async () => {
-					const view = await views.openView<CloudeidePanel>(CloudeidePanel.ID, true);
-					await view?.askFromCommand(testRequestFor(name, path));
-				},
+				run: () => commands.executeCommand(ASK_AGENT_COMMAND, testRequestFor(name, path)),
 			}],
 		);
 	}

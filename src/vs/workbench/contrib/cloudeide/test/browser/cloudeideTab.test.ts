@@ -105,6 +105,14 @@ suite('CloudeIDE Tab', () => {
 		assert.strictEqual(testOfferFor('def yearly(plan):', '\n    total = plan * 12\n    return total', 'python'), 'yearly');
 	});
 
+	test('counts the closing brace the editor already put after the cursor', () => {
+		// Typing `{` adds `}`; the suggestion leaves it alone, and the
+		// function is still finished.
+		const line = 'export function teamCost(plan, seats) {';
+		assert.strictEqual(testOfferFor(line, '\n  if (seats <= 0) return 0;\n  return plan.monthly * seats;', 'javascript', '\n}\n'), 'teamCost');
+		assert.strictEqual(testOfferFor(line, '\n  const a = 1;\n  return a;', 'javascript', '\n  more();\n}'), undefined);
+	});
+
 	test('the test request names the function and the file', () => {
 		const text = testRequestFor('teamCost', 'src/pricing.js');
 		assert.ok(text.includes('`teamCost`') && text.includes('src/pricing.js'));

@@ -32,6 +32,7 @@ import { ICommandService } from '../../../../platform/commands/common/commands.j
 import { AgentHostAnthropicKeySecret, CloudeideTokenSecret } from '../../../../platform/agentHost/common/agentService.js';
 import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
 import { CloudeideTabContribution } from './cloudeideTabCompletion.js';
+import { ASK_AGENT_COMMAND } from './cloudeideTab.js';
 import { EditorPaneDescriptor, IEditorPaneRegistry } from '../../../browser/editor.js';
 import { EditorExtensions, IEditorFactoryRegistry, IEditorSerializer } from '../../../common/editor.js';
 import { EditorInput } from '../../../common/editor/editorInput.js';
@@ -308,6 +309,25 @@ registerAction2(class extends Action2 {
 		const views = accessor.get(IViewsService);
 		const view = await views.openView<CloudeidePanel>(CloudeidePanel.ID, false);
 		await view?.offerPullRequestFromCommand();
+	}
+});
+
+/*
+ * A request from elsewhere in the editor, run in the panel as if typed there.
+ * Tab's "Write the test" is the first caller; it goes through a command so
+ * nothing outside the panel has to import it.
+ */
+registerAction2(class extends Action2 {
+	constructor() {
+		super({ id: ASK_AGENT_COMMAND, title: localize2('cloudeide.askAgent', "CloudeIDE: Ask the Agent"), f1: false });
+	}
+
+	async run(accessor: ServicesAccessor, text?: unknown): Promise<void> {
+		if (typeof text !== 'string' || !text.trim()) {
+			return;
+		}
+		const view = await accessor.get(IViewsService).openView<CloudeidePanel>(CloudeidePanel.ID, true);
+		await view?.askFromCommand(text);
 	}
 });
 

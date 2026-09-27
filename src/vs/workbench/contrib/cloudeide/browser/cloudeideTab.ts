@@ -210,9 +210,12 @@ export function functionNameAt(lineBeforeCursor: string): string | undefined {
  * which one.
  *
  * A body, not a one-line tweak: at least two lines inserted, and for brace
- * languages the closing brace among them.
+ * languages the function closed — either by a brace in the suggestion, or by
+ * the one already waiting after the cursor. That second case is the usual
+ * one: typing `{` makes the editor add `}`, and the suggestion rightly does
+ * not type it again.
  */
-export function testOfferFor(lineBeforeCursor: string, inserted: string, languageId: string): string | undefined {
+export function testOfferFor(lineBeforeCursor: string, inserted: string, languageId: string, suffix = ''): string | undefined {
 	const name = functionNameAt(lineBeforeCursor);
 	if (!name) {
 		return undefined;
@@ -222,11 +225,17 @@ export function testOfferFor(lineBeforeCursor: string, inserted: string, languag
 		return undefined;
 	}
 	const braces = languageId !== 'python';
-	if (braces && !/^\s*\}/m.test(inserted)) {
+	if (braces && !/^\s*\}/m.test(inserted) && !/^\s*\}/.test(suffix)) {
 		return undefined;
 	}
 	return name;
 }
+
+/**
+ * The command that hands a request to the agent panel, as if typed there.
+ * A command rather than an import, so Tab does not depend on the panel.
+ */
+export const ASK_AGENT_COMMAND = 'cloudeide.askAgent';
 
 /** What the agent is asked when the person takes the offer. */
 export function testRequestFor(name: string, path: string): string {
