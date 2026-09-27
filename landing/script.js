@@ -247,3 +247,29 @@ for (const row of document.querySelectorAll("[data-download]")) {
     });
   }
 }
+
+/*
+ * The hero's one button names the visitor's own platform.
+ *
+ * It says macOS in the markup, which is what a visitor with no script, or
+ * on a platform with no build, gets. Windows and Linux visitors get their
+ * own file instead of a Mac download they cannot open.
+ */
+(function () {
+  const hero = document.querySelector("[data-hero-download]");
+  if (!hero) return;
+  const ua = navigator.userAgent;
+  const platform = navigator.userAgentData?.platform ?? navigator.platform ?? "";
+  const base = "https://github.com/laxmansubedi7/cloudevs/releases/latest/download/";
+  if (!/mac/i.test(platform) && !/Mac OS X/i.test(ua)) {
+    if (/win/i.test(platform) || /Windows/i.test(ua)) {
+      hero.href = base + "CloudeIDE-win32-x64.zip";
+      hero.textContent = "Download for Windows";
+    } else if (/linux|cros/i.test(platform) || /Linux|CrOS/i.test(ua)) {
+      if (!/Android/i.test(ua)) {
+        hero.href = base + "CloudeIDE-linux-x64.deb";
+        hero.textContent = "Download for Linux";
+      }
+    }
+  }
+})();
