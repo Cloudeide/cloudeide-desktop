@@ -331,15 +331,92 @@
         </div>
         <div class="painted feat-painted"><div class="shot-window" style="--fx: 0.72"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><img src="assets/shots/ship.webp" alt="The Cloud tab beside the chat; the agent deployed a preview and asks "Deploy to production?" with Allow Once and Skip." width="1000" height="605" loading="lazy" decoding="async" /></div></div>
       </article>
-      <article class="feat reveal" id="cloud">
-        <div class="feat-head">
-          <div class="feat-copy"><h2>Live on your own domain.</h2><p>Deployments, domains and rollbacks, in a tab beside the chat.</p></div>
-          <a class="learn" href="features.html#cloud">Learn about Cloud <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
-        </div>
-        <div class="painted feat-painted"><div class="shot-window" style="--fx: 0"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><img src="assets/shots/live.webp" alt="Yearly billing live at acme.com, with the deployments and the domain listed in Cloud." width="1000" height="605" loading="lazy" decoding="async" /></div></div>
-      </article>
+      <!--
+        Why this and not something else, answered by what each kind of tool
+        does, not by naming anybody: the editor, the agent and the hosting,
+        each shown as it really is, then the comparison.
+      -->
     </div>
   </section>
+
+  <section class="wy-why" id="why" aria-labelledby="why-title">
+  <div class="wy-why-head">
+    <span class="wy-eyebrow">Why CloudeIDE</span>
+    <h2 id="why-title">Write it, check it, ship it. <span>One app.</span></h2>
+    <p>Deploy straight from CloudeIDE. No other platform needed.</p>
+  </div>
+
+  <div class="wy-trio">
+    <div class="wy-piece">
+      <figure class="wy-pic"><img src="assets/why/editor.webp" alt="The editor with new lines marked green and a removed line red, and Keep and Undo." loading="lazy" style="object-position: left top" /></figure>
+      <div class="wy-txt"><span class="wy-n">Editor</span>
+      <h3>The editor you already know</h3>
+      <p>Built on VS Code. Your files, your extensions, your terminal, on your machine.</p></div>
+    </div>
+    <div class="wy-piece">
+      <figure class="wy-pic"><img src="assets/why/agent.webp" alt="The chat: the agent has finished, says what changed, and 2 files wait for Keep or Undo." loading="lazy" style="object-position: left top" /></figure>
+      <div class="wy-txt"><span class="wy-n">Agent</span>
+      <h3>An agent that does the work</h3>
+      <p>It plans, edits across files, runs the tests, and waits for you to keep it.</p></div>
+    </div>
+    <div class="wy-piece">
+      <figure class="wy-pic"><img src="assets/why/cloud.webp" alt="The Cloud tab: acme.com live in production, with the deployments listed." loading="lazy" style="object-position: left top" /></figure>
+      <div class="wy-txt"><span class="wy-n">Cloud</span>
+      <h3>Hosting that ships it</h3>
+      <p>Preview, production, your own domain and rollbacks, in the Cloud tab. The agent can deploy too, within limits you set.</p></div>
+    </div>
+  </div>
+
+  <div class="wy-table" role="table" aria-label="What each kind of tool does">
+    <div class="wy-row wy-head" role="row">
+      <div role="columnheader"></div>
+      <div class="wy-cell wy-tool" role="columnheader">Editor agents</div>
+      <div class="wy-cell wy-tool" role="columnheader">App builders</div>
+      <div class="wy-cell wy-tool" role="columnheader">Terminal agents</div>
+      <div class="wy-cell wy-tool wy-us" role="columnheader">CloudeIDE</div>
+    </div>
+    <div class="wy-row" role="row">
+      <div class="wy-cap" role="rowheader">Works on your files, on your machine<small>Not a copy in someone else's cloud</small></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+    </div>
+    <div class="wy-row" role="row">
+      <div class="wy-cap" role="rowheader">A full code editor<small>Extensions, debugger, terminal, Git</small></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-part">Partly</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
+      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+    </div>
+    <div class="wy-row" role="row">
+      <div class="wy-cap" role="rowheader">An agent that plans, edits and tests<small>Across files, with every change reviewed</small></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+    </div>
+    <div class="wy-row" role="row">
+      <div class="wy-cap" role="rowheader">Hosting, domains and deploys built in<small>No second service to set up</small></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
+      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+    </div>
+    <div class="wy-row" role="row">
+      <div class="wy-cap" role="rowheader">The agent deploys, within limits you set<small>Production waits for your Allow</small></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-part">Partly</span></div>
+      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
+      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
+    </div>
+  </div>
+
+  <div class="wy-foot">
+    <p>Compared by what each kind of tool does out of the box, from public features in September 2026. Each can be extended with other services.</p>
+    <a class="wy-learn" href="features.html">See everything CloudeIDE does <span aria-hidden="true">&rarr;</span></a>
+  </div>
+</section>
 
   <!--
     The desktop build, and deliberately last.
