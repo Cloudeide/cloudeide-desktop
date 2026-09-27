@@ -374,3 +374,55 @@ for (const row of document.querySelectorAll("[data-download]")) {
     start();
   }
 })();
+
+/* The hero demo. */
+
+(() => {
+  const stage = document.querySelector(".hd-stage");
+  if (!stage) return;
+  const LOOP = 11;
+  const TERM = [
+    [4.6, '<span class="hd-p0">~/acme-app $</span> cloudeide deploy --env preview'],
+    [5.1, ' 38 files · 412 KB'],
+    [5.9, '<span class="hd-okl">✓ Preview ready</span> acme-app-checkout.cloudeide.app'],
+  ];
+  const $ = (id) => document.getElementById(id);
+  const timed = [...stage.querySelectorAll("[data-at]")];
+  const chat = $("hd-chat"), scroll = $("hd-chatScroll");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = performance.now();
+  const at = (s) => t >= s;
+
+  function render() {
+    timed.forEach((el) => el.classList.toggle("hd-gone", !at(+el.dataset.at)));
+    $("hd-keep").classList.toggle("hd-off", !at(6.6));
+    $("hd-term").innerHTML = TERM.filter(([s]) => at(s)).map(([, l]) => `<div>${l}</div>`).join("");
+    $("hd-term").classList.toggle("hd-off", !at(4.6));
+    const ready = at(5.9);
+    $("hd-newDot").className = "hd-dot " + (ready ? "hd-ok" : at(4.6) ? "hd-run" : "");
+    $("hd-newWhen").textContent = ready ? "just now" : at(4.6) ? "building…" : "queued";
+    $("hd-rowNew").classList.toggle("hd-off", !at(4.6));
+    $("hd-s1s").textContent = at(6.4) ? "Ready for review · preview up" : at(4.6) ? "Deploying a preview…" : at(3.9) ? "Running tests…" : at(2.0) ? "Editing 3 files…" : at(1.3) ? "Planning…" : "Reading the project…";
+    $("hd-s1i").className = "hd-ico " + (at(6.4) ? "hd-ok" : "hd-spin");
+    $("hd-s2s").textContent = at(7.5) ? "Editing 5 files…" : at(3) ? "Writing a plan…" : "Reading the project…";
+    $("hd-vis").textContent = (1284 + Math.floor(t * 1.4)).toLocaleString("en-US");
+    const over = chat.scrollHeight - scroll.clientHeight;
+    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+  }
+  // Loops only while it is on screen; it opens already full.
+  let running = false;
+  function frame(now) {
+    if (!running) return;
+    t += Math.min(0.1, (now - last) / 1000);
+    last = now;
+    if (t > LOOP) t = 0;
+    render();
+    requestAnimationFrame(frame);
+  }
+  t = 7; render();
+  if (still) return;
+  const go = () => { if (running) return; running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.2 }).observe(stage);
+  } else { go(); }
+})();

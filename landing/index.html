@@ -132,11 +132,87 @@
       </div>
     </div>
 
-    <!-- A real screenshot: the agent's finished change, waiting for Keep. -->
+    <!-- The product at a glance, drawn in the page so it is sharp anywhere: two agents at work, one
+         finishing and deploying a preview, beside the Cloud tab. -->
     <div class="wrap wrap--wide hero-shot-wrap">
-      <div class="painted hero-painted reveal">
-        <div class="shot-window shot-window--hero" style="--fx: 0.55"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><img src="assets/shots/review.webp" alt="CloudeIDE: the agent has added yearly billing; the new lines are marked in the editor, the chat says what changed, and 2 files wait for Keep or Undo." width="1000" height="605" loading="eager" decoding="async" /></div>
+      <div class="hd-stage">
+    <div class="hd-win" role="img" aria-label="CloudeIDE: two agents at work in the sessions list; the selected one adds Stripe checkout, runs the tests and deploys a preview, which appears in the Cloud tab beside it with the live site, domains and today's visitors.">
+      <div class="hd-bar"><span class="hd-dots"><i></i><i></i><i></i></span><span class="hd-title">CloudeIDE</span></div>
+      <div class="hd-grid">
+
+        <div class="hd-col hd-sessions">
+          <div class="hd-label">In progress 2</div>
+          <div class="hd-ses hd-on">
+            <span class="hd-ico hd-spin" id="hd-s1i"></span><b>Stripe checkout</b><em id="hd-s1w"></em>
+            <small id="hd-s1s">Reading the project…</small>
+          </div>
+          <div class="hd-ses">
+            <span class="hd-ico hd-spin"></span><b>Blog with MDX</b><em></em>
+            <small id="hd-s2s">Writing a plan…</small>
+          </div>
+          <div class="hd-label">Ready for review 3</div>
+          <div class="hd-ses"><span class="hd-ico hd-ok"></span><b>Pricing page</b><em>12m</em><small><span class="hd-add">+200</span> <span class="hd-del">−4</span> · Live</small></div>
+          <div class="hd-ses"><span class="hd-ico hd-ok"></span><b>Fix the login redirect</b><em>40m</em><small><span class="hd-add">+12</span> <span class="hd-del">−4</span> · acme-app</small></div>
+          <div class="hd-ses"><span class="hd-ico hd-ok"></span><b>Dark mode toggle</b><em>1h</em><small><span class="hd-add">+46</span> <span class="hd-del">−8</span> · acme-app</small></div>
+        </div>
+
+        <div class="hd-col hd-chat-col">
+          <div class="hd-task-title">Stripe checkout</div>
+          <div class="hd-chat-scroll" id="hd-chatScroll">
+            <div class="hd-chat" id="hd-chat">
+              <div class="hd-you">Add Stripe checkout to the Pro plan and deploy a preview</div>
+              <div class="hd-muted">
+                <span>Read <code>app/pricing/page.tsx</code></span>
+                <span data-at="0.5">Read <code>lib/pricing.ts</code></span>
+                <span data-at="0.9">Thought 4s</span>
+              </div>
+              <div class="hd-say" data-at="1.3">I'll add a checkout route, a button on the Pro plan, and a test with Stripe mocked.</div>
+              <div class="hd-chips">
+                <div class="hd-chip" data-at="2.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>app/api/checkout/route.ts <span class="hd-n"><span class="hd-add">+58</span> <span class="hd-del">−0</span></span></div>
+                <div class="hd-chip" data-at="2.6"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>components/PricingTable.tsx <span class="hd-n"><span class="hd-add">+14</span> <span class="hd-del">−2</span></span></div>
+                <div class="hd-chip" data-at="3.2"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>app/api/checkout/route.test.ts <span class="hd-n"><span class="hd-add">+41</span> <span class="hd-del">−0</span></span></div>
+              </div>
+              <div class="hd-muted" data-at="3.9"><span>Ran <code>npm test</code> · 18 passed</span></div>
+              <div class="hd-muted" data-at="4.6"><span>Deployed a preview · checked it</span></div>
+              <div class="hd-say" data-at="6.4">Done. Pro now opens Stripe checkout. The preview is at <code>acme-app-checkout.cloudeide.app</code>, ready for you to try.</div>
+            </div>
+          </div>
+          <div class="hd-keep" data-at2="6.6" id="hd-keep">
+            <span class="hd-files">3 files changed <span class="hd-add">+113</span> <span class="hd-del">−2</span></span>
+            <button class="hd-btn hd-primary" tabindex="-1">Keep</button><button class="hd-btn" tabindex="-1">Undo</button>
+          </div>
+          <div class="hd-input"><span class="hd-ph">Plan, search, build anything…</span><div class="hd-meta"><span>Agent</span><span>Sonnet 5</span></div></div>
+        </div>
+
+        <div class="hd-col">
+          <div class="hd-cloud">
+            <div class="hd-c-head"><h3>acme-app</h3><span class="hd-sub">acme.com · production</span></div>
+            <div class="hd-c-btns"><span class="hd-primary">Deploy</span><span>Preview</span><span>Agent: Balanced</span></div>
+            <div class="hd-c-sec">
+              <h4><span>DEPLOYMENTS</span></h4>
+              <div class="hd-c-row" id="hd-rowNew"><span class="hd-dot hd-run" id="hd-newDot"></span><span>Preview</span><span class="hd-u">acme-app-checkout.cloudeide.app<span class="hd-by">agent</span></span><span class="hd-w" id="hd-newWhen">building…</span></div>
+              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>Production</span><span class="hd-u">acme.com/pricing<span class="hd-by">agent</span></span><span class="hd-w">12m ago</span></div>
+              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>Production</span><span class="hd-u">acme.com<span class="hd-by">you</span></span><span class="hd-w">1 day ago</span></div>
+            </div>
+            <div class="hd-c-sec">
+              <h4><span>DOMAINS</span></h4>
+              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>acme.com</span><span class="hd-u">production · primary</span><span class="hd-v">Verified</span></div>
+              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>shop.acme.com</span><span class="hd-u">production</span><span class="hd-v">Verified</span></div>
+            </div>
+            <div class="hd-c-sec">
+              <h4><span>VISITORS TODAY</span></h4>
+              <div class="hd-spark">
+                <b id="hd-vis">1,284</b><small>acme.com</small>
+                <svg viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hd-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f2f0" stop-opacity="0.18"/><stop offset="1" stop-color="#f2f2f0" stop-opacity="0"/></linearGradient></defs><path d="M0 38 L20 34 L40 36 L60 28 L80 30 L100 22 L120 25 L140 16 L160 18 L180 10 L200 8 L200 44 L0 44 Z" fill="url(#hd-g)"/><path d="M0 38 L20 34 L40 36 L60 28 L80 30 L100 22 L120 25 L140 16 L160 18 L180 10 L200 8" fill="none" stroke="#f2f2f0" stroke-width="1.5" vector-effect="non-scaling-stroke"/><circle cx="200" cy="8" r="2.5" fill="#f2f2f0"/></svg>
+              </div>
+            </div>
+            <div class="hd-term" id="hd-term"></div>
+          </div>
+        </div>
+
       </div>
+    </div>
+  </div>
     </div>
   </section>
 
