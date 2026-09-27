@@ -88,6 +88,8 @@ const app = await electron.launch({
 const page = await app.firstWindow({ timeout: 180_000 });
 const pageErrors = [];
 page.on('pageerror', e => pageErrors.push(clean(e)));
+const consoleLines = [];
+page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') { consoleLines.push(`${m.type()}: ${clean(m.text())}`); } });
 await app.evaluate(({ BrowserWindow }) => {
 	const win = BrowserWindow.getAllWindows()[0];
 	win?.setMenuBarVisibility(false);
@@ -145,6 +147,19 @@ async function lastAnswer() {
 }
 
 let signedIn = false;
+
+// The server on its own, before the app is asked to reach it: whether the
+// address answers and whether the token is accepted, so a failed sign-in in
+// the app can be told apart from a server or token that does not work.
+const API = (SERVER || 'https://api.cloudeide.com').replace(/\/+$/, '');
+await step(page, 'server-accepts-the-token', async () => {
+	const res = await fetch(`${API}/api/user/profile`, { headers: { authorization: `Bearer ${TOKEN}` }, signal: AbortSignal.timeout(20_000) });
+	const text = await res.text();
+	let keys = '';
+	try { keys = Object.keys(JSON.parse(text)).join(','); } catch { keys = `not JSON: ${text.slice(0, 80)}`; }
+	if (res.status !== 200) { throw new Error(`${API}/api/user/profile answered ${res.status} (${keys})`); }
+	return `${API} answered 200 (${keys})`;
+});
 let liveUrl = '';
 
 await step(page, 'app-starts', async () => {
@@ -260,6 +275,7 @@ const summary = {
 	seconds: Number(secs()),
 	results,
 	pageErrors: pageErrors.slice(0, 20),
+	console: consoleLines.slice(-60),
 };
 await writeFile(path.join(OUT, 'results.json'), JSON.stringify(summary, null, 2));
 console.log(`\n${summary.passed} passed, ${summary.failed} failed`);
