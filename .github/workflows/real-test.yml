@@ -1,0 +1,106 @@
+name: Real test
+
+# The released application, against the real server, the way a person would
+# use it: build/cloudeide/real-test.mjs starts it, signs in with a real token,
+# has the agent change a file, keeps it, deploys a preview and checks the
+# address. The pictures and results come back on the build-real-test branch.
+#
+# Run it from the Actions tab (Real test → Run workflow) after a release, or
+# with a desktop build's run id to test that build before it is released.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Desktop build to test (blank: the latest release)'
+        required: false
+  push:
+    branches: [cloudeide-branding]
+    paths:
+      - '.github/workflows/real-test.yml'
+      - 'build/cloudeide/real-test.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: real-test
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install a screen
+        run: sudo apt-get update -y && sudo apt-get install -y xvfb
+
+      - name: Get the application
+        id: app
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/app
+          run="${{ inputs.run_id }}"
+          if [ -n "$run" ]; then
+            gh run download "$run" --name cloudeide-linux-x64 --dir /tmp/app
+          else
+            gh release download --pattern 'CloudeIDE-linux-x64.tar.gz' --dir /tmp/app
+          fi
+          tar="$(find /tmp/app -name '*.tar.gz' | head -1)"
+          test -n "$tar" || { echo "::error::no application tarball was found"; exit 1; }
+          tar -xzf "$tar" -C /tmp/app
+          bin="$(find /tmp/app -maxdepth 3 -name cloudeide -type f | head -1)"
+          test -x "$bin" || { echo "::error::the tarball holds no cloudeide executable"; exit 1; }
+          echo "bin=${bin}" >> "$GITHUB_OUTPUT"
+
+      - name: Write the project
+        run: build/cloudeide/sample-project.sh /tmp/ws
+
+      - name: Install Playwright
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').dependencies['playwright-core']")"
+          mkdir -p /tmp/runner
+          (cd /tmp/runner && npm init -y >/dev/null && npm install --no-audit --no-fund "playwright-core@${version}")
+          cp build/cloudeide/real-test.mjs /tmp/runner/
+
+      - name: Use it
+        timeout-minutes: 22
+        env:
+          CLOUDEIDE_API_TOKEN: ${{ secrets.CLOUDEIDE_API_TOKEN }}
+          CLOUDEIDE_BIN: ${{ steps.app.outputs.bin }}
+          WORKSPACE_DIR: /tmp/ws
+          OUT_DIR: /tmp/real-test
+        run: |
+          set -uo pipefail
+          xvfb-run -a --server-args='-screen 0 1600x1000x24' \
+            node /tmp/runner/real-test.mjs 2>&1 | tee /tmp/real-test.log
+          exit "${PIPESTATUS[0]}"
+
+      # Over git rather than as an artifact, so they can be read without
+      # signing in to download a zip.
+      - name: Send the results back over git
+        if: always()
+        run: |
+          set -euo pipefail
+          test -d /tmp/real-test || { echo "nothing to send"; exit 0; }
+          cp /tmp/real-test.log /tmp/real-test/ 2>/dev/null || true
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout --orphan build-real-test
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          find . -maxdepth 1 -not -name . -not -name .git -exec rm -rf {} +
+          cp -r /tmp/real-test results
+          echo "Results of run ${{ github.run_id }}, written by .github/workflows/real-test.yml. Rewritten on every run; not meant to be merged." > README.md
+          git add -A
+          git commit -m "Real test, run ${{ github.run_id }}"
+          git push --force origin build-real-test
