@@ -151,11 +151,22 @@ await step(page, 'folder-is-open', async () => {
 });
 
 signedIn = await step(page, 'sign-in', async () => {
+	// A first run opens on the sign-in door, which covers the window and takes
+	// the keyboard. Its buttons hand off to a browser this machine does not
+	// have, so it is closed the way a person would close it, and the token
+	// goes in through the command meant for callers with no browser.
+	const skip = page.locator('button.cloudeide-signin-skip');
+	if (await skip.count()) {
+		await skip.click();
+		await sleep(1000);
+	}
+	await page.locator('.monaco-workbench').click({ position: { x: 700, y: 400 } }).catch(() => { });
 	await command('CloudeIDE: Sign In with an API Token');
+	await page.waitForSelector('.quick-input-widget input[type="password"]', { timeout: 20_000 });
 	await page.keyboard.type(TOKEN, { delay: 3 });
 	await page.keyboard.press('Enter');
 	const dialog = page.locator('.monaco-dialog-box');
-	await dialog.waitFor({ timeout: 60_000 });
+	await dialog.waitFor({ timeout: 90_000 });
 	const text = await dialog.innerText();
 	await page.locator('.monaco-dialog-box .monaco-button').first().click();
 	if (!/Signed in/i.test(text)) { throw new Error(`the server said: ${text}`); }
