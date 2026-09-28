@@ -10,8 +10,8 @@
 
 <!-- Open Graph / social preview -->
 <meta property="og:site_name" content="CloudeIDE" />
-<meta property="og:title" content="CloudeIDE — AI-Powered Cloud IDE & Developer Workspace" />
-<meta property="og:description" content="Write it and ship it in the same window. CloudeIDE is a desktop editor with an AI agent that reads your real code and a button that publishes it." />
+<meta property="og:title" content="CloudeIDE — Your coding agent for building ambitious software" />
+<meta property="og:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
 <meta property="og:image" content="https://cloudeide.com/assets/dashboard-preview.png" />
 <meta property="og:url" content="https://cloudeide.com/" />
 <meta property="og:type" content="website" />
@@ -19,8 +19,8 @@
 
 <!-- Twitter / X Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="CloudeIDE — AI-Powered Cloud IDE & Developer Workspace" />
-<meta name="twitter:description" content="Write it and ship it in the same window. A desktop editor with an AI agent and one-button deploys." />
+<meta name="twitter:title" content="CloudeIDE — Your coding agent for building ambitious software" />
+<meta name="twitter:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
 <meta name="twitter:image" content="https://cloudeide.com/assets/dashboard-preview.png" />
 
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
@@ -211,7 +211,7 @@
       <article class="t2" id="agent">
         <div class="t2-copy">
           <p class="t2-text"><strong>Plans before it builds.</strong> For bigger jobs it asks what it needs to know, writes a plan you can see, and ticks it off step by step.</p>
-          <a class="t2-link" href="features.html#agent">Learn about the agent <span aria-hidden="true">&rarr;</span></a>
+          <a class="t2-link" href="features.html#agent">Learn about planning <span aria-hidden="true">&rarr;</span></a>
         </div>
         <div class="t2-visual">
       <div class="hx hx--plan" id="pl" role="img" aria-label="CloudeIDE: asked to let customers download invoices as PDFs, the agent reads the billing code, asks where the download should live, writes a four-step plan, and ticks off each step while the files it writes appear in the editor.">
@@ -371,6 +371,59 @@
         </div>
         <div class="rv-nav" id="rv-nav"></div>
         <svg class="pl-ptr" id="rv-ptr" viewBox="0 0 18 22" style="opacity:0;left:700px;top:420px"><path d="M2 1.5v16.8l4.4-4.1 2.9 6.6 2.8-1.2-2.9-6.5h6.1z" fill="#f2f2f0" stroke="#0d0c0b" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </div>
+        </div>
+      </article>
+
+      <article class="t2 t2--flip" id="tests">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>Checks its own work.</strong> It runs your tests, reads what failed, fixes it and runs them again, before it hands anything back.</p>
+          <a class="t2-link" href="features.html#agent">Learn how it checks its work <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual">
+      <div class="hx hx--test" id="ts" role="img" aria-label="CloudeIDE: asked to add discount codes to checkout, the agent edits total.ts and runs the tests. One fails: the code came off after tax, so the total was a dollar too high. It moves the discount before tax, runs the tests again, and all 42 pass.">
+        <div class="hx-win">
+          <div class="hx-bar"><span class="hx-dots"><i></i><i></i><i></i></span><span class="hx-bar-t">acme-shop — CloudeIDE</span></div>
+          <div class="hx-grid">
+
+            <!-- chat -->
+            <div class="hx-col">
+              <div class="hx-title">Discount codes</div>
+              <div class="hx-scroll" id="ts-scroll">
+                <div class="hx-chat" id="ts-chat">
+                  <div class="hx-you"><span id="ts-typed"></span><span class="hx-caret" id="ts-caret"></span></div>
+                  <div class="hx-steps">
+                    <div class="hx-step" data-at="1.5">Read <span>src/checkout/total.ts</span></div>
+                    <div class="hx-step" data-at="1.8">Read <span>src/checkout/total.test.ts</span></div>
+                    <div class="hx-step" data-at="2.1">Thought 2s</div>
+                  </div>
+                  <div class="hx-chip" data-at="2.5"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/checkout/total.ts</span> <span class="n"><span class="hx-add">+9</span> <span class="hx-del">−2</span></span><span class="hx-ico" data-spin="2.5:3.8"></span></div>
+                  <div class="hx-step" data-at="3.9" data-until="5.5">Running <span>npm test</span>…</div>
+                  <div class="hx-step bad" data-at="5.5">Ran npm test · <span>1 failed</span></div>
+                  <div class="hx-say" data-at="6.0">The code came off after tax, so the total was $1 too high. It should come off first.</div>
+                  <div class="hx-chip" data-at="6.6"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/checkout/total.ts</span> <span class="n"><span class="hx-add">+1</span> <span class="hx-del">−1</span></span><span class="hx-ico" data-spin="6.6:7.3"></span></div>
+                  <div class="hx-step" data-at="7.5" data-until="8.9">Running <span>npm test</span>…</div>
+                  <div class="hx-step" data-at="8.9">Ran <span>npm test</span> · 42 passed</div>
+                  <div class="hx-say" data-at="9.3">Done. Discount codes work at checkout, and they come off before tax. All 42 tests pass.</div>
+                </div>
+              </div>
+              <div class="hx-keep hx-off" data-at="9.7"><span class="f">1 file changed <span class="hx-add">+9</span> <span class="hx-del">−2</span></span><span class="hx-btn pri">Keep</span><span class="hx-btn">Undo</span></div>
+              <div class="hx-input"><span class="ph">Plan, search, build anything…</span><div class="meta"><span>Agent ⌄</span><span>Sonnet 5 ⌄</span><span>↑</span></div></div>
+            </div>
+
+            <!-- editor, with the test run below it -->
+            <div class="hx-col ts-right">
+              <div class="hx-tabs"><div class="hx-tab"><i>TS</i>total.test.ts</div><div class="hx-tab on"><i>TS</i>total.ts<span class="m hx-gone" id="ts-m">M</span></div></div>
+              <div class="hx-crumb">src › checkout › total.ts</div>
+              <div class="hx-code" id="ts-code"></div>
+              <div class="ts-panel">
+                <div class="ts-panel-tabs"><span>Problems</span><span>Output</span><span class="on">Terminal</span></div>
+                <div class="ts-out" id="ts-out"><div class="ts-lines" id="ts-lines"></div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
         </div>
       </article>

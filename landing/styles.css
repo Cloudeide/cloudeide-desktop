@@ -3784,3 +3784,30 @@ a:hover > .learn-arrow {
     /* With the chat aside, this says where the review has got to. */
     .rv-nav { display: flex; }
   }
+  /* ── the tests demo (ts-) ──────────────────────────────────────────── */
+  .hx--test { height: 680px; border-radius: 12px; background-image: url("assets/paint/tests.jpg"); background-position: center 70%; }
+  .hx--test .hx-win { left: 44px; top: 52px; height: 640px; width: max(1080px, calc(100% - 44px)); }
+  .hx--test .hx-grid { grid-template-columns: 370px minmax(0, 1fr); }
+  .ts-right { display: flex; flex-direction: column; min-height: 0; }
+  .ts-right .hx-code { flex: 1; }
+  .ts-panel { flex: none; height: 250px; border-top: 1px solid var(--line-2); background: #121110; display: flex; flex-direction: column; }
+  .ts-panel-tabs { flex: none; display: flex; gap: 18px; padding: 0 16px; height: 32px; align-items: center; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+  .ts-panel-tabs .on { color: var(--text); box-shadow: inset 0 -1px 0 var(--text); line-height: 31px; }
+  .ts-out { flex: 1; min-height: 0; overflow: hidden; position: relative; }
+  .ts-lines { padding: 6px 16px 14px; font-family: var(--mono); font-size: 12px; line-height: 1.7; color: #c9c4bc; white-space: pre; transition: transform 0.3s ease-out; }
+  .ts-lines .dim { color: #6e6963; } .ts-lines .w { color: #f2f2f0; } .ts-lines .ok { color: var(--add); } .ts-lines .bad { color: var(--del); }
+  .ts-lines .tag { display: inline-block; padding: 0 5px; border-radius: 3px; font-weight: 500; color: #0d0c0b; }
+  .ts-lines .tag.ok { background: var(--add); color: #0d0c0b; } .ts-lines .tag.bad { background: var(--del); color: #0d0c0b; }
+  .ts-lines > div { animation: hx-in 0.2s ease-out; }
+  .hx-step.bad span { color: var(--del); }
+
+  /* On a phone the editor and the test run fill the screen at full size,
+     and the chat steps aside. */
+  @media (max-width: 700px) {
+    .hx--test { height: 640px; border-radius: 14px; }
+    .hx--test .hx-win { left: 12px; top: 28px; height: 624px; width: 900px; }
+    .hx--test .hx-grid { grid-template-columns: 0 minmax(0, 1fr); }
+    .hx--test .hx-grid > .hx-col:first-child { visibility: hidden; border: 0; }
+    .hx--test .hx-grid > .hx-col:last-child { border-left: 0; }
+    .ts-panel { height: 270px; }
+  }

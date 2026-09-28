@@ -968,3 +968,114 @@ for (const row of document.querySelectorAll("[data-download]")) {
     new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
   } else { go(); }
 })();
+
+/* The tests demo: a test fails, the agent reads why, fixes it and runs them again. */
+
+(() => {
+  const root = document.getElementById("ts");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 13.5, REST = 10.2;
+  const TASK = "Add discount codes to checkout.";
+
+  // The file: [when the line appears (0 = already there; "dX" = removed at X), html, when it is taken out again].
+  const TOTAL = [
+    [0, '<span class="k">import</span> { sum, withTax } <span class="k">from</span> <span class="s">"./money"</span>;'],
+    [2.6, '<span class="k">import</span> { CODES } <span class="k">from</span> <span class="s">"./codes"</span>;'],
+    [0, ''],
+    ["d2.8", '<span class="k">export function</span> <span class="f">total</span>(cart) {'],
+    [2.8, '<span class="k">export function</span> <span class="f">total</span>(cart, code) {'],
+    [0, '  <span class="k">const</span> subtotal = <span class="f">sum</span>(cart.items);'],
+    ["d3.0", '  <span class="k">return</span> <span class="f">withTax</span>(subtotal);'],
+    [3.0, '  <span class="k">const</span> off = <span class="f">discount</span>(code, subtotal);'],
+    [3.15, '  <span class="k">return</span> <span class="f">withTax</span>(subtotal) - off;', 6.9],
+    [6.9, '  <span class="k">return</span> <span class="f">withTax</span>(subtotal - off);'],
+    [0, '}'],
+    [3.3, ''],
+    [3.35, '<span class="k">function</span> <span class="f">discount</span>(code, amount) {'],
+    [3.5, '  <span class="k">const</span> pct = CODES[code] ?? <span class="nu">0</span>;'],
+    [3.6, '  <span class="k">return</span> (amount * pct) / <span class="nu">100</span>;'],
+    [3.7, '}'],
+  ];
+  const TERM = [
+    [4.0, '<span class="dim">~/acme-shop $</span> <span class="w">npm test</span>'],
+    [4.4, ' <span class="tag ok">PASS</span> src/cart/cart.test.ts'],
+    [4.7, ' <span class="tag bad">FAIL</span> src/checkout/total.test.ts'],
+    [4.8, ''],
+    [4.9, '  <span class="bad">● total › takes the code off before tax</span>'],
+    [5.1, '    expect(total(cart, "SAVE10")).toBe(99)'],
+    [5.25, '    Expected: <span class="ok">99</span>'],
+    [5.3, '    Received: <span class="bad">100</span>'],
+    [5.4, ''],
+    [5.5, '<span class="w">Tests:</span> <span class="bad">1 failed</span>, 41 passed, 42 total'],
+    [7.6, ''],
+    [7.65, '<span class="dim">~/acme-shop $</span> <span class="w">npm test</span>'],
+    [8.1, ' <span class="tag ok">PASS</span> src/cart/cart.test.ts'],
+    [8.5, ' <span class="tag ok">PASS</span> src/checkout/total.test.ts'],
+    [8.6, ''],
+    [8.9, '<span class="w">Tests:</span> <span class="ok">42 passed</span>, 42 total'],
+  ];
+
+  const timed = [...root.querySelectorAll("[data-at]")];
+  const spins = [...root.querySelectorAll("[data-spin]")].map((el) => [el, ...el.dataset.spin.split(":").map(Number)]);
+  const chat = $("ts-chat"), scroll = $("ts-scroll"), code = $("ts-code"), out = $("ts-out"), lines = $("ts-lines");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false, shownCode = "", shownTerm = -1;
+
+  function renderCode() {
+    const vis = [];
+    for (const [at, html, outAt] of TOTAL) {
+      const removed = typeof at === "string";
+      if (!removed && at > 0 && t < at) { continue; }
+      const gone = removed ? t >= +at.slice(1) : outAt !== undefined && t >= outAt;
+      vis.push([gone ? "del" : (!removed && at > 0) ? "add" : "", html, !removed && at > 0 && t - at < 0.25]);
+    }
+    const sig = vis.map((v) => v[0] + (v[2] ? "n" : "")).join();
+    if (sig === shownCode) { return; }
+    shownCode = sig;
+    let n = 0;
+    code.innerHTML = vis.map(([kind, html, fresh]) =>
+      `<div class="hx-ln ${kind}${fresh ? " new" : ""}"><b>${kind === "del" ? "" : ++n}</b><span>${html || " "}</span></div>`).join("");
+  }
+
+  function render() {
+    const typed = Math.max(0, Math.min(TASK.length, Math.round(((t - 0.2) / 0.8) * TASK.length)));
+    $("ts-typed").textContent = TASK.slice(0, typed);
+    $("ts-caret").classList.toggle("hx-gone", t > 1.1);
+
+    timed.forEach((el) => {
+      const on = t >= +el.dataset.at && !(el.dataset.until && t >= +el.dataset.until);
+      if (chat.contains(el)) { el.classList.toggle("hx-gone", !on); }
+      else { el.classList.toggle("hx-off", !on); }
+    });
+    spins.forEach(([el, a, b]) => { el.className = "hx-ico " + (t >= b ? "ok" : t >= a ? "spin" : ""); });
+    $("ts-m").classList.toggle("hx-gone", t < 2.6);
+    renderCode();
+
+    const shown = TERM.filter(([at]) => t >= at).length;
+    if (shown !== shownTerm) {
+      shownTerm = shown;
+      lines.innerHTML = TERM.slice(0, shown).map(([, l]) => `<div>${l || " "}</div>`).join("");
+      lines.style.transform = `translateY(${-Math.max(0, lines.scrollHeight - out.clientHeight)}px)`;
+    }
+
+    const over = chat.scrollHeight - scroll.clientHeight;
+    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // At rest, and for anyone who asked for less motion: the tests passing.
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
+})();
