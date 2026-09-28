@@ -88,7 +88,6 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="#agent">Agent</a>
-      <a href="#deploy">Deploy</a>
       <a href="features.html">Features</a>
     </nav>
 
@@ -114,7 +113,6 @@
   <div class="mobile-menu" id="mobileMenu" hidden>
     <a href="https://api.cloudeide.com/app/signin">Sign in</a>
     <a href="#agent">Agent</a>
-    <a href="#deploy">Deploy</a>
     <a href="features.html">Features</a>
     <a href="#desktop">Download</a>
   </div>
@@ -125,288 +123,154 @@
   <!-- ------------------------------------------------------------- hero -- -->
   <section class="hero" id="top">
     <div class="wrap">
-      <h1>CloudeIDE, your coding agent for building ambitious software.</h1>
+      <h1>Your coding agent for building ambitious software.</h1>
+      <p class="hero-sub">Works directly with your codebase.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip" data-hero-download>Download for macOS</a>
         <a class="btn btn-secondary" href="features.html">Learn about CloudeIDE <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
 
-    <!-- The product at a glance, drawn in the page so it is sharp anywhere: two agents at work, one
-         finishing and deploying a preview, beside the Cloud tab. -->
+    <!-- The agent at work, drawn in the page so it is sharp anywhere: asked for
+         dark mode, it reads the project, edits three files as you watch, runs
+         the tests and leaves the change for Keep or Undo. -->
     <div class="wrap wrap--wide hero-shot-wrap">
-      <div class="hd-stage">
-    <div class="hd-win" role="img" aria-label="CloudeIDE: two agents at work in the sessions list; the selected one adds Stripe checkout, runs the tests and deploys a preview, which appears in the Cloud tab beside it with the live site, domains and today's visitors.">
-      <div class="hd-bar"><span class="hd-dots"><i></i><i></i><i></i></span><span class="hd-title">CloudeIDE</span></div>
-      <div class="hd-grid">
+  <div class="hx hx--hero" id="hx" role="img" aria-label="CloudeIDE: asked to add dark mode to the settings page, the agent reads Settings.tsx and theme.css, plans, edits three files as you watch in the editor, runs the tests in the terminal, and leaves three changed files for Keep or Undo.">
+    <div class="hx-win">
+      <div class="hx-bar"><span class="hx-dots"><i></i><i></i><i></i></span><span class="hx-bar-t">CloudeIDE</span></div>
+      <div class="hx-grid">
 
-        <div class="hd-col hd-sessions">
-          <div class="hd-label">In progress 2</div>
-          <div class="hd-ses hd-on">
-            <span class="hd-ico hd-spin" id="hd-s1i"></span><b>Stripe checkout</b><em id="hd-s1w"></em>
-            <small id="hd-s1s">Reading the project…</small>
-          </div>
-          <div class="hd-ses">
-            <span class="hd-ico hd-spin"></span><b>Blog with MDX</b><em></em>
-            <small id="hd-s2s">Writing a plan…</small>
-          </div>
-          <div class="hd-label">Ready for review 3</div>
-          <div class="hd-ses"><span class="hd-ico hd-ok"></span><b>Pricing page</b><em>12m</em><small><span class="hd-add">+200</span> <span class="hd-del">−4</span> · Live</small></div>
-          <div class="hd-ses"><span class="hd-ico hd-ok"></span><b>Fix the login redirect</b><em>40m</em><small><span class="hd-add">+12</span> <span class="hd-del">−4</span> · acme-app</small></div>
-          <div class="hd-ses"><span class="hd-ico hd-ok"></span><b>Dark mode toggle</b><em>1h</em><small><span class="hd-add">+46</span> <span class="hd-del">−8</span> · acme-app</small></div>
+        <!-- sessions -->
+        <div class="hx-col">
+          <div class="hx-label">In progress 1</div>
+          <div class="hx-ses on"><span class="hx-ico spin" id="hx-sesico"></span><b>Dark mode for settings</b><em id="hx-seswhen"></em><small id="hx-sessub">Reading the project…</small></div>
+          <div class="hx-gap"></div>
+          <div class="hx-label">Ready for review 3</div>
+          <div class="hx-ses"><span class="hx-ico ok"></span><b>Fix the login redirect</b><em>20m</em><small><span class="hx-add">+12</span> <span class="hx-del">−4</span> · acme-app</small></div>
+          <div class="hx-ses"><span class="hx-ico ok"></span><b>Export invoices as PDF</b><em>1h</em><small><span class="hx-add">+88</span> <span class="hx-del">−6</span> · acme-app</small></div>
+          <div class="hx-ses"><span class="hx-ico ok"></span><b>Rate limit the API</b><em>2h</em><small><span class="hx-add">+31</span> <span class="hx-del">−2</span> · acme-api</small></div>
         </div>
 
-        <div class="hd-col hd-chat-col">
-          <div class="hd-task-title">Stripe checkout</div>
-          <div class="hd-chat-scroll" id="hd-chatScroll">
-            <div class="hd-chat" id="hd-chat">
-              <div class="hd-you">Add Stripe checkout to the Pro plan and deploy a preview</div>
-              <div class="hd-muted">
-                <span>Read <code>app/pricing/page.tsx</code></span>
-                <span data-at="0.5">Read <code>lib/pricing.ts</code></span>
-                <span data-at="0.9">Thought 4s</span>
+        <!-- chat -->
+        <div class="hx-col">
+          <div class="hx-title">Dark mode for settings</div>
+          <div class="hx-scroll" id="hx-scroll">
+            <div class="hx-chat" id="hx-chat">
+              <div class="hx-you"><span id="hx-typed"></span><span class="hx-caret" id="hx-caret"></span></div>
+              <div class="hx-steps">
+                <div class="hx-step" data-at="1.5">Read <span>src/pages/Settings.tsx</span></div>
+                <div class="hx-step" data-at="1.9">Read <span>src/styles/theme.css</span></div>
+                <div class="hx-step" data-at="2.3">Searched <span>useTheme</span> · 3 results</div>
+                <div class="hx-step" data-at="2.8">Thought 5s</div>
               </div>
-              <div class="hd-say" data-at="1.3">I'll add a checkout route, a button on the Pro plan, and a test with Stripe mocked.</div>
-              <div class="hd-chips">
-                <div class="hd-chip" data-at="2.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>app/api/checkout/route.ts <span class="hd-n"><span class="hd-add">+58</span> <span class="hd-del">−0</span></span></div>
-                <div class="hd-chip" data-at="2.6"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>components/PricingTable.tsx <span class="hd-n"><span class="hd-add">+14</span> <span class="hd-del">−2</span></span></div>
-                <div class="hd-chip" data-at="3.2"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>app/api/checkout/route.test.ts <span class="hd-n"><span class="hd-add">+41</span> <span class="hd-del">−0</span></span></div>
+              <div class="hx-say" data-at="3.3">I'll add dark colours to <code>theme.css</code>, a hook that remembers the choice, and a switch on the Settings page.</div>
+              <div class="hx-chips">
+                <div class="hx-chip" data-at="4.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>src/styles/theme.css <span class="n"><span class="hx-add">+9</span> <span class="hx-del">−1</span></span><span class="hx-ico" data-spin="4.0:6.0"></span></div>
+                <div class="hx-chip" data-at="6.1"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>src/hooks/useTheme.ts <span class="n"><span class="hx-add">+31</span></span><span class="hx-ico" data-spin="6.1:6.9"></span></div>
+                <div class="hx-chip" data-at="7.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>src/pages/Settings.tsx <span class="n"><span class="hx-add">+7</span> <span class="hx-del">−0</span></span><span class="hx-ico" data-spin="7.0:8.8"></span></div>
               </div>
-              <div class="hd-muted" data-at="3.9"><span>Ran <code>npm test</code> · 18 passed</span></div>
-              <div class="hd-muted" data-at="4.6"><span>Deployed a preview · checked it</span></div>
-              <div class="hd-say" data-at="6.4">Done. Pro now opens Stripe checkout. The preview is at <code>acme-app-checkout.cloudeide.app</code>, ready for you to try.</div>
+              <div class="hx-step" data-at="9.0">Ran <span>npm test</span> · 24 passed</div>
+              <div class="hx-say" data-at="11.4">Done. Settings has a Dark mode switch, and the choice is remembered. All 24 tests pass.</div>
             </div>
           </div>
-          <div class="hd-keep" data-at2="6.6" id="hd-keep">
-            <span class="hd-files">3 files changed <span class="hd-add">+113</span> <span class="hd-del">−2</span></span>
-            <button class="hd-btn hd-primary" tabindex="-1">Keep</button><button class="hd-btn" tabindex="-1">Undo</button>
-          </div>
-          <div class="hd-input"><span class="hd-ph">Plan, search, build anything…</span><div class="hd-meta"><span>Agent</span><span>Sonnet 5</span></div></div>
+          <div class="hx-keep hx-off" data-at="11.8"><span class="f">3 files changed <span class="hx-add">+47</span> <span class="hx-del">−1</span></span><span class="hx-btn pri">Keep</span><span class="hx-btn">Undo</span></div>
+          <div class="hx-input"><span class="ph">Plan, search, build anything…</span><div class="meta"><span>Agent ⌄</span><span>Sonnet 5 ⌄</span><span>↑</span></div></div>
         </div>
 
-        <div class="hd-col">
-          <div class="hd-cloud">
-            <div class="hd-c-head"><h3>acme-app</h3><span class="hd-sub">acme.com · production</span></div>
-            <div class="hd-c-btns"><span class="hd-primary">Deploy</span><span>Preview</span><span>Agent: Balanced</span></div>
-            <div class="hd-c-sec">
-              <h4><span>DEPLOYMENTS</span></h4>
-              <div class="hd-c-row" id="hd-rowNew"><span class="hd-dot hd-run" id="hd-newDot"></span><span>Preview</span><span class="hd-u">acme-app-checkout.cloudeide.app<span class="hd-by">agent</span></span><span class="hd-w" id="hd-newWhen">building…</span></div>
-              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>Production</span><span class="hd-u">acme.com/pricing<span class="hd-by">agent</span></span><span class="hd-w">12m ago</span></div>
-              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>Production</span><span class="hd-u">acme.com<span class="hd-by">you</span></span><span class="hd-w">1 day ago</span></div>
-            </div>
-            <div class="hd-c-sec">
-              <h4><span>DOMAINS</span></h4>
-              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>acme.com</span><span class="hd-u">production · primary</span><span class="hd-v">Verified</span></div>
-              <div class="hd-c-row"><span class="hd-dot hd-ok"></span><span>shop.acme.com</span><span class="hd-u">production</span><span class="hd-v">Verified</span></div>
-            </div>
-            <div class="hd-c-sec">
-              <h4><span>VISITORS TODAY</span></h4>
-              <div class="hd-spark">
-                <b id="hd-vis">1,284</b><small>acme.com</small>
-                <svg viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hd-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f2f0" stop-opacity="0.18"/><stop offset="1" stop-color="#f2f2f0" stop-opacity="0"/></linearGradient></defs><path d="M0 38 L20 34 L40 36 L60 28 L80 30 L100 22 L120 25 L140 16 L160 18 L180 10 L200 8 L200 44 L0 44 Z" fill="url(#hd-g)"/><path d="M0 38 L20 34 L40 36 L60 28 L80 30 L100 22 L120 25 L140 16 L160 18 L180 10 L200 8" fill="none" stroke="#f2f2f0" stroke-width="1.5" vector-effect="non-scaling-stroke"/><circle cx="200" cy="8" r="2.5" fill="#f2f2f0"/></svg>
-              </div>
-            </div>
-            <div class="hd-term" id="hd-term"></div>
+        <!-- editor -->
+        <div class="hx-col">
+          <div class="hx-tabs">
+            <div class="hx-tab" id="hx-tab-css"><i class="css">#</i>theme.css<span class="m hx-gone" id="hx-m-css">M</span></div>
+            <div class="hx-tab" id="hx-tab-tsx"><i>TS</i>Settings.tsx<span class="m hx-gone" id="hx-m-tsx">M</span></div>
           </div>
+          <div class="hx-crumb" id="hx-crumb">src › styles › theme.css</div>
+          <div class="hx-code" id="hx-code"></div>
         </div>
 
       </div>
     </div>
+
+    <!-- terminal -->
+    <div class="hx-term hx-off" data-at="9.0">
+      <div class="hx-term-bar"><span class="hx-dots"><i></i><i></i><i></i></span><span>Terminal — acme-app</span></div>
+      <div class="hx-term-body" id="hx-term"></div>
+    </div>
   </div>
+      <p class="hero-under"><b>Built on VS Code.</b> Your extensions, themes and keybindings come with you.</p>
     </div>
   </section>
 
   
 
     <!--
-    Three things, the way the best pages in this space show them: a tile each,
-    one sentence beside one picture, the middle one the other way round.
+    The agent's work, the way the best pages in this space show it: a tile
+    each, one sentence beside one live demo.
   -->
   <section class="t2s" id="features" aria-label="What CloudeIDE does">
     <div class="t2-wrap">
       <article class="t2" id="agent">
         <div class="t2-copy">
-          <p class="t2-text"><strong>An agent that does the work.</strong> It reads your project, makes a plan, builds it and runs the tests. Nothing stays until you keep it.</p>
+          <p class="t2-text"><strong>Plans before it builds.</strong> For bigger jobs it asks what it needs to know, writes a plan you can see, and ticks it off step by step.</p>
           <a class="t2-link" href="features.html#agent">Learn about the agent <span aria-hidden="true">&rarr;</span></a>
         </div>
         <div class="t2-visual">
-          <div class="ad-stage">
-    <div class="ad-win" role="img" aria-label="CloudeIDE: asked for a pricing page with yearly billing, the agent reads the project, writes a plan, ticks off each step as it changes four files, runs the tests and the build, the change is kept, and the page goes live at acme.com/pricing.">
-      <div class="ad-bar"><span class="ad-dots"><i></i><i></i><i></i></span><span class="ad-title">CloudeIDE</span></div>
-      <div class="ad-grid">
+      <div class="hx hx--plan" id="pl" role="img" aria-label="CloudeIDE: asked to let customers download invoices as PDFs, the agent reads the billing code, asks where the download should live, writes a four-step plan, and ticks off each step while the files it writes appear in the editor.">
+            <div class="hx-win">
+              <div class="hx-bar"><span class="hx-dots"><i></i><i></i><i></i></span><span class="hx-bar-t">acme-app — CloudeIDE</span></div>
+              <div class="hx-grid">
 
-        <div class="ad-col ad-sessions">
-          <div class="ad-label" id="ad-inProg">In progress 1</div>
-          <div class="ad-ses ad-on" id="ad-sesNow">
-            <span class="ad-ico ad-spin" id="ad-sesIco"></span><b>Pricing page</b><em id="ad-sesWhen"></em>
-            <small id="ad-sesSub">Planning…</small>
-          </div>
-          <div class="ad-label">Ready for review 3</div>
-          <div class="ad-ses"><span class="ad-ico ad-ok"></span><b>Fix the login redirect</b><em>20m</em><small><span class="ad-add">+12</span> <span class="ad-del">−4</span> · acme-app</small></div>
-          <div class="ad-ses"><span class="ad-ico ad-ok"></span><b>Dark mode toggle</b><em>1h</em><small><span class="ad-add">+46</span> <span class="ad-del">−8</span> · acme-app</small></div>
-          <div class="ad-ses"><span class="ad-ico ad-ok"></span><b>Shop on shop.acme.com</b><em>3h</em><small>Live · acme-shop</small></div>
-        </div>
-
-        <div class="ad-col ad-chat-col">
-          <div class="ad-task-title">Pricing page</div>
-          <div class="ad-chat-scroll" id="ad-chatScroll">
-            <div class="ad-chat" id="ad-chat">
-              <div class="ad-you"><span id="ad-typed"></span></div>
-
-              <div class="ad-muted ad-off" data-at="0.8">
-                <span>Read <code>package.json</code></span>
-                <span class="ad-off" data-at="1.0">Read <code>lib/pricing.ts</code></span>
-                <span class="ad-off" data-at="1.2">Thought 3s</span>
-              </div>
-
-              <div class="ad-say ad-off" data-at="1.5">I'll add yearly prices and a pricing page with a monthly and yearly switch.</div>
-
-              <div class="ad-plan ad-off" data-at="1.8">
-                <h4>PLAN</h4>
-                <div class="ad-item" data-done="2.6"><span class="ad-ico ad-box"></span><div>Add yearly prices, 20% off<div class="ad-fl ad-off" data-at="2.6"><span>lib/pricing.ts <span class="ad-add">+18</span> <span class="ad-del">−4</span></span></div></div></div>
-                <div class="ad-item" data-done="3.8"><span class="ad-ico ad-box"></span><div>Build the pricing page with a monthly and yearly switch<div class="ad-fl ad-off" data-at="3.3"><span>app/pricing/page.tsx <span class="ad-add">+42</span></span><span class="ad-off" data-at="3.8">components/PricingTable.tsx <span class="ad-add">+96</span></span></div></div></div>
-                <div class="ad-item" data-done="4.5"><span class="ad-ico ad-box"></span><div>Write tests for the yearly prices<div class="ad-fl ad-off" data-at="4.5"><span>lib/pricing.test.ts <span class="ad-add">+44</span></span></div></div></div>
-                <div class="ad-item" data-done="6.1"><span class="ad-ico ad-box"></span><div>Run the tests and the build<div class="ad-fl ad-off" data-at="5.6"><span>npm test <span class="ad-add">12 passed</span></span><span class="ad-off" data-at="6.1">build <span class="ad-add">passed</span></span></div></div></div>
-              </div>
-
-              <div class="ad-say ad-off" data-at="6.5">Done. The pricing page is ready and every check passes.</div>
-
-              <div class="ad-you ad-off" data-at="7.9">Ship it</div>
-              <div class="ad-muted ad-off" data-at="8.2"><span>Deployed a preview · checked it</span></div>
-              <div class="ad-confirm ad-off" data-at="8.6" id="ad-confirm">
-                <b>Deploy to production?</b>
-                <p>Puts the open folder on the live site: Pricing page</p>
-                <div class="ad-acts"><button class="ad-btn ad-primary" id="ad-allow" tabindex="-1">Allow Once</button><button class="ad-btn" tabindex="-1">Skip</button></div>
-              </div>
-              <div class="ad-say ad-off" data-at="9.6">Live at <code>https://acme.com/pricing</code>.</div>
-            </div>
-          </div>
-          <div class="ad-keep ad-off" data-at="6.8">
-            <span class="ad-files" id="ad-keepText">4 files changed <span class="ad-add">+200</span> <span class="ad-del">−4</span></span>
-            <button class="ad-btn ad-primary" id="ad-keepBtn" tabindex="-1">Keep</button><button class="ad-btn" tabindex="-1">Undo</button>
-          </div>
-          <div class="ad-input"><span class="ad-ph">Plan, search, build anything…</span><div class="ad-meta"><span>Agent</span><span>Sonnet 5</span></div></div>
-        </div>
-
-        <div class="ad-col ad-preview">
-          <div class="ad-browser">
-            <span>&larr;</span><span>&rarr;</span><span>&#8635;</span>
-            <div class="ad-url"><span id="ad-urlText">localhost:3000/pricing</span><span class="ad-live ad-off" data-at="9.6">Live</span></div>
-          </div>
-          <div class="ad-site">
-            <nav><b>Acme</b><span>Product</span><span>Customers</span><span>Pricing</span></nav>
-            <div class="ad-off" data-at="3.3">
-              <h2>Simple pricing</h2>
-              <p class="ad-lede">Start free. Pay yearly and save 20%.</p>
-              <div class="ad-toggle"><span id="ad-tgM" class="ad-on">Monthly</span><span id="ad-tgY">Yearly <span class="ad-save">−20%</span></span></div>
-            </div>
-            <div class="ad-plans ad-off" data-at="3.8">
-              <div class="ad-p"><h5>Starter</h5><div class="ad-amt">$0</div><div class="ad-per">free forever</div></div>
-              <div class="ad-p ad-hot"><h5>Pro</h5><div class="ad-amt" id="ad-pro">$20</div><div class="ad-per" id="ad-proPer">per month</div></div>
-              <div class="ad-p"><h5>Team</h5><div class="ad-amt" id="ad-team">$40</div><div class="ad-per" id="ad-teamPer">per month</div></div>
-            </div>
-            <div class="ad-term ad-off" data-at="4.9" id="ad-term"></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="t2 t2--flip" id="deploy">
-        <div class="t2-copy">
-          <p class="t2-text"><strong>It ships it, too.</strong> A preview first, checked. Production only when you allow it.</p>
-          <a class="t2-link" href="features.html#deploy">Learn about deploys <span aria-hidden="true">&rarr;</span></a>
-        </div>
-        <div class="t2-visual">
-          <div class="mk-stage" id="mk-ship" data-loop="10">
-        <div class="mk-win" role="img" aria-label="The agent is asked to ship it. It deploys a preview, which builds and turns ready in the Cloud tab, asks Deploy to production, is allowed once, and production goes live at acme.com.">
-          <div class="mk-bar"><span class="mk-dots"><i></i><i></i><i></i></span><span>acme-app — CloudeIDE</span></div>
-          <div class="mk-grid mk-grid--ship">
-            <div class="mk-col">
-              <div class="mk-label">Chat</div>
-              <div class="mk-chat">
-                <div class="mk-you">Ship it</div>
-                <div class="mk-who" data-at="0.4"><i>✦</i>Agent</div>
-                <div class="mk-muted" data-at="0.6">Checked what is live</div>
-                <div class="mk-say" data-at="0.9">Deploying a preview.</div>
-                <div class="mk-muted" data-at="3.0">Preview is up · checked it</div>
-                <div class="mk-confirm" data-at="3.4" data-until="5.0">
-                  <b>Deploy to production?</b>
-                  <p>Puts the open folder on the live site: acme.com</p>
-                  <div class="mk-acts"><span class="mk-btn mk-primary" data-press="4.5" data-release="4.8">Allow Once</span><span class="mk-btn">Skip</span></div>
-                </div>
-                <div class="mk-say" data-at="6.6">Live at <code>https://acme.com</code>.</div>
-              </div>
-              <div class="mk-input">Plan, search, build anything…</div>
-            </div>
-            <div class="mk-col">
-              <div class="mk-cloud">
-                <div class="mk-head"><h3>acme-app</h3><span>acme.com · production</span></div>
-                <div class="mk-btns"><span class="mk-btn mk-primary">Deploy</span><span class="mk-btn">Preview</span><span class="mk-btn">Agent: Balanced</span></div>
-                <div class="mk-sec">
-                  <h4>DEPLOYMENTS</h4>
-                  <div class="mk-row" data-at="5.0"><span class="mk-dot" data-state="5.0:run,6.6:ok"></span><span>Production</span><span class="mk-u">acme.com<span class="mk-tag">agent</span></span><span class="mk-w" data-text="5.0:building…,6.6:Live"></span></div>
-                  <div class="mk-row" data-at="1.0"><span class="mk-dot" data-state="1.0:run,3.0:ok"></span><span>Preview</span><span class="mk-u">acme-app-preview.cloudeide.app<span class="mk-tag">agent</span></span><span class="mk-w" data-text="1.0:building…,3.0:Ready"></span></div>
-                  <div class="mk-row"><span class="mk-dot mk-ok"></span><span>Production</span><span class="mk-u">acme.com<span class="mk-tag">you</span></span><span class="mk-w">1 day ago</span></div>
-                </div>
-                <div class="mk-sec">
-                  <h4>DEPLOY LOG</h4>
-                  <div class="mk-log" data-log="1.1:Installing packages…|1.8:Building…|2.6:<span class='mk-okl'>✓</span> Built in 21s · 38 files|5.2:Building for production…|6.2:<span class='mk-okl'>✓</span> Uploaded · https://acme.com"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        </div>
-      </article>
-
-      <article class="t2" id="cloud">
-        <div class="t2-copy">
-          <p class="t2-text"><strong>Hosting included.</strong> Deploy straight from CloudeIDE to your own domain, with logs and rollbacks. No other platform needed.</p>
-          <a class="t2-link" href="features.html#cloud">Learn about Cloud <span aria-hidden="true">&rarr;</span></a>
-        </div>
-        <div class="t2-visual">
-          <div class="mk-stage" id="mk-domain" data-loop="11">
-        <div class="mk-win" role="img" aria-label="In the Cloud tab, shop.acme.com is typed and added. The DNS record to copy appears, the domain is checked and turns verified with HTTPS, and the browser beside it opens the shop at shop.acme.com.">
-          <div class="mk-bar"><span class="mk-dots"><i></i><i></i><i></i></span><span>acme-app — CloudeIDE</span></div>
-          <div class="mk-grid mk-grid--domain">
-            <div class="mk-col">
-              <div class="mk-cloud">
-                <div class="mk-head"><h3>Domains</h3><span>acme-app · production</span></div>
-                <div class="mk-field"><div data-type="0.3:1.5:shop.acme.com"></div><span class="mk-btn mk-primary" data-press="1.8" data-release="2.1">Add domain</span></div>
-                <div class="mk-dns" data-at="2.2" data-until="6.4">
-                  <p>Add this record where you bought the domain:</p>
-                  <div class="mk-rec"><span>CNAME</span><span>shop</span><span>acme-app.cloudeide.app</span><span class="mk-btn" data-press="3.2" data-release="3.5">Copy</span></div>
-                  <p class="mk-muted" data-at="4.2">Checking DNS…</p>
-                </div>
-                <div class="mk-sec">
-                  <div class="mk-row" data-at="2.2"><span class="mk-dot" data-state="2.2:run,6.4:ok"></span><span>shop.acme.com</span><span class="mk-u">production</span><span class="mk-v" data-text="2.2:Waiting for DNS,6.4:Verified · HTTPS on" data-good="6.4"></span></div>
-                  <div class="mk-row"><span class="mk-dot mk-ok"></span><span>acme.com</span><span class="mk-u">production · primary</span><span class="mk-v mk-good">Verified</span></div>
-                  <div class="mk-row"><span class="mk-dot mk-ok"></span><span>cloudeide.app</span><span class="mk-u">acme-app.cloudeide.app</span><span class="mk-v mk-good">Verified</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="mk-col">
-              <div class="mk-browser"><span>&larr;</span><span>&rarr;</span><span>&#8635;</span><div class="mk-url"><span class="mk-lock mk-fade" data-at="7.0">&#128274;</span><span>shop.acme.com</span></div></div>
-              <div class="mk-site">
-                <div class="mk-err" data-until="7.0"><b>This site can't be reached</b><span>shop.acme.com is not set up yet</span></div>
-                <div class="mk-shop mk-fade" data-at="7.0">
-                  <nav><b>Acme Shop</b><span>New</span><span>Cart</span></nav>
-                  <h5>This week's picks</h5>
-                  <div class="mk-items">
-                    <div class="mk-item"><div></div><b>Ceramic mug</b>$18</div>
-                    <div class="mk-item"><div></div><b>Linen tote</b>$24</div>
+                <!-- chat -->
+                <div class="hx-col">
+                  <div class="hx-title">Invoice PDFs</div>
+                  <div class="hx-scroll" id="pl-scroll">
+                    <div class="hx-chat" id="pl-chat">
+                      <div class="hx-you"><span id="pl-typed"></span><span class="hx-caret" id="pl-caret"></span></div>
+                      <div class="hx-steps">
+                        <div class="hx-step" data-at="1.5">Read <span>src/billing/invoices.ts</span></div>
+                        <div class="hx-step" data-at="1.9">Read <span>src/routes/invoices.ts</span></div>
+                        <div class="hx-step" data-at="2.3">Searched <span>pdf</span> · no results</div>
+                        <div class="hx-step" data-at="2.7">Thought 3s</div>
+                      </div>
+                      <div class="pl-q" data-at="3.2" data-until="5.5">
+                        <div class="pl-q-h">One question before I plan<b>1 of 1</b></div>
+                        <div class="pl-q-t">Where should customers download them?</div>
+                        <div class="pl-opts">
+                          <div class="pl-opt" id="pl-o1"><i></i>A button on each invoice<small>Recommended</small></div>
+                          <div class="pl-opt"><i></i>One “Download all” zip</div>
+                          <div class="pl-opt"><i></i>Both</div>
+                        </div>
+                        <div class="pl-q-f"><span class="hx-btn">Skip</span><span class="hx-btn pri" id="pl-submit">Submit</span></div>
+                      </div>
+                      <div class="pl-ans" data-at="5.5"><em>Where to download</em><span>A button on each invoice</span></div>
+                      <div class="hx-say" data-at="5.9">Here's the plan. I'll tick off each step as I go.</div>
+                      <div class="pl-plan" data-at="6.2">
+                        <div class="pl-plan-h">Plan<small id="pl-count">0 of 4 done</small></div>
+                        <div class="pl-todo">
+                          <div class="pl-item" data-at="6.3" data-run="7.0:8.4"><span class="pl-box"></span><span>Render an invoice as a PDF</span></div>
+                          <div class="pl-item" data-at="6.5" data-run="8.4:9.8"><span class="pl-box"></span><span>Add <code>GET /invoices/:id/pdf</code>, owner only</span></div>
+                          <div class="pl-item" data-at="6.7" data-run="9.8:11.0"><span class="pl-box"></span><span>A Download PDF button on each invoice</span></div>
+                          <div class="pl-item" data-at="6.9" data-run="11.0:12.3"><span class="pl-box"></span><span>Tests for the route and the PDF</span></div>
+                        </div>
+                      </div>
+                      <div class="hx-step" data-at="12.4">Ran <span>npm test</span> · 31 passed</div>
+                      <div class="hx-say" data-at="12.8">Done. Each invoice has a Download PDF button, and only its owner can fetch it. All 31 tests pass.</div>
+                    </div>
                   </div>
+                  <div class="hx-keep hx-off" data-at="13.2"><span class="f">4 files changed <span class="hx-add">+39</span></span><span class="hx-btn pri">Keep</span><span class="hx-btn">Undo</span></div>
+                  <div class="hx-input"><span class="ph">Plan, search, build anything…</span><div class="meta"><span>Agent ⌄</span><span>Sonnet 5 ⌄</span><span>↑</span></div></div>
                 </div>
+
+                <!-- editor -->
+                <div class="hx-col">
+                  <div class="hx-tabs" id="pl-tabs"></div>
+                  <div class="hx-crumb" id="pl-crumb"></div>
+                  <div class="hx-code" id="pl-code"></div>
+                </div>
+
               </div>
             </div>
+            <svg class="pl-ptr" id="pl-ptr" viewBox="0 0 18 22" style="opacity:0;left:560px;top:420px"><path d="M2 1.5v16.8l4.4-4.1 2.9 6.6 2.8-1.2-2.9-6.5h6.1z" fill="#f2f2f0" stroke="#0d0c0b" stroke-width="1.3" stroke-linejoin="round"/></svg>
           </div>
-        </div>
-      </div>
         </div>
       </article>
     </div>

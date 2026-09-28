@@ -281,210 +281,311 @@ for (const row of document.querySelectorAll("[data-download]")) {
   });
 })();
 
-/* The agent demo on the home page. */
+/* The hero demo: the agent adds dark mode. */
 
 (() => {
-  const stage = document.querySelector(".ad-stage");
-  if (!stage) return;
-  const END = 10.4, LOOP = 12.4;
-  const TASK = "Add a pricing page with yearly billing at 20% off, and tests";
+  const root = document.getElementById("hx");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 18;
+  const TASK = "Add dark mode to the settings page, and remember the choice.";
+
+  // Each file: its lines, and when each line becomes an addition. A line
+  // listed in `adds` appears at that second, typed into place.
+  const CSS = [
+    [0, '<span class="p">:root</span> {'],
+    [0, '  <span class="p">--bg</span>: <span class="nu">#ffffff</span>;'],
+    [0, '  <span class="p">--text</span>: <span class="nu">#16181d</span>;'],
+    [0, '  <span class="p">--accent</span>: <span class="nu">#3b5bdb</span>;'],
+    [0, '}'],
+    [4.5, ''],
+    [4.6, '<span class="p">[data-theme="dark"]</span> {'],
+    [4.8, '  <span class="p">--bg</span>: <span class="nu">#121316</span>;'],
+    [5.0, '  <span class="p">--text</span>: <span class="nu">#e8e9ec</span>;'],
+    [5.2, '  <span class="p">--accent</span>: <span class="nu">#7b93ff</span>;'],
+    [5.3, '}'],
+    [0, ''],
+    [0, '<span class="p">body</span> {'],
+    [0, '  <span class="p">background</span>: <span class="f">var</span>(<span class="p">--bg</span>);'],
+    ['d5.6', '  <span class="p">color</span>: <span class="nu">#16181d</span>;'],
+    [5.6, '  <span class="p">color</span>: <span class="f">var</span>(<span class="p">--text</span>);'],
+    [5.8, '  <span class="p">transition</span>: background <span class="nu">0.2s</span>;'],
+    [0, '}'],
+    [0, ''],
+    [0, '<span class="p">.card</span> {'],
+    [0, '  <span class="p">border-radius</span>: <span class="nu">12px</span>;'],
+    [0, '  <span class="p">padding</span>: <span class="nu">20px</span>;'],
+    [0, '}'],
+  ];
+  const TSX = [
+    [0, '<span class="k">import</span> { Page, Row, Switch } <span class="k">from</span> <span class="s">"../ui"</span>;'],
+    [7.2, '<span class="k">import</span> { useTheme } <span class="k">from</span> <span class="s">"../hooks/useTheme"</span>;'],
+    [0, ''],
+    [0, '<span class="k">export function</span> <span class="f">Settings</span>({ prefs }) {'],
+    [7.5, '  <span class="k">const</span> { theme, setTheme } = <span class="f">useTheme</span>();'],
+    [0, '  <span class="k">return</span> ('],
+    [0, '    &lt;<span class="t">Page</span> title=<span class="s">"Settings"</span>&gt;'],
+    [7.8, '      &lt;<span class="t">Row</span> label=<span class="s">"Dark mode"</span>&gt;'],
+    [8.0, '        &lt;<span class="t">Switch</span> checked={theme === <span class="s">"dark"</span>}'],
+    [8.2, '          onChange={(on) =&gt; <span class="f">setTheme</span>(on ? <span class="s">"dark"</span> : <span class="s">"light"</span>)} /&gt;'],
+    [8.4, '      &lt;/<span class="t">Row</span>&gt;'],
+    [0, '      &lt;<span class="t">Row</span> label=<span class="s">"Email notifications"</span>&gt;'],
+    [0, '        &lt;<span class="t">Switch</span> checked={prefs.email} /&gt;'],
+    [0, '      &lt;/<span class="t">Row</span>&gt;'],
+    [0, '    &lt;/<span class="t">Page</span>&gt;'],
+    [0, '  );'],
+    [0, '}'],
+  ];
   const TERM = [
-    [4.9, '<span class="ad-p0">~/acme-app $</span> npm test'],
-    [5.3, ' PASS  lib/pricing.test.ts'],
-    [5.6, '<span class="ad-okl">✓ 12 passed</span> in 1.8s'],
-    [5.7, '<span class="ad-p0">~/acme-app $</span> npm run build'],
-    [6.1, '<span class="ad-okl">✓ Build passed</span> · 14 routes'],
-    [9.0, '<span class="ad-p0">~/acme-app $</span> cloudeide deploy --env production'],
-    [9.6, '<span class="ad-okl">✓ Live</span> at https://acme.com/pricing'],
+    [9.2, '<span class="dim">~/acme-app $</span> <span class="w">npm test</span>'],
+    [9.8, ' <span class="ok">PASS</span>  src/hooks/useTheme.test.ts'],
+    [10.2, ' <span class="ok">PASS</span>  src/pages/Settings.test.tsx'],
+    [10.6, ' <span class="w">Tests:</span>  <span class="ok">24 passed</span>, 24 total'],
+    [11.0, '<span class="ok">✓</span> No problems in 3 changed files'],
   ];
 
-  const $ = (id) => document.getElementById(id);
-  const chat = $("ad-chat"), scroll = $("ad-chatScroll");
-  const timed = [...stage.querySelectorAll("[data-at]")];
-  const items = [...document.querySelectorAll(".ad-item")];
+  const timed = [...root.querySelectorAll("[data-at]")];
+  const spins = [...root.querySelectorAll("[data-spin]")].map((el) => [el, ...el.dataset.spin.split(":").map(Number)]);
+  const chat = $("hx-chat"), scroll = $("hx-scroll"), code = $("hx-code");
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let t = 0, last = 0, playing = false;
-  const at = (s) => t >= s;
+  let t = 0, last = 0, running = false, shownFile = "", shownCount = -1;
+
+  function renderFile(lines, key) {
+    // Which lines exist at this moment, and which of them are marked.
+    const visible = [];
+    let n = 0;
+    for (const [at, html] of lines) {
+      const removed = typeof at === "string";
+      const when = removed ? +at.slice(1) : at;
+      if (!removed && at > 0 && t < at) { continue; }
+      const kind = removed ? (t >= when ? "del" : "") : (at > 0 ? "add" : "");
+      visible.push([kind, html, !removed && at > 0 && t - at < 0.25]);
+    }
+    const sig = key + visible.map((v) => v[0]).join("");
+    if (sig === shownFile + shownCount) { return; }
+    shownFile = key; shownCount = visible.map((v) => v[0]).join("");
+    code.innerHTML = visible.map(([kind, html, fresh]) => {
+      const num = kind === "del" ? "" : ++n;
+      return `<div class="hx-ln ${kind}${fresh ? " new" : ""}"><b>${num}</b><span>${html || " "}</span></div>`;
+    }).join("");
+  }
 
   function render() {
-    const n = Math.max(0, Math.min(TASK.length, Math.round((t / 0.6) * TASK.length)));
-    $("ad-typed").textContent = TASK.slice(0, n);
+    const typed = Math.max(0, Math.min(TASK.length, Math.round(((t - 0.2) / 1.1) * TASK.length)));
+    $("hx-typed").textContent = TASK.slice(0, typed);
+    $("hx-caret").classList.toggle("hx-gone", t > 1.35);
 
     timed.forEach((el) => {
-      const on = at(+el.dataset.at);
-      if (chat.contains(el)) { el.classList.remove("ad-off"); el.classList.toggle("ad-gone", !on); }
-      else el.classList.toggle("ad-off", !on);
+      const on = t >= +el.dataset.at;
+      if (chat.contains(el)) { el.classList.toggle("hx-gone", !on); }
+      else { el.classList.toggle("hx-off", !on); }
     });
-    items.forEach((el) => {
-      const d = at(+el.dataset.done);
-      el.classList.toggle("ad-done", d);
-      el.querySelector(".ad-ico").className = "ad-ico " + (d ? "ad-tick" : "ad-box");
-    });
+    spins.forEach(([el, a, b]) => { el.className = "hx-ico " + (t >= b ? "ok" : t >= a ? "spin" : ""); });
 
-    $("ad-term").innerHTML = TERM.filter(([s]) => at(s)).slice(-5).map(([, l]) => `<div>${l}</div>`).join("");
+    const onTsx = t >= 7.1;
+    $("hx-tab-css").classList.toggle("on", !onTsx);
+    $("hx-tab-tsx").classList.toggle("on", onTsx);
+    $("hx-m-css").classList.toggle("hx-gone", t < 4.5);
+    $("hx-m-tsx").classList.toggle("hx-gone", t < 7.2);
+    $("hx-crumb").textContent = onTsx ? "src › pages › Settings.tsx" : "src › styles › theme.css";
+    renderFile(onTsx ? TSX : CSS, onTsx ? "tsx" : "css");
 
-    const yearly = at(6.3);
-    $("ad-tgM").classList.toggle("ad-on", !yearly);
-    $("ad-tgY").classList.toggle("ad-on", yearly);
-    $("ad-pro").textContent = yearly ? "$16" : "$20";
-    $("ad-team").textContent = yearly ? "$32" : "$40";
-    $("ad-proPer").textContent = $("ad-teamPer").textContent = yearly ? "per month, billed yearly" : "per month";
+    $("hx-term").innerHTML = TERM.filter(([s]) => t >= s).map(([, l]) => `<div>${l}</div>`).join("");
 
-    $("ad-keepBtn").classList.toggle("ad-press", at(7.2) && !at(7.5));
-    $("ad-keepText").innerHTML = at(7.5) ? '<span class="ad-add">✓</span> Kept 4 files' : '4 files changed <span class="ad-add">+200</span> <span class="ad-del">−4</span>';
-    $("ad-allow").classList.toggle("ad-press", at(9.0) && !at(9.3));
-    $("ad-confirm").classList.toggle("ad-gone", !at(8.6) || at(9.4));
-    $("ad-urlText").textContent = at(9.6) ? "acme.com/pricing" : "localhost:3000/pricing";
-
-    $("ad-sesIco").className = "ad-ico " + (at(9.6) ? "ad-ok" : "ad-spin");
-    $("ad-sesSub").innerHTML = at(9.6) ? '<span class="ad-add">+200</span> <span class="ad-del">−4</span> · Live' : at(6.5) ? "Ready for review" : at(2.6) ? "Building…" : at(1.5) ? "Planning…" : "Reading…";
-    $("ad-sesWhen").textContent = at(9.6) ? "now" : "";
+    const done = t >= 11.4;
+    $("hx-sesico").className = "hx-ico " + (done ? "ok" : "spin");
+    $("hx-sessub").innerHTML = done ? '<span class="hx-add">+47</span> <span class="hx-del">−1</span> · Ready for review'
+      : t >= 9.0 ? "Running the tests…" : t >= 4.0 ? "Editing 3 files…" : t >= 3.3 ? "Planning…" : "Reading the project…";
+    $("hx-seswhen").textContent = done ? "now" : "";
 
     const over = chat.scrollHeight - scroll.clientHeight;
     chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
-
   }
 
-  // Runs only while it is on screen, and starts from the beginning each
-  // time it comes into view, so the visitor sees the whole job.
   function frame(now) {
-    if (playing) {
-      t += Math.min(0.1, (now - last) / 1000);
-      if (t > LOOP) t = 0;
-      render();
-    }
-    last = now;
-    if (playing) requestAnimationFrame(frame);
-  }
-
-  function start() {
-    if (playing || still) return;
-    playing = true; t = 0; render();
-    last = performance.now();
-    requestAnimationFrame(frame);
-  }
-
-  if (still) { t = END; render(); return; }
-  t = END; render();
-  if ("IntersectionObserver" in window) {
-    new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) start(); else playing = false; });
-    }, { threshold: 0.3 }).observe(stage);
-  } else {
-    start();
-  }
-})();
-
-/* The hero demo. */
-
-(() => {
-  const stage = document.querySelector(".hd-stage");
-  if (!stage) return;
-  const LOOP = 11;
-  const TERM = [
-    [4.6, '<span class="hd-p0">~/acme-app $</span> cloudeide deploy --env preview'],
-    [5.1, ' 38 files · 412 KB'],
-    [5.9, '<span class="hd-okl">✓ Preview ready</span> acme-app-checkout.cloudeide.app'],
-  ];
-  const $ = (id) => document.getElementById(id);
-  const timed = [...stage.querySelectorAll("[data-at]")];
-  const chat = $("hd-chat"), scroll = $("hd-chatScroll");
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let t = 0, last = performance.now();
-  const at = (s) => t >= s;
-
-  function render() {
-    timed.forEach((el) => el.classList.toggle("hd-gone", !at(+el.dataset.at)));
-    $("hd-keep").classList.toggle("hd-off", !at(6.6));
-    $("hd-term").innerHTML = TERM.filter(([s]) => at(s)).map(([, l]) => `<div>${l}</div>`).join("");
-    $("hd-term").classList.toggle("hd-off", !at(4.6));
-    const ready = at(5.9);
-    $("hd-newDot").className = "hd-dot " + (ready ? "hd-ok" : at(4.6) ? "hd-run" : "");
-    $("hd-newWhen").textContent = ready ? "just now" : at(4.6) ? "building…" : "queued";
-    $("hd-rowNew").classList.toggle("hd-off", !at(4.6));
-    $("hd-s1s").textContent = at(6.4) ? "Ready for review · preview up" : at(4.6) ? "Deploying a preview…" : at(3.9) ? "Running tests…" : at(2.0) ? "Editing 3 files…" : at(1.3) ? "Planning…" : "Reading the project…";
-    $("hd-s1i").className = "hd-ico " + (at(6.4) ? "hd-ok" : "hd-spin");
-    $("hd-s2s").textContent = at(7.5) ? "Editing 5 files…" : at(3) ? "Writing a plan…" : "Reading the project…";
-    $("hd-vis").textContent = (1284 + Math.floor(t * 1.4)).toLocaleString("en-US");
-    const over = chat.scrollHeight - scroll.clientHeight;
-    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
-  }
-  // Loops only while it is on screen; it opens already full.
-  let running = false;
-  function frame(now) {
-    if (!running) return;
-    t += Math.min(0.1, (now - last) / 1000);
-    last = now;
-    if (t > LOOP) t = 0;
+    if (!running) { return; }
+    t += Math.min(0.1, (now - last) / 1000); last = now;
+    if (t > LOOP) { t = 0; }
     render();
     requestAnimationFrame(frame);
   }
-  t = 7; render();
-  if (still) return;
-  const go = () => { if (running) return; running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+
+  // At rest, and for anyone who asked for less motion: the finished change.
+  t = 12.5; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.2 }).observe(stage);
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
   } else { go(); }
 })();
 
-/* The ship and domain demos. */
+/* The plan demo: the agent asks, plans, and ticks the plan off. */
 
 (() => {
-  // One small clock per demo. Elements say when they appear (data-at), when
-  // they go (data-until), what state or text they show from when (data-state,
-  // data-text), when they are pressed (data-press/release), what they type
-  // (data-type="from:to:text") and what log lines they collect (data-log).
+  const root = document.getElementById("pl");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 18.5, REST = 13.8;
+  const TASK = "Let customers download their invoices as PDFs.";
+
+  // Each file: [when the line appears (0 = already there), html].
+  const PDF = [
+    [7.1, '<span class="k">import</span> PDFDocument <span class="k">from</span> <span class="s">"pdfkit"</span>;'],
+    [7.2, '<span class="k">import</span> { money } <span class="k">from</span> <span class="s">"../lib/format"</span>;'],
+    [7.25, ''],
+    [7.3, '<span class="k">export function</span> <span class="f">renderInvoicePdf</span>(invoice) {'],
+    [7.45, '  <span class="k">const</span> doc = <span class="k">new</span> <span class="f">PDFDocument</span>({ margin: <span class="nu">48</span> });'],
+    [7.6, '  doc.<span class="f">fontSize</span>(<span class="nu">20</span>).<span class="f">text</span>(<span class="s">`Invoice ${invoice.number}`</span>);'],
+    [7.7, '  doc.<span class="f">fontSize</span>(<span class="nu">11</span>).<span class="f">text</span>(invoice.customer.name);'],
+    [7.8, '  <span class="k">for</span> (<span class="k">const</span> line <span class="k">of</span> invoice.lines) {'],
+    [7.9, '    doc.<span class="f">text</span>(<span class="s">`${line.name}  ${</span><span class="f">money</span>(line.amount)<span class="s">}`</span>);'],
+    [8.0, '  }'],
+    [8.05, '  doc.<span class="f">text</span>(<span class="s">`Total  ${</span><span class="f">money</span>(invoice.total)<span class="s">}`</span>);'],
+    [8.15, '  doc.<span class="f">end</span>();'],
+    [8.2, '  <span class="k">return</span> doc;'],
+    [8.25, '}'],
+  ];
+  const ROUTE = [
+    [0, '<span class="k">import</span> { Router } <span class="k">from</span> <span class="s">"express"</span>;'],
+    [0, '<span class="k">import</span> { requireUser } <span class="k">from</span> <span class="s">"../auth"</span>;'],
+    [8.5, '<span class="k">import</span> { renderInvoicePdf } <span class="k">from</span> <span class="s">"../billing/pdf"</span>;'],
+    [0, '<span class="k">import</span> { findInvoice, listInvoices } <span class="k">from</span> <span class="s">"../billing/invoices"</span>;'],
+    [0, ''],
+    [0, '<span class="k">export const</span> invoices = <span class="f">Router</span>();'],
+    [0, ''],
+    [0, 'invoices.<span class="f">get</span>(<span class="s">"/invoices"</span>, requireUser, <span class="k">async</span> (req, res) =&gt; {'],
+    [0, '  res.<span class="f">json</span>(<span class="k">await</span> <span class="f">listInvoices</span>(req.user.id));'],
+    [0, '});'],
+    [8.7, ''],
+    [8.75, 'invoices.<span class="f">get</span>(<span class="s">"/invoices/:id/pdf"</span>, requireUser, <span class="k">async</span> (req, res) =&gt; {'],
+    [8.9, '  <span class="k">const</span> invoice = <span class="k">await</span> <span class="f">findInvoice</span>(req.params.id);'],
+    [9.05, '  <span class="c">// Only the customer the invoice belongs to can download it.</span>'],
+    [9.15, '  <span class="k">if</span> (!invoice || invoice.customerId !== req.user.id) {'],
+    [9.25, '    <span class="k">return</span> res.<span class="f">sendStatus</span>(<span class="nu">404</span>);'],
+    [9.3, '  }'],
+    [9.4, '  res.<span class="f">type</span>(<span class="s">"application/pdf"</span>);'],
+    [9.5, '  <span class="f">renderInvoicePdf</span>(invoice).<span class="f">pipe</span>(res);'],
+    [9.55, '});'],
+  ];
+  const ROW = [
+    [0, '<span class="k">export function</span> <span class="f">InvoiceRow</span>({ invoice }) {'],
+    [0, '  <span class="k">return</span> ('],
+    [0, '    &lt;<span class="t">Row</span>&gt;'],
+    [0, '      &lt;<span class="t">Cell</span>&gt;{invoice.number}&lt;/<span class="t">Cell</span>&gt;'],
+    [0, '      &lt;<span class="t">Cell</span>&gt;{<span class="f">money</span>(invoice.total)}&lt;/<span class="t">Cell</span>&gt;'],
+    [0, '      &lt;<span class="t">Status</span> value={invoice.status} /&gt;'],
+    [10.1, '      &lt;<span class="t">a</span> href={<span class="s">`/invoices/${invoice.id}/pdf`</span>} download&gt;'],
+    [10.3, '        Download PDF'],
+    [10.45, '      &lt;/<span class="t">a</span>&gt;'],
+    [0, '    &lt;/<span class="t">Row</span>&gt;'],
+    [0, '  );'],
+    [0, '}'],
+  ];
+  const TEST = [
+    [11.1, '<span class="f">describe</span>(<span class="s">"GET /invoices/:id/pdf"</span>, () =&gt; {'],
+    [11.2, '  <span class="f">it</span>(<span class="s">"sends the PDF to the invoice owner"</span>, <span class="k">async</span> () =&gt; {'],
+    [11.3, '    <span class="k">const</span> res = <span class="k">await</span> <span class="f">as</span>(ana).<span class="f">get</span>(<span class="s">"/invoices/inv_104/pdf"</span>);'],
+    [11.4, '    <span class="f">expect</span>(res.status).<span class="f">toBe</span>(<span class="nu">200</span>);'],
+    [11.5, '    <span class="f">expect</span>(res.type).<span class="f">toBe</span>(<span class="s">"application/pdf"</span>);'],
+    [11.55, '  });'],
+    [11.6, ''],
+    [11.65, '  <span class="f">it</span>(<span class="s">"refuses anyone else"</span>, <span class="k">async</span> () =&gt; {'],
+    [11.8, '    <span class="k">const</span> res = <span class="k">await</span> <span class="f">as</span>(ben).<span class="f">get</span>(<span class="s">"/invoices/inv_104/pdf"</span>);'],
+    [11.9, '    <span class="f">expect</span>(res.status).<span class="f">toBe</span>(<span class="nu">404</span>);'],
+    [11.95, '  });'],
+    [12.0, '});'],
+  ];
+  // Which file is open when, and when each tab first appears.
+  const FILES = [
+    { key: "route", name: "invoices.ts", icon: "TS", path: "src › routes › invoices.ts", lines: ROUTE, open: 0, tab: 0, badge: 8.5, mark: "M" },
+    { key: "pdf", name: "pdf.ts", icon: "TS", path: "src › billing › pdf.ts", lines: PDF, open: 7.0, tab: 7.0, badge: 7.0, mark: "U" },
+    { key: "row", name: "InvoiceRow.tsx", icon: "TS", path: "src › pages › InvoiceRow.tsx", lines: ROW, open: 9.8, tab: 9.8, badge: 10.1, mark: "M" },
+    { key: "test", name: "pdf.test.ts", icon: "TS", path: "src › routes › pdf.test.ts", lines: TEST, open: 11.0, tab: 11.0, badge: 11.0, mark: "U" },
+  ];
+  const openAt = (t) => t >= 11.0 ? "test" : t >= 9.8 ? "row" : t >= 8.4 ? "route" : t >= 7.0 ? "pdf" : "route";
+
+  const timed = [...root.querySelectorAll("[data-at]")];
+  const items = [...root.querySelectorAll("[data-run]")].map((el) => [el, ...el.dataset.run.split(":").map(Number)]);
+  const chat = $("pl-chat"), scroll = $("pl-scroll"), code = $("pl-code"), ptr = $("pl-ptr");
+  const o1 = $("pl-o1"), submit = $("pl-submit");
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const parse = (s) => s.split(",").map((p) => { const i = p.indexOf(":"); return [+p.slice(0, i), p.slice(i + 1)]; });
+  let t = 0, last = 0, running = false, shown = "";
 
-  document.querySelectorAll("[data-loop]").forEach((stage) => {
-    const LOOP = +stage.dataset.loop;
-    const q = (sel) => [...stage.querySelectorAll(sel)];
-    const shown = q("[data-at], [data-until]");
-    const states = q("[data-state]").map((el) => [el, parse(el.dataset.state)]);
-    const texts = q("[data-text]").map((el) => [el, parse(el.dataset.text)]);
-    const presses = q("[data-press]");
-    const typers = q("[data-type]").map((el) => { const [a, b, ...t] = el.dataset.type.split(":"); return [el, +a, +b, t.join(":")]; });
-    const logs = q("[data-log]").map((el) => [el, el.dataset.log.split("|").map((p) => { const i = p.indexOf(":"); return [+p.slice(0, i), p.slice(i + 1)]; })]);
-    const goods = q("[data-good]");
-    let t = 0, last = 0, running = false;
+  function renderEditor() {
+    const key = openAt(t);
+    const file = FILES.find((f) => f.key === key);
+    const tabs = FILES.filter((f) => t >= f.tab).map((f) =>
+      `<div class="hx-tab${f.key === key ? " on" : ""}"><i>${f.icon}</i>${f.name}${t >= f.badge && f.key !== "route" || (f.key === "route" && t >= f.badge) ? `<span class="${f.mark === "U" ? "u" : "m"}">${f.mark}</span>` : ""}</div>`).join("");
+    const visible = file.lines.filter(([at]) => !(at > 0 && t < at));
+    const sig = key + visible.length + tabs;
+    if (sig === shown) { return; }
+    shown = sig;
+    $("pl-tabs").innerHTML = tabs;
+    $("pl-crumb").textContent = file.path;
+    let n = 0;
+    code.innerHTML = visible.map(([at, html]) => {
+      const kind = at > 0 ? "add" : "";
+      const fresh = at > 0 && t - at < 0.25;
+      return `<div class="hx-ln ${kind}${fresh ? " new" : ""}"><b>${++n}</b><span>${html || " "}</span></div>`;
+    }).join("");
+  }
 
-    const pick = (list) => { let v = ""; for (const [s, x] of list) { if (t >= s) v = x; } return v; };
+  function place(el, dx, dy) {
+    const s = root.getBoundingClientRect(), r = el.getBoundingClientRect();
+    ptr.style.left = (r.left - s.left + dx) + "px";
+    ptr.style.top = (r.top - s.top + dy) + "px";
+  }
 
-    function render() {
-      shown.forEach((el) => {
-        const on = (!el.dataset.at || t >= +el.dataset.at) && (!el.dataset.until || t < +el.dataset.until);
-        if (el.classList.contains("mk-fade") || el.dataset.fade !== undefined) { el.style.opacity = on ? "1" : "0"; }
-        else { el.classList.toggle("mk-hide", !on); }
-      });
-      stage.querySelectorAll(".mk-fade[data-at]").forEach((el) => { el.style.opacity = t >= +el.dataset.at ? "1" : "0"; });
-      states.forEach(([el, list]) => { const s = pick(list); el.className = "mk-dot" + (s ? " mk-" + s : ""); });
-      texts.forEach(([el, list]) => {
-        const v = pick(list); el.textContent = v;
-        el.classList.toggle("mk-live", v === "Live");
-      });
-      goods.forEach((el) => el.classList.toggle("mk-good", t >= +el.dataset.good));
-      presses.forEach((el) => el.classList.toggle("mk-press", t >= +el.dataset.press && t < +el.dataset.release));
-      typers.forEach(([el, a, b, text]) => {
-        const n = Math.max(0, Math.min(text.length, Math.round(((t - a) / (b - a)) * text.length)));
-        el.innerHTML = text.slice(0, n) + (t < b + 0.3 && t >= a ? '<span class="mk-caret"></span>' : "");
-      });
-      logs.forEach(([el, lines]) => { el.innerHTML = lines.filter(([s]) => t >= s).slice(-4).map(([, l]) => `<div>${l}</div>`).join(""); });
-    }
+  function render() {
+    const typed = Math.max(0, Math.min(TASK.length, Math.round(((t - 0.2) / 1.0) * TASK.length)));
+    $("pl-typed").textContent = TASK.slice(0, typed);
+    $("pl-caret").classList.toggle("hx-gone", t > 1.25);
 
-    function frame(now) {
-      if (!running) return;
-      t += Math.min(0.1, (now - last) / 1000); last = now;
-      if (t > LOOP) t = 0;
-      render();
-      requestAnimationFrame(frame);
-    }
-    // At rest, and for anyone who asked for less motion: the finished state.
-    t = LOOP - 1.5; render();
-    if (still) return;
-    const go = () => { if (running) return; running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.25 }).observe(stage);
-    } else { go(); }
-  });
+    timed.forEach((el) => {
+      const on = t >= +el.dataset.at && !(el.dataset.until && t >= +el.dataset.until);
+      if (chat.contains(el)) { el.classList.toggle("hx-gone", !on); }
+      else { el.classList.toggle("hx-off", !on); }
+    });
+
+    // The person answers the question.
+    o1.classList.toggle("hover", t >= 4.35 && t < 5.5);
+    o1.classList.toggle("pick", t >= 4.6);
+    submit.classList.toggle("dim", t < 4.6);
+    submit.classList.toggle("press", t >= 5.15 && t < 5.3);
+
+    let done = 0;
+    items.forEach(([el, a, b]) => {
+      el.classList.toggle("doing", t >= a && t < b);
+      el.classList.toggle("done", t >= b);
+      if (t >= b) { done++; }
+    });
+    $("pl-count").textContent = `${done} of 4 done`;
+
+    renderEditor();
+
+    const over = chat.scrollHeight - scroll.clientHeight;
+    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+
+    // Pointer: in from the side, onto the first answer, then Submit.
+    const vis = t >= 3.8 && t < 5.6;
+    ptr.style.opacity = vis ? "1" : "0";
+    if (t >= 3.8 && t < 4.8) { place(o1, 14, 13); }
+    else if (t >= 4.8 && t < 5.6) { place(submit, 26, 8); }
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.min(0.1, (now - last) / 1000); last = now;
+    if (t > LOOP) { t = 0; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // At rest, and for anyone who asked for less motion: the finished plan.
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
 })();
