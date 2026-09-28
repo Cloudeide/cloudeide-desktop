@@ -1284,3 +1284,89 @@ for (const row of document.querySelectorAll("[data-download]")) {
     new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
   } else { go(); }
 })();
+
+/* The ship demo: a preview link, checked, then production once you allow it. */
+
+(() => {
+  const root = document.getElementById("dp");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 15, REST = 12.6;
+  const TASK = "Put this on a link I can share.";
+  const LOG = [
+    [2.8, '<span class="w">▸ Installing dependencies</span>'],
+    [3.5, '<span class="dim">  added 214 packages in 6s</span>'],
+    [3.9, '<span class="w">▸ Building</span> <span class="dim">· npm run build</span>'],
+    [4.3, '<span class="dim">  vite v6 building for production…</span>'],
+    [4.9, '<span class="dim">  ✓ 38 modules transformed</span>'],
+    [5.3, '<span class="dim">  dist/  12 files · 214 kB</span>'],
+    [5.8, '<span class="w">▸ Publishing</span>'],
+    [6.6, '<span class="ok">✓ Live</span>  https://acme-app-preview.cloudeide.app'],
+  ];
+  const LOG2 = [
+    [10.3, ''],
+    [10.3, '<span class="w">▸ Production</span> <span class="dim">· the same build</span>'],
+    [11.5, '<span class="ok">✓ Live</span>  https://acme.com'],
+  ];
+
+  const timed = [...root.querySelectorAll("[data-at]")];
+  const spins = [...root.querySelectorAll("[data-spin]")].map((el) => [el, ...el.dataset.spin.split(":").map(Number)]);
+  const chat = $("dp-chat"), scroll = $("dp-scroll"), log = $("dp-log"), ptr = $("dp-ptr"), allow = $("dp-allow");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false, shown = -1;
+
+  function place(el) {
+    const s = root.getBoundingClientRect(), r = el.getBoundingClientRect();
+    ptr.style.left = (r.left - s.left + r.width * 0.55) + "px";
+    ptr.style.top = (r.top - s.top + r.height * 0.5) + "px";
+  }
+
+  function render() {
+    const typed = Math.max(0, Math.min(TASK.length, Math.round(((t - 0.2) / 0.9) * TASK.length)));
+    $("dp-typed").textContent = TASK.slice(0, typed);
+    $("dp-caret").classList.toggle("hx-gone", t > 1.2);
+
+    timed.forEach((el) => {
+      const on = t >= +el.dataset.at && !(el.dataset.until && t >= +el.dataset.until);
+      el.classList.toggle("hx-gone", !on);
+    });
+    spins.forEach(([el, a, b]) => { el.className = "hx-ico " + (t >= b ? "ok" : t >= a ? "spin" : ""); });
+
+    // The build log, then the site; back to the log for production, then the site again.
+    const lines = [...LOG, ...LOG2].filter(([at]) => t >= at);
+    if (lines.length !== shown) {
+      shown = lines.length;
+      log.innerHTML = lines.map(([, l]) => `<div>${l || " "}</div>`).join("");
+    }
+    const onSite = (t >= 7.0 && t < 10.2) || t >= 11.9;
+    $("dp-logpane").classList.toggle("dp-hide", onSite);
+    $("dp-sitepane").classList.toggle("dp-hide", !onSite);
+    $("dp-env").textContent = t >= 10.1 ? "production" : "preview";
+    $("dp-addr").textContent = t >= 11.9 ? "acme.com" : "acme-app-preview.cloudeide.app";
+
+    // The person allows production.
+    const leg = t >= 8.6 && t < 10.0;
+    ptr.style.opacity = leg ? "1" : "0";
+    if (leg && allow.offsetParent) { place(allow); }
+    allow.classList.toggle("press", t >= 9.55 && t < 9.7);
+
+    const over = chat.scrollHeight - scroll.clientHeight;
+    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; shown = -1; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // At rest, and for anyone who asked for less motion: the site, live.
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; shown = -1; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
+})();

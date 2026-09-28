@@ -110,6 +110,7 @@
         <a href="#tab">Tab</a>
         <a href="#pr">Pull requests</a>
         <a href="#teams">Team rules</a>
+        <a href="#deploy">Deploys</a>
         <a href="#vscode">VS Code</a>
       </nav>
     </div>
@@ -179,6 +180,19 @@
       <ul>
         <li>An admin writes the rules once, for the whole organisation. Every agent and every suggestion follows them.</li>
         <li>A project can add its own in <code>AGENTS.md</code> at the root of the folder.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="deploy">
+      <h2>Ships it, too</h2>
+      <p>Ask the agent to put it online, from the same window. No other platform needed.</p>
+      <ul>
+        <li><strong>Preview first.</strong> It builds the project and publishes a preview on its own HTTPS address, then checks the page loads before telling you it's live.</li>
+        <li><strong>Production when you allow it.</strong> Going to production always asks you first.</li>
+        <li><strong>Fixes a failed build.</strong> If a build fails, it reads the log, fixes the cause and tries again, then stops and tells you if it can't.</li>
+        <li><strong>Roll back any time.</strong> Every deploy is kept. Go back to an earlier one, or stop one that is still building, from the Cloud tab.</li>
+        <li><strong>Your domain.</strong> Add your own domain, copy the DNS record, and it is checked for you. Environment variables keep secret values hidden.</li>
+        <li><strong>Static sites today.</strong> React, Vite, Astro, SvelteKit (static), Next.js (static export), Vue, Angular and plain HTML.</li>
       </ul>
     </section>
 

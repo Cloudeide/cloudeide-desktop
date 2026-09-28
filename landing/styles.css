@@ -3931,3 +3931,39 @@ a:hover > .learn-arrow {
     .en-row { grid-template-columns: 16px minmax(0, 1fr) 58px 50px; gap: 8px; padding: 7px 10px; }
     .en-row em, .en-row small { display: none; }
   }
+  /* ── the ship demo (dp-) ───────────────────────────────────────────── */
+  .hx--ship { height: 680px; border-radius: 12px; background-image: url("assets/paint/ship.jpg"); background-position: left top; }
+  .hx--ship .hx-win { left: 52px; top: 52px; width: max(1080px, calc(100% - 52px)); }
+  .hx--ship .hx-grid { grid-template-columns: 370px minmax(0, 1fr); }
+  .dp-right { position: relative; min-height: 0; }
+  .dp-pane { position: absolute; inset: 0; display: flex; flex-direction: column; transition: opacity 0.4s ease; }
+  .dp-pane.dp-hide { opacity: 0; pointer-events: none; }
+  .dp-head { flex: none; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--text-2); background: #181715; }
+  .dp-head b { color: var(--text); font-weight: 500; }
+  .dp-head .dp-env { margin-left: 6px; font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line-2); }
+  .dp-log { flex: 1; min-height: 0; overflow: hidden; padding: 12px 16px; font-family: var(--mono); font-size: 12.5px; line-height: 1.8; color: #c9c4bc; white-space: pre; }
+  .dp-log .dim { color: #6e6963; } .dp-log .w { color: #f2f2f0; } .dp-log .ok { color: var(--add); }
+  .dp-log > div { animation: hx-in 0.2s ease-out; }
+  /* the preview, in a browser */
+  .dp-url { flex: none; display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px; background: #1b1a18; border-bottom: 1px solid var(--line); }
+  .dp-url > span:last-child { flex: 1; max-width: 420px; height: 24px; border-radius: 6px; background: #121110; display: flex; align-items: center; gap: 6px; padding: 0 10px; font-size: 11.5px; color: var(--text-2); }
+  .dp-url > span:last-child i { font-style: normal; color: var(--add); }
+  .dp-site { flex: 1; min-height: 0; overflow: hidden; background: #f7f5f1; color: #1d1c1a; font-family: var(--sans); }
+  .dp-site nav { display: flex; align-items: center; gap: 22px; padding: 16px 28px; font-size: 13px; color: #5d5a55; }
+  .dp-site nav b { color: #1d1c1a; font-size: 15px; margin-right: auto; }
+  .dp-site nav em { font-style: normal; background: #1d1c1a; color: #fff; padding: 6px 12px; border-radius: 7px; }
+  .dp-site h4 { margin: 34px 28px 0; font-size: 34px; line-height: 1.08; letter-spacing: -0.025em; max-width: 13ch; }
+  .dp-site p { margin: 12px 28px 0; font-size: 14px; color: #5d5a55; max-width: 40ch; line-height: 1.5; }
+  .dp-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 28px; }
+  .dp-cards div { height: 92px; border-radius: 10px; background: #ebe7e0; }
+  .dp-ask { border: 1px solid var(--line-2); border-radius: 10px; background: #181715; padding: 11px 12px; display: grid; gap: 10px; }
+  .dp-ask p { margin: 0; font-size: 13px; line-height: 1.45; }
+  .dp-ask div { display: flex; gap: 6px; }
+  .dp-done { font-size: 12.5px; color: var(--text-3); }
+  .hx-btn.press { transform: scale(0.94); }
+  .hx-btn { transition: transform 0.12s; }
+  @media (max-width: 700px) {
+    .hx--ship { height: 640px; border-radius: 14px; }
+    .hx--ship .hx-win { left: 12px; top: 28px; width: 900px; }
+    .hx--ship .hx-grid { grid-template-columns: min(336px, calc(100vw - 72px)) minmax(0, 1fr); }
+  }
