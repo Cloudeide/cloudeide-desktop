@@ -135,8 +135,8 @@ suite('CloudeIDE chat agent', () => {
 
 	test('runs on the model picked in the chat panel, and falls back to the setting', async () => {
 		const picked = setUp(false, [saying('ok')]);
-		await picked.agent.invoke(request({ userSelectedModelId: 'cloudeide/claude-opus-5' }), () => { }, [], CancellationToken.None);
-		assert.strictEqual(picked.bodies[0].model, 'claude-opus-5');
+		await picked.agent.invoke(request({ userSelectedModelId: 'cloudeide/claude-opus-5-5' }), () => { }, [], CancellationToken.None);
+		assert.strictEqual(picked.bodies[0].model, 'claude-opus-5-5');
 
 		const other = setUp(false, [saying('ok')]);
 		await other.agent.invoke(request({ userSelectedModelId: 'someone-else/model' }), () => { }, [], CancellationToken.None);

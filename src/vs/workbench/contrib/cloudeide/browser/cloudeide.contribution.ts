@@ -409,7 +409,7 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 		},
 		'cloudeide.model': {
 			type: 'string',
-			enum: ['claude-sonnet-5', 'claude-opus-5', 'claude-haiku-4-5', 'gpt-5.6-terra', 'gpt-5.6-sol', 'gpt-5.6-luna'],
+			enum: ['claude-sonnet-5', 'claude-opus-5-5', 'claude-haiku-4-5', 'gpt-5.6-terra', 'gpt-5.6-sol', 'gpt-5.6-luna'],
 			default: 'claude-sonnet-5',
 			enumDescriptions: [
 				localize('cloudeide.model.sonnet', "The default. Strong at code, and the one most coding turns should use."),
