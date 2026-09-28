@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Learn about CloudeIDE</title>
-<meta name="description" content="Everything CloudeIDE does: the agent, review with Keep and Undo, Tab, pull requests, team rules, deploys, domains, agent permissions and the CLI." />
+<meta name="description" content="Everything CloudeIDE does: planning, the agent across your codebase, reviewing every change, checking its own work, Tab, pull requests and team rules." />
 <link rel="canonical" href="https://cloudeide.com/features.html" />
 <meta name="theme-color" content="#0d0c0b" />
 
@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="CloudeIDE" />
 <meta property="og:title" content="CloudeIDE — Your coding agent for building ambitious software" />
 <meta property="og:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
-<meta property="og:image" content="https://cloudeide.com/assets/dashboard-preview.png" />
+<meta property="og:image" content="https://cloudeide.com/assets/og.png" />
 <meta property="og:url" content="https://cloudeide.com/features.html" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
@@ -21,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="CloudeIDE — Your coding agent for building ambitious software" />
 <meta name="twitter:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
-<meta name="twitter:image" content="https://cloudeide.com/assets/dashboard-preview.png" />
+<meta name="twitter:image" content="https://cloudeide.com/assets/og.png" />
 
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 <link rel="apple-touch-icon" href="assets/logo-180.png" />
@@ -61,7 +61,6 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="index.html#agent">Agent</a>
-      <a href="index.html#deploy">Deploy</a>
       <a href="#top">Features</a>
     </nav>
 
@@ -87,7 +86,6 @@
   <div class="mobile-menu" id="mobileMenu" hidden>
     <a href="https://api.cloudeide.com/app/signin">Sign in</a>
     <a href="index.html#agent">Agent</a>
-    <a href="index.html#deploy">Deploy</a>
     <a href="#top">Features</a>
     <a href="index.html#desktop">Download</a>
   </div>
@@ -105,15 +103,13 @@
       <h1>Learn about CloudeIDE</h1>
       <p>Your coding agent, built on VS Code. It plans, works across your codebase, checks its own work, and nothing lands until you keep it.</p>
       <nav class="doc-toc" aria-label="On this page">
+        <a href="#planning">Planning</a>
         <a href="#agent">Agent</a>
-        <a href="#review">Review</a>
+        <a href="#review">Reviewing changes</a>
+        <a href="#checks">Checks its work</a>
         <a href="#tab">Tab</a>
         <a href="#pr">Pull requests</a>
         <a href="#teams">Team rules</a>
-        <a href="#deploy">Deploys</a>
-        <a href="#cloud">Cloud</a>
-        <a href="#permissions">Permissions</a>
-        <a href="#cli">CLI and MCP</a>
         <a href="#vscode">VS Code</a>
       </nav>
     </div>
@@ -121,14 +117,22 @@
 
   <div class="wrap doc">
 
-    <section class="doc-section" id="agent">
-      <h2>The agent</h2>
-      <p>Open a folder, open Chat, and say what you want. The agent works on your real project, in your editor.</p>
+    <section class="doc-section" id="planning">
+      <h2>Plans before it builds</h2>
+      <p>For bigger jobs the agent works out what it needs to know before it writes any code.</p>
       <ul>
-        <li><strong>Plans first.</strong> For bigger jobs it asks what it needs to know, then keeps a plan you can see and ticks it off step by step.</li>
+        <li><strong>Asks first.</strong> When there is a real choice to make, it asks, with options to pick from, and waits for your answer.</li>
+        <li><strong>A plan you can see.</strong> It writes the steps as a to-do list in the chat and ticks each one off as it goes.</li>
+        <li><strong>Small jobs stay small.</strong> A one-line fix gets no plan and no questions. It just does it.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="agent">
+      <h2>Works across your codebase</h2>
+      <p>Open a folder, open Chat, and say what you want. The agent works on your real project, in your editor, and changes every file the job touches.</p>
+      <ul>
         <li><strong>Reads first.</strong> It lists the project, searches it, finds symbols and their uses, and reads the files that matter before it changes anything.</li>
         <li><strong>Edits across files.</strong> Changes are made in the editor, marked line by line, in as many files as the job needs.</li>
-        <li><strong>Checks its work.</strong> It asks the editor for errors after editing, runs your tests in the terminal, and fixes what fails before it hands anything back.</li>
         <li><strong>Understands pictures.</strong> Attach a screenshot and it sees it. Attach files, folders or a selection with #.</li>
         <li><strong>Agent and Ask.</strong> Agent mode changes code. Ask mode only reads and answers.</li>
         <li><strong>Sessions.</strong> Every conversation is kept in the sessions list, with what it changed.</li>
@@ -140,12 +144,23 @@
     </section>
 
     <section class="doc-section" id="review">
-      <h2>Review with Keep and Undo</h2>
+      <h2>Review every change</h2>
       <p>Nothing the agent writes stays until you say so.</p>
       <ul>
         <li>Every change shows in place in the editor: new lines green, removed lines red.</li>
         <li>Keep or Undo each change, each file, or everything at once.</li>
         <li>Checkpoints let you go back to how things were before any request.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="checks">
+      <h2>Checks its own work</h2>
+      <p>The agent does not hand back work it has not checked.</p>
+      <ul>
+        <li><strong>Problems first.</strong> After editing, it asks the editor for errors in the files it changed and fixes them.</li>
+        <li><strong>Runs your tests.</strong> It runs them in the terminal, where you can watch.</li>
+        <li><strong>Fixes what fails.</strong> When a test fails it reads why, fixes the cause, and runs the tests again.</li>
+        <li><strong>Says what it ran.</strong> Its last message tells you what it checked and what passed.</li>
       </ul>
     </section>
 
@@ -165,53 +180,6 @@
         <li>An admin writes the rules once, for the whole organisation. Every agent and every suggestion follows them.</li>
         <li>A project can add its own in <code>AGENTS.md</code> at the root of the folder.</li>
       </ul>
-    </section>
-
-    <section class="doc-section" id="deploy">
-      <h2>Deploys</h2>
-      <p>Ask the agent to ship it, or press Deploy in the Cloud tab.</p>
-      <ul>
-        <li><strong>Preview first.</strong> The agent deploys a preview, checks it, and only then asks to go to production.</li>
-        <li><strong>Reads the log.</strong> If a deploy fails, the agent reads the build log, fixes the cause and tries again, up to three times, then stops and tells you.</li>
-        <li><strong>Rollback and cancel.</strong> Go back to any earlier deployment, or stop one that is still building.</li>
-        <li><strong>One record.</strong> Whether you deploy or the agent does, both see it: the Cloud tab updates, and the agent knows on its next turn.</li>
-      </ul>
-    </section>
-
-    <section class="doc-section" id="cloud">
-      <h2>Cloud</h2>
-      <p>A tab beside the chat, for the project you have open.</p>
-      <ul>
-        <li><strong>Deployments</strong> for development, preview and production, with their logs.</li>
-        <li><strong>Custom domains.</strong> Add yours, copy the DNS record, check it, and choose the primary one.</li>
-        <li><strong>Environment variables</strong> per environment, with secret values hidden.</li>
-        <li><strong>Analytics</strong> for each environment.</li>
-      </ul>
-    </section>
-
-    <section class="doc-section" id="permissions">
-      <h2>Agent permissions</h2>
-      <p>You decide what the agent may do in Cloud on its own. Choose a preset from the Agent button in the Cloud tab.</p>
-      <div class="doc-table">
-        <div class="doc-row doc-row--head"><span></span><span>Careful</span><span>Balanced</span><span>Autopilot</span></div>
-        <div class="doc-row"><span>Deploy a preview</span><span>Asks</span><span>Allowed</span><span>Allowed</span></div>
-        <div class="doc-row"><span>Deploy to production</span><span>Asks</span><span>Asks</span><span>Allowed</span></div>
-        <div class="doc-row"><span>Roll back</span><span>Asks</span><span>Asks</span><span>Allowed</span></div>
-        <div class="doc-row"><span>Set an environment variable</span><span>Asks</span><span>Asks</span><span>Asks</span></div>
-        <div class="doc-row"><span>Remove a domain</span><span>Never</span><span>Asks</span><span>Asks</span></div>
-      </div>
-      <ul>
-        <li><strong>Secrets stay secret.</strong> When a variable needs a value, you type it into a password box. The agent only ever sees the name.</li>
-        <li><strong>A limit per hour.</strong> The agent can start at most 10 deploys an hour. You can change the number in Settings.</li>
-      </ul>
-    </section>
-
-    <section class="doc-section" id="cli">
-      <h2>CLI and MCP</h2>
-      <p>Deploy from your terminal, or let Claude Code, Cursor and Codex deploy with CloudeIDE over MCP.</p>
-      <div class="copy-chip"><code>npm install -g cloudeide</code><button class="cli-copy" type="button" data-copy="npm install -g cloudeide">Copy</button></div>
-      <pre class="doc-code"><code>cloudeide deploy --env production
-cloudeide install claude-code</code></pre>
     </section>
 
     <section class="doc-section" id="vscode">
@@ -242,12 +210,13 @@ cloudeide install claude-code</code></pre>
     <div class="footer-grid">
       <nav class="footer-col" aria-label="Product">
         <h2 class="footer-head">Product</h2>
+        <a href="#planning">Planning</a>
         <a href="#agent">Agent</a>
-        <a href="#deploy">Deploy</a>
+        <a href="#review">Reviewing changes</a>
+        <a href="#checks">Checks its work</a>
         <a href="#tab">Tab</a>
         <a href="#pr">Pull requests</a>
         <a href="#teams">Team rules</a>
-        <a href="#cli">CLI</a>
         <a href="https://api.cloudeide.com/app/enterprise">Enterprise</a>
       </nav>
       <nav class="footer-col" aria-label="Account">
