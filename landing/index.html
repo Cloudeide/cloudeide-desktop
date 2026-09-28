@@ -216,33 +216,21 @@
     </div>
   </section>
 
-  <!-- Trust, from what is true today: no invented numbers. -->
-  <section class="section trust" id="trust">
-    <div class="wrap wrap--wide">
-      <div class="trust-grid">
-        <div class="trust-item"><h3>Built on VS Code</h3><p>Your extensions, keybindings and themes come with you.</p></div>
-        <div class="trust-item"><h3>Nothing lands without you</h3><p>Every change waits for Keep. Production waits for Allow.</p></div>
-        <div class="trust-item"><h3>Secrets stay secret</h3><p>You type a key's value; the agent only ever sees its name.</p></div>
-        <div class="trust-item"><h3>Your files, your folder</h3><p>The agent works on the folder you opened, on your machine.</p></div>
-      </div>
-    </div>
-  </section>
+  
 
-  <!-- Three things, each one real screenshot, shown big. The details are on
-       features.html, one tap away. -->
-  <section class="section feats">
-    <div class="wrap wrap--wide">
-      <article class="feat reveal" id="agent">
-        <div class="feat-head">
-          <div class="feat-copy"><h2>An agent that works in your editor.</h2><p>It reads your project, makes a plan, builds it, runs the tests and ships. Nothing stays until you keep it.</p></div>
-          <a class="learn" href="features.html#agent">Learn about the agent <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
+    <!--
+    Three things, the way the best pages in this space show them: a tile each,
+    one sentence beside one picture, the middle one the other way round.
+  -->
+  <section class="t2s" id="features" aria-label="What CloudeIDE does">
+    <div class="t2-wrap">
+      <article class="t2" id="agent">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>An agent that does the work.</strong> It reads your project, makes a plan, builds it and runs the tests. Nothing stays until you keep it.</p>
+          <a class="t2-link" href="features.html#agent">Learn about the agent <span aria-hidden="true">&rarr;</span></a>
         </div>
-        <!--
-          The agent doing one whole job, drawn in the page rather than filmed,
-          so its text is sharp on any screen: it reads, writes a plan, ticks it
-          off as it builds, tests, the change is kept, and it goes live.
-        -->
-        <div class="ad-stage">
+        <div class="t2-visual">
+          <div class="ad-stage">
     <div class="ad-win" role="img" aria-label="CloudeIDE: asked for a pricing page with yearly billing, the agent reads the project, writes a plan, ticks off each step as it changes four files, runs the tests and the build, the change is kept, and the page goes live at acme.com/pricing.">
       <div class="ad-bar"><span class="ad-dots"><i></i><i></i><i></i></span><span class="ad-title">CloudeIDE</span></div>
       <div class="ad-grid">
@@ -323,136 +311,37 @@
 
       </div>
     </div>
-      </article>
-      <article class="feat reveal" id="deploy">
-        <div class="feat-head">
-          <div class="feat-copy"><h2>It ships it, too.</h2><p>A preview first. Production only when you allow it.</p></div>
-          <a class="learn" href="features.html#deploy">Learn about deploys <span class="learn-arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
         </div>
-        <div class="painted feat-painted"><div class="shot-window" style="--fx: 0.72"><div class="shot-bar"><span class="shot-dots"><i></i><i></i><i></i></span><span class="shot-title">acme-app — CloudeIDE</span></div><img src="assets/shots/ship.webp" alt="The Cloud tab beside the chat; the agent deployed a preview and asks "Deploy to production?" with Allow Once and Skip." width="1000" height="605" loading="lazy" decoding="async" /></div></div>
       </article>
-      <!--
-        Why this and not something else, answered by what each kind of tool
-        does, not by naming anybody: the editor, the agent and the hosting,
-        each shown as it really is, then the comparison.
-      -->
+
+      <article class="t2 t2--flip" id="deploy">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>It ships it, too.</strong> A preview first, checked. Production only when you allow it.</p>
+          <a class="t2-link" href="features.html#deploy">Learn about deploys <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual"><div class="t2-shot"><div class="t2-win"><div class="t2-bar"><span class="t2-dots"><i></i><i></i><i></i></span><span class="t2-title">acme-app — CloudeIDE</span></div><img src="assets/shots/ship.webp" alt="The Cloud tab beside the chat; the agent deployed a preview and asks "Deploy to production?" with Allow Once and Skip." width="1000" height="605" loading="lazy" decoding="async" /></div></div></div>
+      </article>
+
+      <article class="t2" id="cloud">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>Hosting included.</strong> Deploy straight from CloudeIDE to your own domain, with logs and rollbacks. No other platform needed.</p>
+          <a class="t2-link" href="features.html#cloud">Learn about Cloud <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual"><div class="t2-shot t2-shot--mid"><div class="t2-win"><div class="t2-bar"><span class="t2-dots"><i></i><i></i><i></i></span><span class="t2-title">acme-app — CloudeIDE</span></div><img src="assets/why/one.webp" alt="One CloudeIDE window: the change marked in the editor on the left, the Cloud tab in the middle with acme.com live in production and its domains verified, and the agent in the chat on the right saying the site is live." width="1240" height="665" loading="lazy" decoding="async" /></div></div></div>
+      </article>
     </div>
   </section>
 
-  <section class="wy-why" id="why" aria-labelledby="why-title">
-  <div class="wy-why-head">
-    <span class="wy-eyebrow">Why CloudeIDE</span>
-    <h2 id="why-title">Write it, check it, ship it. <span>One app.</span></h2>
-    <p>Deploy straight from CloudeIDE. No other platform needed.</p>
-  </div>
-
-  <figure class="wy-shot">
-    <div class="wy-bar"><span class="wy-dots"><i></i><i></i><i></i></span><span class="wy-title">acme-app — CloudeIDE</span></div>
-    <img src="assets/why/one.webp" alt="One CloudeIDE window: the change marked in the editor on the left, the Cloud tab in the middle with acme.com live in production and its domains verified, and the agent in the chat on the right saying the site is live." width="1240" height="665" loading="lazy" decoding="async" />
-  </figure>
-
-  <div class="wy-trio">
-    <div class="wy-piece">
-      <span class="wy-n">Editor</span>
-      <h3>The editor you already know</h3>
-      <p>Built on VS Code. Your files, your extensions, your terminal, on your machine.</p>
-    </div>
-    <div class="wy-piece">
-      <span class="wy-n">Agent</span>
-      <h3>An agent that does the work</h3>
-      <p>It plans, edits across files, runs the tests, and waits for you to keep it.</p>
-    </div>
-    <div class="wy-piece">
-      <span class="wy-n">Cloud</span>
-      <h3>Hosting that ships it</h3>
-      <p>Preview, production, your own domain and rollbacks, in the Cloud tab. The agent can deploy too, within limits you set.</p>
-    </div>
-  </div>
-
-  <div class="wy-table" role="table" aria-label="What each kind of tool does">
-    <div class="wy-row wy-head" role="row">
-      <div role="columnheader"></div>
-      <div class="wy-cell wy-tool" role="columnheader">Editor agents</div>
-      <div class="wy-cell wy-tool" role="columnheader">App builders</div>
-      <div class="wy-cell wy-tool" role="columnheader">Terminal agents</div>
-      <div class="wy-cell wy-tool wy-us" role="columnheader">CloudeIDE</div>
-    </div>
-    <div class="wy-row" role="row">
-      <div class="wy-cap" role="rowheader">Works on your files, on your machine<small>Not a copy in someone else's cloud</small></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-    </div>
-    <div class="wy-row" role="row">
-      <div class="wy-cap" role="rowheader">A full code editor<small>Extensions, debugger, terminal, Git</small></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-part">Partly</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
-      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-    </div>
-    <div class="wy-row" role="row">
-      <div class="wy-cap" role="rowheader">An agent that plans, edits and tests<small>Across files, with every change reviewed</small></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-    </div>
-    <div class="wy-row" role="row">
-      <div class="wy-cap" role="rowheader">Hosting, domains and deploys built in<small>No second service to set up</small></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
-      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-    </div>
-    <div class="wy-row" role="row">
-      <div class="wy-cap" role="rowheader">The agent deploys, within limits you set<small>Production waits for your Allow</small></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-part">Partly</span></div>
-      <div class="wy-cell" role="cell"><span class="wy-mark wy-no" aria-label="No">—</span></div>
-      <div class="wy-cell wy-us" role="cell"><span class="wy-mark wy-yes" aria-label="Yes">✓</span></div>
-    </div>
-  </div>
-
-  <div class="wy-foot">
-    <p>Compared by what each kind of tool does out of the box, from public features in September 2026. Each can be extended with other services.</p>
-    <a class="wy-learn" href="features.html">See everything CloudeIDE does <span aria-hidden="true">&rarr;</span></a>
-  </div>
-</section>
-
   <!--
-    The desktop build, and deliberately last.
-
-    This is the only way in now, so it no longer hedges. It used to read "or
-    keep it on your machine", offered after the browser build had already
-    been offered twice; the browser build is gone and this is the product.
-
-    It is a showcase like the two above it rather than a panel with buttons
-    in it, because there is a picture worth showing beside it: the tree and
-    the file, which is what "your files stay where they are" means.
-
-    It used to be the smoke test's own photograph — the application running,
-    taken on a Linux machine by the build that produced the very file these
-    links download — and that provenance is worth more than this. The picture
-    was not: it was a first run, so two thirds of the frame was the
-    walkthrough, offering Copilot, over a panel showing a token box that no
-    longer exists and pointing at a dashboard address that is not the one.
-    Nothing on a public page should be any of those. The smoke test now opens
-    a project and skips the walkthrough, so the photograph earns its place
-    back on the next build.
-
-    Linux gets the .deb first and the tarball as a footnote, and that order is
-    not tidiness. A URL scheme on Linux is claimed by an installed .desktop
-    file, which a tarball does not install — so signing in through the browser
-    completes on the .deb and dead-ends on the tarball.
-
-    No version numbers: /releases/latest/download/<name> always resolves to
-    the newest release, so the page never goes stale and never needs editing
-    when a build ships.
+    The download, last and plain: the platform that matches the visitor is the
+    button, the other two are links beside it (script.js), and every link works
+    with no script. Linux gets the .deb first because browser sign-in returns
+    through a URL scheme only an installed .deb registers.
   -->
   <section class="section" id="desktop">
     <div class="wrap">
-      <div class="showcase reveal">
+      <div class="showcase showcase--single reveal">
         <div class="showcase-copy">
           <div class="section-label">Desktop app</div>
           <h2>Install it</h2>
@@ -493,35 +382,13 @@
           </p>
         </div>
 
-        <div class="install-stage" aria-hidden="true"><div class="mock"><div class="window-bar"><span class="window-dots"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span></span><span class="window-title">acme-app — CloudeIDE</span></div><div class="mock-split mock-split--tree"><div class="mock-pane mock-tree"><div class="mock-pane-label">Explorer</div><div class="mock-file mock-file--dir"><span>src</span></div><div class="mock-file mock-file--open"><span>pricing.js</span></div><div class="mock-file "><span>pricing.test.js</span></div><div class="mock-file mock-file--top"><span>index.html</span></div><div class="mock-file mock-file--top"><span>styles.css</span></div><div class="mock-file mock-file--top"><span>package.json</span></div><div class="mock-file mock-file--top"><span>README.md</span></div></div><div class="mock-pane mock-code"><div class="mock-tabs"><span class="mock-tab mock-tab--on">pricing.js</span><span class="mock-tab">pricing.test.js</span></div><div class="mock-body--code"><div class="mock-line"><span class="mock-ln">1</span>export const plans = [</div><div class="mock-line"><span class="mock-ln">2</span>  { name: 'Starter', monthly: 0 },</div><div class="mock-line"><span class="mock-ln">3</span>  { name: 'Pro',     monthly: 20 },</div><div class="mock-line"><span class="mock-ln">4</span>  { name: 'Team',    monthly: 40 },</div><div class="mock-line"><span class="mock-ln">5</span>];</div><div class="mock-line"><span class="mock-ln">6</span></div><div class="mock-line"><span class="mock-ln">7</span>export function price(plan, billing) {</div><div class="mock-line"><span class="mock-ln">8</span>  if (billing === 'yearly') {</div><div class="mock-line"><span class="mock-ln">9</span>    return `$${yearly(plan)}/yr`;</div><div class="mock-line"><span class="mock-ln">10</span>  }</div><div class="mock-line"><span class="mock-ln">11</span>  return `$${plan.monthly}/mo`;</div><div class="mock-line"><span class="mock-ln">12</span>}</div><div class="mock-line"><span class="mock-ln">13</span></div><div class="mock-line"><span class="mock-ln">14</span>export function yearly(plan) {</div><div class="mock-line"><span class="mock-ln">15</span>  return plan.monthly * 12 * 0.8;</div><div class="mock-line"><span class="mock-ln">16</span>}</div></div></div></div></div></div>
+        
       </div>
     </div>
   </section>
 
   <!-- -------------------------------------------------------------- mark -- -->
-  <!--
-    The page ended on its own name, set large, and nothing else. A signature
-    rather than an ending: somebody who read the whole thing and was persuaded
-    arrived at a word and a footer, and had to scroll back up to act on it.
-
-    So it ends the way it opens — with the download, and the same detection,
-    because the visitor who got this far is the one most likely to want it.
-  -->
-  <section class="section" id="mark">
-    <div class="wrap">
-      <div class="closing reveal">
-        <h2>Start building.</h2>
-        <div class="download-row" data-download>
-          <a class="btn btn-primary" data-os="linux" data-os-short="Linux"
-             href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Download for Linux</a>
-          <a class="btn btn-secondary" data-os="windows" data-os-short="Windows"
-             href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip">Download for Windows</a>
-          <a class="btn btn-secondary" data-os="mac" data-os-short="macOS"
-             href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip">Download for macOS</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  
 
 </main>
 

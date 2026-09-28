@@ -3916,3 +3916,74 @@ a:hover > .learn-arrow {
       .wy-why-head p { font-size: 16.5px; }
   }
 
+
+/* ================================================= tiles ================== */
+/*
+ * One sentence beside one picture, three times, the middle one flipped. The
+ * sentence is a white title running into grey text in the same size; the
+ * picture is a window that runs off the right and bottom of its card.
+ */
+.t2s { padding: 72px 0 32px; }
+.t2-wrap { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: grid; gap: 24px; }
+.t2 {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.55fr) minmax(0, 2.2fr);
+  align-items: center;
+  gap: 44px;
+  padding: 20px 20px 20px 44px;
+  background: var(--panel);
+  border-radius: 16px;
+}
+.t2--flip { grid-template-columns: minmax(0, 2.2fr) minmax(230px, 0.55fr); padding: 20px 44px 20px 20px; }
+.t2--flip .t2-copy { order: 2; }
+.t2-copy { min-width: 0; }
+.t2-text { margin: 0; color: var(--text-secondary); font-size: 22px; line-height: 1.38; letter-spacing: -0.015em; font-weight: 500; max-width: 26ch; }
+.t2-text strong { display: block; color: var(--text-primary); font-weight: 500; }
+.t2-link { display: inline-flex; gap: 6px; margin-top: 20px; color: var(--text-primary); font-size: 15px; font-weight: 500; text-decoration: none; }
+.t2-link span { transition: transform 0.2s var(--ease); }
+.t2-link:hover span { transform: translateX(3px); }
+.t2-visual { min-width: 0; }
+
+/* The agent demo sits in the tile's card rather than a card of its own. */
+.t2 .ad-stage { height: 680px; border: 0; border-radius: 12px; background: #0b0a09; padding: 44px 0 0 44px; }
+
+.t2-shot { height: 680px; overflow: hidden; border-radius: 12px; background: #0b0a09; padding: 44px 0 0 44px; }
+.t2-win { height: 100%; overflow: hidden; border: 1px solid var(--border-strong); border-bottom: 0; border-radius: 12px 12px 0 0; background: #181715; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55); }
+.t2-bar { display: flex; align-items: center; gap: 12px; height: 34px; padding: 0 14px; border-bottom: 1px solid rgba(242, 242, 240, 0.07); background: #1f1d1b; }
+.t2-dots { display: inline-flex; gap: 7px; }
+.t2-dots i { width: 11px; height: 11px; border-radius: 999px; background: rgba(242, 242, 240, 0.16); }
+.t2-title { flex: 1; margin-right: 50px; text-align: center; color: var(--text-tertiary); font-size: 12px; }
+.t2-win img { display: block; width: max(100%, 1100px); max-width: none; height: auto; }
+.t2-shot--mid .t2-win img { margin-left: min(0px, calc(0.45 * (100% - 1100px))); }
+
+.showcase--single { grid-template-columns: minmax(0, 560px); justify-content: start; }
+
+@media (max-width: 960px) {
+  .t2, .t2--flip { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 28px 20px 20px; }
+  .t2--flip .t2-copy { order: 0; }
+  .t2-text { font-size: 19px; max-width: none; }
+  .t2 .ad-stage, .t2-shot { height: 560px; padding: 24px 0 0 20px; }
+}
+
+/*
+ * On a phone the demos keep their desktop shape and run off the edge, like a
+ * window seen through a doorway, instead of stacking into a long column.
+ * The sessions list goes; the chat stays whole, with the next pane beside it.
+ */
+@media (max-width: 700px) {
+  .t2s { padding-top: 48px; }
+  .t2 .ad-stage, .hero .hd-stage { height: 540px; padding: 24px 0 0 16px; border-radius: 12px; }
+  .t2 .ad-win, .hero .hd-win { width: 740px; }
+  .t2 .ad-grid, .hero .hd-grid { grid-template-columns: 330px 410px; }
+  .t2 .ad-col.ad-chat-col, .hero .hd-col.hd-chat-col { height: auto; }
+  .t2 .ad-col.ad-preview, .hero .hd-grid > .hd-col:last-child { height: auto; border-top: 0; border-left: 1px solid rgba(242, 242, 240, 0.08); }
+  .t2 .ad-term, .hero .hd-term { right: -40px; width: 300px; }
+  .hero .hd-cloud { padding: 18px 20px; }
+  .t2-shot .t2-win img { width: 1000px; }
+  .t2-shot--mid .t2-win img { margin-left: -300px; }
+}
+
+/* The hero's demo, a little larger than the tiles' so it leads. */
+.hero .hd-stage { height: 720px; }
+.hero .wrap--wide { max-width: 1400px; }
+@media (max-width: 700px) { .hero .hd-stage { height: 540px; } }
