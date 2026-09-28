@@ -320,7 +320,48 @@
           <p class="t2-text"><strong>It ships it, too.</strong> A preview first, checked. Production only when you allow it.</p>
           <a class="t2-link" href="features.html#deploy">Learn about deploys <span aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="t2-visual"><div class="t2-shot"><div class="t2-win"><div class="t2-bar"><span class="t2-dots"><i></i><i></i><i></i></span><span class="t2-title">acme-app — CloudeIDE</span></div><img src="assets/shots/ship.webp" alt="The Cloud tab beside the chat; the agent deployed a preview and asks "Deploy to production?" with Allow Once and Skip." width="1000" height="605" loading="lazy" decoding="async" /></div></div></div>
+        <div class="t2-visual">
+          <div class="mk-stage" id="mk-ship" data-loop="10">
+        <div class="mk-win" role="img" aria-label="The agent is asked to ship it. It deploys a preview, which builds and turns ready in the Cloud tab, asks Deploy to production, is allowed once, and production goes live at acme.com.">
+          <div class="mk-bar"><span class="mk-dots"><i></i><i></i><i></i></span><span>acme-app — CloudeIDE</span></div>
+          <div class="mk-grid mk-grid--ship">
+            <div class="mk-col">
+              <div class="mk-label">Chat</div>
+              <div class="mk-chat">
+                <div class="mk-you">Ship it</div>
+                <div class="mk-who" data-at="0.4"><i>✦</i>Agent</div>
+                <div class="mk-muted" data-at="0.6">Checked what is live</div>
+                <div class="mk-say" data-at="0.9">Deploying a preview.</div>
+                <div class="mk-muted" data-at="3.0">Preview is up · checked it</div>
+                <div class="mk-confirm" data-at="3.4" data-until="5.0">
+                  <b>Deploy to production?</b>
+                  <p>Puts the open folder on the live site: acme.com</p>
+                  <div class="mk-acts"><span class="mk-btn mk-primary" data-press="4.5" data-release="4.8">Allow Once</span><span class="mk-btn">Skip</span></div>
+                </div>
+                <div class="mk-say" data-at="6.6">Live at <code>https://acme.com</code>.</div>
+              </div>
+              <div class="mk-input">Plan, search, build anything…</div>
+            </div>
+            <div class="mk-col">
+              <div class="mk-cloud">
+                <div class="mk-head"><h3>acme-app</h3><span>acme.com · production</span></div>
+                <div class="mk-btns"><span class="mk-btn mk-primary">Deploy</span><span class="mk-btn">Preview</span><span class="mk-btn">Agent: Balanced</span></div>
+                <div class="mk-sec">
+                  <h4>DEPLOYMENTS</h4>
+                  <div class="mk-row" data-at="5.0"><span class="mk-dot" data-state="5.0:run,6.6:ok"></span><span>Production</span><span class="mk-u">acme.com<span class="mk-tag">agent</span></span><span class="mk-w" data-text="5.0:building…,6.6:Live"></span></div>
+                  <div class="mk-row" data-at="1.0"><span class="mk-dot" data-state="1.0:run,3.0:ok"></span><span>Preview</span><span class="mk-u">acme-app-preview.cloudeide.app<span class="mk-tag">agent</span></span><span class="mk-w" data-text="1.0:building…,3.0:Ready"></span></div>
+                  <div class="mk-row"><span class="mk-dot mk-ok"></span><span>Production</span><span class="mk-u">acme.com<span class="mk-tag">you</span></span><span class="mk-w">1 day ago</span></div>
+                </div>
+                <div class="mk-sec">
+                  <h4>DEPLOY LOG</h4>
+                  <div class="mk-log" data-log="1.1:Installing packages…|1.8:Building…|2.6:<span class='mk-okl'>✓</span> Built in 21s · 38 files|5.2:Building for production…|6.2:<span class='mk-okl'>✓</span> Uploaded · https://acme.com"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
       </article>
 
       <article class="t2" id="cloud">
@@ -328,7 +369,45 @@
           <p class="t2-text"><strong>Hosting included.</strong> Deploy straight from CloudeIDE to your own domain, with logs and rollbacks. No other platform needed.</p>
           <a class="t2-link" href="features.html#cloud">Learn about Cloud <span aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="t2-visual"><div class="t2-shot t2-shot--mid"><div class="t2-win"><div class="t2-bar"><span class="t2-dots"><i></i><i></i><i></i></span><span class="t2-title">acme-app — CloudeIDE</span></div><img src="assets/why/one.webp" alt="One CloudeIDE window: the change marked in the editor on the left, the Cloud tab in the middle with acme.com live in production and its domains verified, and the agent in the chat on the right saying the site is live." width="1240" height="665" loading="lazy" decoding="async" /></div></div></div>
+        <div class="t2-visual">
+          <div class="mk-stage" id="mk-domain" data-loop="11">
+        <div class="mk-win" role="img" aria-label="In the Cloud tab, shop.acme.com is typed and added. The DNS record to copy appears, the domain is checked and turns verified with HTTPS, and the browser beside it opens the shop at shop.acme.com.">
+          <div class="mk-bar"><span class="mk-dots"><i></i><i></i><i></i></span><span>acme-app — CloudeIDE</span></div>
+          <div class="mk-grid mk-grid--domain">
+            <div class="mk-col">
+              <div class="mk-cloud">
+                <div class="mk-head"><h3>Domains</h3><span>acme-app · production</span></div>
+                <div class="mk-field"><div data-type="0.3:1.5:shop.acme.com"></div><span class="mk-btn mk-primary" data-press="1.8" data-release="2.1">Add domain</span></div>
+                <div class="mk-dns" data-at="2.2" data-until="6.4">
+                  <p>Add this record where you bought the domain:</p>
+                  <div class="mk-rec"><span>CNAME</span><span>shop</span><span>acme-app.cloudeide.app</span><span class="mk-btn" data-press="3.2" data-release="3.5">Copy</span></div>
+                  <p class="mk-muted" data-at="4.2">Checking DNS…</p>
+                </div>
+                <div class="mk-sec">
+                  <div class="mk-row" data-at="2.2"><span class="mk-dot" data-state="2.2:run,6.4:ok"></span><span>shop.acme.com</span><span class="mk-u">production</span><span class="mk-v" data-text="2.2:Waiting for DNS,6.4:Verified · HTTPS on" data-good="6.4"></span></div>
+                  <div class="mk-row"><span class="mk-dot mk-ok"></span><span>acme.com</span><span class="mk-u">production · primary</span><span class="mk-v mk-good">Verified</span></div>
+                  <div class="mk-row"><span class="mk-dot mk-ok"></span><span>cloudeide.app</span><span class="mk-u">acme-app.cloudeide.app</span><span class="mk-v mk-good">Verified</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="mk-col">
+              <div class="mk-browser"><span>&larr;</span><span>&rarr;</span><span>&#8635;</span><div class="mk-url"><span class="mk-lock mk-fade" data-at="7.0">&#128274;</span><span>shop.acme.com</span></div></div>
+              <div class="mk-site">
+                <div class="mk-err" data-until="7.0"><b>This site can't be reached</b><span>shop.acme.com is not set up yet</span></div>
+                <div class="mk-shop mk-fade" data-at="7.0">
+                  <nav><b>Acme Shop</b><span>New</span><span>Cart</span></nav>
+                  <h5>This week's picks</h5>
+                  <div class="mk-items">
+                    <div class="mk-item"><div></div><b>Ceramic mug</b>$18</div>
+                    <div class="mk-item"><div></div><b>Linen tote</b>$24</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
       </article>
     </div>
   </section>

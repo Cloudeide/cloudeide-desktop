@@ -426,3 +426,65 @@ for (const row of document.querySelectorAll("[data-download]")) {
     new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.2 }).observe(stage);
   } else { go(); }
 })();
+
+/* The ship and domain demos. */
+
+(() => {
+  // One small clock per demo. Elements say when they appear (data-at), when
+  // they go (data-until), what state or text they show from when (data-state,
+  // data-text), when they are pressed (data-press/release), what they type
+  // (data-type="from:to:text") and what log lines they collect (data-log).
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const parse = (s) => s.split(",").map((p) => { const i = p.indexOf(":"); return [+p.slice(0, i), p.slice(i + 1)]; });
+
+  document.querySelectorAll("[data-loop]").forEach((stage) => {
+    const LOOP = +stage.dataset.loop;
+    const q = (sel) => [...stage.querySelectorAll(sel)];
+    const shown = q("[data-at], [data-until]");
+    const states = q("[data-state]").map((el) => [el, parse(el.dataset.state)]);
+    const texts = q("[data-text]").map((el) => [el, parse(el.dataset.text)]);
+    const presses = q("[data-press]");
+    const typers = q("[data-type]").map((el) => { const [a, b, ...t] = el.dataset.type.split(":"); return [el, +a, +b, t.join(":")]; });
+    const logs = q("[data-log]").map((el) => [el, el.dataset.log.split("|").map((p) => { const i = p.indexOf(":"); return [+p.slice(0, i), p.slice(i + 1)]; })]);
+    const goods = q("[data-good]");
+    let t = 0, last = 0, running = false;
+
+    const pick = (list) => { let v = ""; for (const [s, x] of list) { if (t >= s) v = x; } return v; };
+
+    function render() {
+      shown.forEach((el) => {
+        const on = (!el.dataset.at || t >= +el.dataset.at) && (!el.dataset.until || t < +el.dataset.until);
+        if (el.classList.contains("mk-fade") || el.dataset.fade !== undefined) { el.style.opacity = on ? "1" : "0"; }
+        else { el.classList.toggle("mk-hide", !on); }
+      });
+      stage.querySelectorAll(".mk-fade[data-at]").forEach((el) => { el.style.opacity = t >= +el.dataset.at ? "1" : "0"; });
+      states.forEach(([el, list]) => { const s = pick(list); el.className = "mk-dot" + (s ? " mk-" + s : ""); });
+      texts.forEach(([el, list]) => {
+        const v = pick(list); el.textContent = v;
+        el.classList.toggle("mk-live", v === "Live");
+      });
+      goods.forEach((el) => el.classList.toggle("mk-good", t >= +el.dataset.good));
+      presses.forEach((el) => el.classList.toggle("mk-press", t >= +el.dataset.press && t < +el.dataset.release));
+      typers.forEach(([el, a, b, text]) => {
+        const n = Math.max(0, Math.min(text.length, Math.round(((t - a) / (b - a)) * text.length)));
+        el.innerHTML = text.slice(0, n) + (t < b + 0.3 && t >= a ? '<span class="mk-caret"></span>' : "");
+      });
+      logs.forEach(([el, lines]) => { el.innerHTML = lines.filter(([s]) => t >= s).slice(-4).map(([, l]) => `<div>${l}</div>`).join(""); });
+    }
+
+    function frame(now) {
+      if (!running) return;
+      t += Math.min(0.1, (now - last) / 1000); last = now;
+      if (t > LOOP) t = 0;
+      render();
+      requestAnimationFrame(frame);
+    }
+    // At rest, and for anyone who asked for less motion: the finished state.
+    t = LOOP - 1.5; render();
+    if (still) return;
+    const go = () => { if (running) return; running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.25 }).observe(stage);
+    } else { go(); }
+  });
+})();
