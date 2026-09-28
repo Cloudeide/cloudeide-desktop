@@ -3738,3 +3738,49 @@ a:hover > .learn-arrow {
     .hx--code .hx-grid { grid-template-columns: 0 min(336px, calc(100vw - 72px)) minmax(0, 1fr); }
     .hx--code .hx-grid > .hx-col:first-child { visibility: hidden; border: 0; }
   }
+  /* ── the review demo (rv-) ─────────────────────────────────────────── */
+  .hx--review { height: 680px; border-radius: 12px; background-image: url("assets/paint/review.jpg"); background-position: center 70%; }
+  .hx--review .hx-win { left: 52px; top: 52px; width: max(1080px, calc(100% - 52px)); }
+  .hx--review .hx-grid { grid-template-columns: 360px minmax(0, 1fr); }
+  .hx--review .hx-tabs { overflow: hidden; }
+  .rv-tabs-in { display: flex; }
+  .hx--review .hx-tab { flex: none; }
+  .hx--review .hx-code { padding-bottom: 60px; }
+
+  /* the files card in the chat */
+  .rv-files { border: 1px solid var(--line); border-radius: 10px; background: #181715; }
+  .rv-files-h { padding: 8px 11px; font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--line); }
+  .rv-file { display: flex; align-items: center; gap: 8px; padding: 7px 11px; font-size: 12.5px; transition: background 0.2s; }
+  .rv-file + .rv-file { border-top: 1px solid var(--line); }
+  .rv-file .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+  .rv-file .n { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
+  .rv-file .st { margin-left: auto; font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+  .rv-file.now { background: #201e1c; }
+  .rv-file.kept .st { color: #8d877f; }
+  .rv-file.undone .nm, .rv-file.undone .n { opacity: 0.45; text-decoration: line-through; }
+  .rv-file.undone .st { color: #c9a27a; }
+
+  /* the Keep / Undo under each change */
+  .rv-bar { display: flex; gap: 6px; padding: 4px 0 8px 46px; font-family: var(--sans); }
+  .rv-bar .hx-btn { font-size: 11.5px; padding: 3px 9px; }
+  .rv-bar .hx-btn.hover { background: #2a2825; }
+  .rv-bar .hx-btn.pri.hover { background: #ffffff; }
+  .hx-ln.gone { display: none; }
+  .hx-ln.fade { transition: background 0.5s; }
+
+  /* where you are in the review */
+  .rv-nav { position: absolute; z-index: 4; left: 26px; bottom: 18px; display: none; align-items: center; gap: 10px; background: #1f1d1b; border: 1px solid var(--line-2); border-radius: 8px; padding: 6px 12px; font-family: var(--sans); font-size: 12px; color: var(--text-2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+  .rv-nav b { color: var(--text); font-weight: 500; }
+  .rv-nav i { font-style: normal; color: var(--text-3); }
+
+  /* On a phone the review is the whole story: the editor fills the screen
+     at full size and the chat steps aside. */
+  @media (max-width: 700px) {
+    .hx--review { height: 640px; border-radius: 14px; }
+    .hx--review .hx-win { left: 12px; top: 28px; width: 900px; }
+    .hx--review .hx-grid { grid-template-columns: 0 minmax(0, 1fr); }
+    .hx--review .hx-grid > .hx-col:first-child { visibility: hidden; border: 0; }
+    .hx--review .hx-grid > .hx-col:last-child { border-left: 0; }
+    /* With the chat aside, this says where the review has got to. */
+    .rv-nav { display: flex; }
+  }

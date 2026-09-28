@@ -404,7 +404,7 @@ for (const row of document.querySelectorAll("[data-download]")) {
 
   function frame(now) {
     if (!running) { return; }
-    t += Math.min(0.1, (now - last) / 1000); last = now;
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
     if (t > LOOP) { t = 0; }
     render();
     requestAnimationFrame(frame);
@@ -575,7 +575,7 @@ for (const row of document.querySelectorAll("[data-download]")) {
 
   function frame(now) {
     if (!running) { return; }
-    t += Math.min(0.1, (now - last) / 1000); last = now;
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
     if (t > LOOP) { t = 0; }
     render();
     requestAnimationFrame(frame);
@@ -791,13 +791,176 @@ for (const row of document.querySelectorAll("[data-download]")) {
 
   function frame(now) {
     if (!running) { return; }
-    t += Math.min(0.1, (now - last) / 1000); last = now;
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
     if (t > LOOP) { t = 0; }
     render();
     requestAnimationFrame(frame);
   }
 
   // At rest, and for anyone who asked for less motion: the finished change.
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
+})();
+
+/* The review demo: you keep two changes and undo the one nobody asked for. */
+
+(() => {
+  const root = document.getElementById("rv");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 11.5, REST = 6.5;
+
+  // Each file: its lines as [" " | "+" | "-", html, the change it belongs to].
+  const LOGIN = [
+    [" ", '<span class="k">import</span> { useState } <span class="k">from</span> <span class="s">"react"</span>;'],
+    [" ", '<span class="k">import</span> { signIn } <span class="k">from</span> <span class="s">"../auth/login"</span>;'],
+    [" ", ''],
+    [" ", '<span class="k">export function</span> <span class="f">Login</span>() {'],
+    [" ", '  <span class="k">const</span> [email, setEmail] = <span class="f">useState</span>(<span class="s">""</span>);'],
+    ["+", '  <span class="k">const</span> [remember, setRemember] = <span class="f">useState</span>(<span class="k">false</span>);', "a1"],
+    [" ", '  <span class="k">return</span> ('],
+    [" ", '    &lt;<span class="t">Form</span>&gt;'],
+    [" ", '      &lt;<span class="t">Field</span> label=<span class="s">"Email"</span> value={email} /&gt;'],
+    ["+", '      &lt;<span class="t">Checkbox</span> checked={remember}', "a2"],
+    ["+", '        onChange={setRemember}&gt;', "a2"],
+    ["+", '        Remember me', "a2"],
+    ["+", '      &lt;/<span class="t">Checkbox</span>&gt;', "a2"],
+    ["-", '      &lt;<span class="t">Button</span> onClick={() =&gt; <span class="f">signIn</span>(email)}&gt;', "a2"],
+    ["+", '      &lt;<span class="t">Button</span> onClick={() =&gt; <span class="f">signIn</span>(email, remember)}&gt;', "a2"],
+    [" ", '        Sign in'],
+    [" ", '      &lt;/<span class="t">Button</span>&gt;'],
+    [" ", '    &lt;/<span class="t">Form</span>&gt;'],
+    [" ", '  );'],
+    [" ", '}'],
+  ];
+  const AUTH = [
+    [" ", '<span class="k">import</span> { setCookie } <span class="k">from</span> <span class="s">"../lib/cookies"</span>;'],
+    [" ", '<span class="k">import</span> { days } <span class="k">from</span> <span class="s">"../lib/time"</span>;'],
+    [" ", ''],
+    ["-", '<span class="k">export async function</span> <span class="f">signIn</span>(email) {', "b1"],
+    ["+", '<span class="k">export async function</span> <span class="f">signIn</span>(email, remember) {', "b1"],
+    [" ", '  <span class="k">const</span> user = <span class="k">await</span> <span class="f">verifyLink</span>(email);'],
+    ["-", '  <span class="f">setCookie</span>(<span class="s">"sid"</span>, user.session);', "b2"],
+    ["+", '  <span class="f">setCookie</span>(<span class="s">"sid"</span>, user.session, {', "b2"],
+    ["+", '    <span class="c">// Ticked: 30 days. Not ticked: until the browser closes.</span>', "b2"],
+    ["+", '    maxAge: remember ? <span class="f">days</span>(<span class="nu">30</span>) : <span class="k">undefined</span>,', "b2"],
+    ["+", '  });', "b2"],
+    [" ", '}'],
+  ];
+  const CONFIG = [
+    [" ", '<span class="k">export const</span> config = {'],
+    [" ", '  apiUrl: process.env.API_URL,'],
+    ["-", '  sessionDays: <span class="nu">7</span>,', "c1"],
+    ["+", '  sessionDays: <span class="nu">30</span>,', "c1"],
+    [" ", '  uploadLimitMb: <span class="nu">20</span>,'],
+    [" ", '  emailFrom: <span class="s">"hello@acme.com"</span>,'],
+    [" ", '};'],
+  ];
+  const FILES = [
+    { key: "login", name: "Login.tsx", icon: "TS", path: "src › pages › Login.tsx", lines: LOGIN, from: 0, to: 3.2 },
+    { key: "auth", name: "login.ts", icon: "TS", path: "src › auth › login.ts", lines: AUTH, from: 3.2, to: 5.3 },
+    { key: "config", name: "config.ts", icon: "TS", path: "src › config.ts", lines: CONFIG, from: 5.3, to: 99 },
+  ];
+  // When each change is decided, and how.
+  const DECIDE = { a1: [2.0, "keep"], a2: [2.8, "keep"], b1: [4.1, "keep"], b2: [4.9, "keep"], c1: [6.9, "undo"] };
+  // The pointer: [from, to, button id], and when it presses.
+  const PATH = [
+    [1.2, 2.3, "rv-k-a1"], [2.3, 3.1, "rv-k-a2"], [3.5, 4.4, "rv-k-b1"], [4.4, 5.3, "rv-k-b2"],
+    [5.7, 6.2, "rv-k-c1"], [6.2, 7.3, "rv-u-c1"],
+  ];
+  const PRESS = [[1.85, 2.0, "rv-k-a1"], [2.65, 2.8, "rv-k-a2"], [3.95, 4.1, "rv-k-b1"], [4.75, 4.9, "rv-k-b2"], [6.75, 6.9, "rv-u-c1"]];
+  const ALL = 6.9;
+
+  const count = (lines) => [lines.filter(([k]) => k === "+").length, lines.filter(([k]) => k === "-").length];
+  const state = (h, t) => (DECIDE[h] && t >= DECIDE[h][0]) ? DECIDE[h][1] : "open";
+  const fileState = (f, t) => {
+    const hs = [...new Set(f.lines.map((l) => l[2]).filter(Boolean))].map((h) => state(h, t));
+    return hs.includes("open") ? "open" : hs.every((s) => s === "undo") ? "undo" : "keep";
+  };
+
+  const code = $("rv-code"), ptr = $("rv-ptr");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false, shown = "", shownRows = "";
+
+  function place(el) {
+    const s = root.getBoundingClientRect(), r = el.getBoundingClientRect();
+    ptr.style.left = (r.left - s.left + r.width * 0.55) + "px";
+    ptr.style.top = (r.top - s.top + r.height * 0.5) + "px";
+  }
+
+  function render() {
+    const file = FILES.find((f) => t >= f.from && t < f.to) || FILES[0];
+
+    // The editor: open changes coloured with Keep and Undo under them;
+    // decided ones settle into plain code, or back to what was there.
+    const tabs = FILES.map((f) => {
+      const undone = fileState(f, t) === "undo";
+      return `<div class="hx-tab${f === file ? " on" : ""}"><i>${f.icon}</i>${f.name}${undone ? "" : '<span class="m">M</span>'}</div>`;
+    }).join("");
+    let html = "", n = 0;
+    file.lines.forEach(([k, line, h], i) => {
+      const s = h ? state(h, t) : "open";
+      const gone = (k === "+" && s === "undo") || (k === "-" && s === "keep");
+      const kind = gone ? "gone" : (k === "+" && s === "open") ? "add" : (k === "-" && s === "open") ? "del" : "";
+      if (!gone) { html += `<div class="hx-ln ${kind}"><b>${kind === "del" ? "" : ++n}</b><span>${line || " "}</span></div>`; }
+      const next = file.lines[i + 1];
+      if (h && s === "open" && (!next || next[2] !== h)) {
+        html += `<div class="rv-bar"><span class="hx-btn pri" id="rv-k-${h}">Keep</span><span class="hx-btn" id="rv-u-${h}">Undo</span></div>`;
+      }
+    });
+    const sig = file.key + tabs + html.length + Object.keys(DECIDE).map((h) => state(h, t)).join();
+    if (sig !== shown) {
+      shown = sig;
+      $("rv-tabs").innerHTML = `<div class="rv-tabs-in">${tabs}</div>`;
+      $("rv-crumb").textContent = file.path;
+      code.innerHTML = html;
+      const on = $("rv-tabs").querySelector(".on");
+      const shift = Math.max(0, on.getBoundingClientRect().right - root.getBoundingClientRect().right + 12);
+      $("rv-tabs").firstChild.style.transform = `translateX(${-shift}px)`;
+    }
+
+    // The files in the chat, and where the review has got to.
+    const rows = FILES.map((f) => {
+      const [a, d] = count(f.lines), s = fileState(f, t);
+      const st = s === "keep" ? "✓ Kept" : s === "undo" ? "↺ Undone" : f === file ? "Reviewing" : "";
+      return `<div class="rv-file ${f === file && s === "open" ? "now" : ""} ${s === "keep" ? "kept" : s === "undo" ? "undone" : ""}"><span class="nm">${f.name}</span><span class="n"><span class="hx-add">+${a}</span> <span class="hx-del">−${d}</span></span><span class="st">${st}</span></div>`;
+    }).join("");
+    if (rows !== shownRows) {
+      shownRows = rows;
+      $("rv-rows").innerHTML = rows;
+      const [a, d] = FILES.reduce(([x, y], f) => { const [p, q] = count(f.lines); return [x + p, y + q]; }, [0, 0]);
+      $("rv-keep").innerHTML = t >= ALL
+        ? '<span class="f">Reviewed · 2 kept, 1 undone</span>'
+        : `<span class="f">3 files changed <span class="hx-add">+${a}</span> <span class="hx-del">−${d}</span></span><span class="hx-btn pri">Keep all</span><span class="hx-btn">Undo all</span>`;
+    }
+    $("rv-nav").innerHTML = t >= ALL ? "<b>Reviewed</b><i>2 kept, 1 undone</i>" : `${file.name}<i>·</i><b>${FILES.indexOf(file) + 1} of 3</b><i>files</i>`;
+
+    // The pointer, and the buttons it touches.
+    const leg = PATH.find(([a, b]) => t >= a && t < b);
+    ptr.style.opacity = leg ? "1" : "0";
+    code.querySelectorAll(".hx-btn").forEach((b) => b.classList.remove("hover", "press"));
+    if (leg && $(leg[2])) {
+      place($(leg[2]));
+      if (t - leg[0] > 0.45) { $(leg[2]).classList.add("hover"); }
+    }
+    const press = PRESS.find(([a, b]) => t >= a && t < b);
+    if (press && $(press[2])) { $(press[2]).classList.add("press"); }
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  // At rest, and for anyone who asked for less motion: the last choice,
+  // about to undo the part nobody asked for.
   t = REST; render();
   if (still) { return; }
   const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
