@@ -3527,7 +3527,7 @@ a:hover > .learn-arrow {
     --add: #3fb56b; --add-bg: rgba(63, 181, 107, 0.13); --del: #e5534b; --del-bg: rgba(229, 83, 75, 0.12);
     --kw: #c792ea; --fn: #82aaff; --str: #e0b07a; --prop: #89ddff; --num: #f78c6c; --tag: #ff8e8e; --com: #6e6963;
     position: relative; overflow: hidden; border-radius: 16px; height: 680px;
-    background: #8f968a center 72% / cover no-repeat;
+    background: #8f968a left top / cover no-repeat;
     font-family: var(--sans); font-size: 13px; color: var(--text); text-align: left;
   }
 
@@ -3671,7 +3671,9 @@ a:hover > .learn-arrow {
 
 
   .hx--hero { height: 680px; background-image: url("assets/paint/hero.jpg"); }
-  .hx--plan { height: 680px; border-radius: 12px; background-image: url("assets/paint/plan.jpg"); background-position: center 70%; }
+  /* Room around the window, so the peaks above it and the spire beside it show. */
+  .hx--hero .hx-win { left: 96px; top: 104px; width: max(1180px, calc(100% - 96px)); }
+  .hx--plan { height: 680px; border-radius: 12px; background-image: url("assets/paint/plan.jpg"); }
   .hx--plan .hx-win { left: 52px; top: 52px; width: max(1040px, calc(100% - 52px)); }
   .hx--plan .hx-grid { grid-template-columns: 440px minmax(0, 1fr); }
   .hero-sub { margin: 16px 0 0; color: var(--text-secondary); font-size: clamp(17px, 1.6vw, 20px); letter-spacing: -0.01em; }
@@ -3690,6 +3692,7 @@ a:hover > .learn-arrow {
     .hero .wrap--wide { padding-left: 12px; padding-right: 12px; }
     .hx--hero, .hx--plan { height: 640px; border-radius: 14px; }
     .hx--hero .hx-win, .hx--plan .hx-win { left: 12px; top: 28px; width: 900px; }
+    .hx--hero .hx-win { top: 64px; }
     .hx--hero .hx-grid { grid-template-columns: 0 min(336px, calc(100vw - 48px)) minmax(0, 1fr); }
     .hx--hero .hx-grid > .hx-col:first-child { visibility: hidden; border: 0; }
     .hx--plan .hx-grid { grid-template-columns: min(336px, calc(100vw - 72px)) minmax(0, 1fr); }
@@ -3705,7 +3708,7 @@ a:hover > .learn-arrow {
   .hx-chat, .hx-chips { grid-template-columns: minmax(0, 1fr); }
 
   /* ── the codebase demo (cb-) ───────────────────────────────────────── */
-  .hx--code { height: 680px; border-radius: 12px; background-image: url("assets/paint/code.jpg"); background-position: center 68%; }
+  .hx--code { height: 680px; border-radius: 12px; background-image: url("assets/paint/code.jpg"); }
   .hx--code .hx-win { left: 44px; top: 52px; width: max(1180px, calc(100% - 44px)); }
   .hx--code .hx-grid { grid-template-columns: 208px 400px minmax(0, 1fr); }
   .hx--code .hx-tabs { overflow: hidden; }
@@ -3739,7 +3742,7 @@ a:hover > .learn-arrow {
     .hx--code .hx-grid > .hx-col:first-child { visibility: hidden; border: 0; }
   }
   /* ── the review demo (rv-) ─────────────────────────────────────────── */
-  .hx--review { height: 680px; border-radius: 12px; background-image: url("assets/paint/review.jpg"); background-position: center 70%; }
+  .hx--review { height: 680px; border-radius: 12px; background-image: url("assets/paint/review.jpg"); }
   .hx--review .hx-win { left: 52px; top: 52px; width: max(1080px, calc(100% - 52px)); }
   .hx--review .hx-grid { grid-template-columns: 360px minmax(0, 1fr); }
   .hx--review .hx-tabs { overflow: hidden; }
@@ -3785,7 +3788,7 @@ a:hover > .learn-arrow {
     .rv-nav { display: flex; }
   }
   /* ── the tests demo (ts-) ──────────────────────────────────────────── */
-  .hx--test { height: 680px; border-radius: 12px; background-image: url("assets/paint/tests.jpg"); background-position: center 70%; }
+  .hx--test { height: 680px; border-radius: 12px; background-image: url("assets/paint/tests.jpg"); }
   .hx--test .hx-win { left: 44px; top: 52px; height: 640px; width: max(1080px, calc(100% - 44px)); }
   .hx--test .hx-grid { grid-template-columns: 370px minmax(0, 1fr); }
   .ts-right { display: flex; flex-direction: column; min-height: 0; }
