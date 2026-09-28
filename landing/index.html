@@ -165,9 +165,9 @@
               </div>
               <div class="hx-say" data-at="3.3">I'll add dark colours to <code>theme.css</code>, a hook that remembers the choice, and a switch on the Settings page.</div>
               <div class="hx-chips">
-                <div class="hx-chip" data-at="4.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>src/styles/theme.css <span class="n"><span class="hx-add">+9</span> <span class="hx-del">−1</span></span><span class="hx-ico" data-spin="4.0:6.0"></span></div>
-                <div class="hx-chip" data-at="6.1"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>src/hooks/useTheme.ts <span class="n"><span class="hx-add">+31</span></span><span class="hx-ico" data-spin="6.1:6.9"></span></div>
-                <div class="hx-chip" data-at="7.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg>src/pages/Settings.tsx <span class="n"><span class="hx-add">+7</span> <span class="hx-del">−0</span></span><span class="hx-ico" data-spin="7.0:8.8"></span></div>
+                <div class="hx-chip" data-at="4.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/styles/theme.css</span> <span class="n"><span class="hx-add">+9</span> <span class="hx-del">−1</span></span><span class="hx-ico" data-spin="4.0:6.0"></span></div>
+                <div class="hx-chip" data-at="6.1"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/hooks/useTheme.ts</span> <span class="n"><span class="hx-add">+31</span></span><span class="hx-ico" data-spin="6.1:6.9"></span></div>
+                <div class="hx-chip" data-at="7.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/pages/Settings.tsx</span> <span class="n"><span class="hx-add">+7</span> <span class="hx-del">−0</span></span><span class="hx-ico" data-spin="7.0:8.8"></span></div>
               </div>
               <div class="hx-step" data-at="9.0">Ran <span>npm test</span> · 24 passed</div>
               <div class="hx-say" data-at="11.4">Done. Settings has a Dark mode switch, and the choice is remembered. All 24 tests pass.</div>
@@ -271,6 +271,63 @@
             </div>
             <svg class="pl-ptr" id="pl-ptr" viewBox="0 0 18 22" style="opacity:0;left:560px;top:420px"><path d="M2 1.5v16.8l4.4-4.1 2.9 6.6 2.8-1.2-2.9-6.5h6.1z" fill="#f2f2f0" stroke="#0d0c0b" stroke-width="1.3" stroke-linejoin="round"/></svg>
           </div>
+        </div>
+      </article>
+
+      <article class="t2 t2--flip" id="codebase">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>Works across your real codebase.</strong> It finds every place a change touches, not just the file you have open, and changes them together.</p>
+          <a class="t2-link" href="features.html#agent">Learn about the agent <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual">
+      <div class="hx hx--code" id="cb" role="img" aria-label="CloudeIDE: asked to sign people out after 30 days without activity everywhere a login is checked, the agent explores fourteen files across the project, finds three places that check a login, and changes five files together: a migration, the session, the middleware, the socket and the nightly cleanup.">
+        <div class="hx-win">
+          <div class="hx-bar"><span class="hx-dots"><i></i><i></i><i></i></span><span class="hx-bar-t">acme-app — CloudeIDE</span></div>
+          <div class="hx-grid">
+
+            <!-- explorer -->
+            <div class="hx-col">
+              <div class="hx-label">acme-app</div>
+              <div class="cb-tree" id="cb-tree"></div>
+            </div>
+
+            <!-- chat -->
+            <div class="hx-col">
+              <div class="hx-title">Idle sessions</div>
+              <div class="hx-scroll" id="cb-scroll">
+                <div class="hx-chat" id="cb-chat">
+                  <div class="hx-you"><span id="cb-typed"></span><span class="hx-caret" id="cb-caret"></span></div>
+                  <div class="cb-explore" id="cb-explore" data-at="1.5">
+                    <div class="cb-explore-h"><span class="hx-ico spin" id="cb-exico"></span><span id="cb-exhead">Exploring</span></div>
+                    <div class="cb-list"><div class="cb-lines" id="cb-lines"></div></div>
+                  </div>
+                  <div class="hx-step" data-at="4.7">Thought 4s</div>
+                  <div class="hx-say" data-at="5.1">Logins are checked in three places, and old sessions are never cleaned up. I'll track when each session was last used, end it after 30 days everywhere, and delete idle ones nightly.</div>
+                  <div class="hx-chips">
+                    <div class="hx-chip" data-at="5.9"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">0042_last_seen.sql</span> <span class="n"><span class="hx-add">+4</span></span><span class="hx-ico" data-spin="5.9:6.6"></span></div>
+                    <div class="hx-chip" data-at="6.6"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/auth/session.ts</span> <span class="n"><span class="hx-add">+9</span> <span class="hx-del">−1</span></span><span class="hx-ico" data-spin="6.6:8.2"></span></div>
+                    <div class="hx-chip" data-at="8.2"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/middleware/requireUser.ts</span> <span class="n"><span class="hx-add">+2</span> <span class="hx-del">−2</span></span><span class="hx-ico" data-spin="8.2:9.0"></span></div>
+                    <div class="hx-chip" data-at="9.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/api/socket.ts</span> <span class="n"><span class="hx-add">+4</span> <span class="hx-del">−1</span></span><span class="hx-ico" data-spin="9.0:9.7"></span></div>
+                    <div class="hx-chip" data-at="9.7"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/jobs/cleanup.ts</span> <span class="n"><span class="hx-add">+3</span></span><span class="hx-ico" data-spin="9.7:10.4"></span></div>
+                  </div>
+                  <div class="hx-step" data-at="10.6">Ran <span>npm test</span> · 58 passed</div>
+                  <div class="hx-say" data-at="11.2">Done. A session now ends after 30 days without use, on the API, the socket and in the nightly cleanup. All 58 tests pass.</div>
+                </div>
+              </div>
+              <div class="hx-keep hx-off" data-at="11.6"><span class="f">5 files changed <span class="hx-add">+22</span> <span class="hx-del">−4</span></span><span class="hx-btn pri">Keep</span><span class="hx-btn">Undo</span></div>
+              <div class="hx-input"><span class="ph">Plan, search, build anything…</span><div class="meta"><span>Agent ⌄</span><span>Sonnet 5 ⌄</span><span>↑</span></div></div>
+            </div>
+
+            <!-- editor -->
+            <div class="hx-col">
+              <div class="hx-tabs" id="cb-tabs"></div>
+              <div class="hx-crumb" id="cb-crumb"></div>
+              <div class="hx-code" id="cb-code"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
         </div>
       </article>
     </div>
