@@ -1079,3 +1079,208 @@ for (const row of document.querySelectorAll("[data-download]")) {
     new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
   } else { go(); }
 })();
+
+/* Enterprise: an admin adds an Agent Rule, and a member's agent follows it. */
+
+(() => {
+  const root = document.getElementById("er");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 12, REST = 8.6;
+  const TITLE = "Use our design system";
+  const BODY = "Build UI with components from @acme/ui. Never write raw hex colours; use the theme tokens.";
+  const TASK = "Add a Pay now button to the invoice page.";
+  const CODE = [
+    [0, '<span class="k">import</span> { formatMoney } <span class="k">from</span> <span class="s">"../lib/money"</span>;'],
+    [6.2, '<span class="k">import</span> { Button } <span class="k">from</span> <span class="s">"@acme/ui"</span>;'],
+    [0, ''],
+    [0, '<span class="k">export function</span> <span class="f">Invoice</span>({ invoice, pay }) {'],
+    [0, '  <span class="k">return</span> ('],
+    [0, '    &lt;<span class="t">Page</span> title={<span class="s">`Invoice ${invoice.number}`</span>}&gt;'],
+    [0, '      &lt;<span class="t">Total</span>&gt;{<span class="f">formatMoney</span>(invoice.total)}&lt;/<span class="t">Total</span>&gt;'],
+    [6.4, '      &lt;<span class="t">Button</span> variant=<span class="s">"primary"</span> onClick={pay}&gt;'],
+    [6.55, '        Pay now'],
+    [6.7, '      &lt;/<span class="t">Button</span>&gt;'],
+    [0, '    &lt;/<span class="t">Page</span>&gt;'],
+    [0, '  );'],
+    [0, '}'],
+  ];
+  const type = (text, from, to, t) => text.slice(0, Math.max(0, Math.min(text.length, Math.round(((t - from) / (to - from)) * text.length))));
+  const timed = [...root.querySelectorAll("[data-at]")];
+  const spins = [...root.querySelectorAll("[data-spin]")].map((el) => [el, ...el.dataset.spin.split(":").map(Number)]);
+  const chat = $("er-chat"), scroll = $("er-scroll"), code = $("er-code");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false, shown = "";
+
+  function render() {
+    // The admin writes the rule and saves it.
+    $("er-t1").textContent = type(TITLE, 0.3, 1.0, t);
+    $("er-t2").textContent = type(BODY, 1.1, 2.2, t);
+    $("er-c1").classList.toggle("hx-gone", t >= 1.05);
+    $("er-c2").classList.toggle("hx-gone", t < 1.05 || t >= 2.3);
+    $("er-save").classList.toggle("press", t >= 2.35 && t < 2.5);
+    $("er-new").classList.toggle("hx-gone", t < 2.5);
+    $("er-new").classList.toggle("fresh", t < 3.6);
+    $("er-toast").classList.toggle("hx-off", !(t >= 2.6 && t < 4.4));
+
+    // A member asks their agent for something, and it follows the rule.
+    $("er-win").classList.toggle("en-hide", t < 3.4);
+    $("er-typed").textContent = type(TASK, 3.9, 4.7, t);
+    $("er-caret").classList.toggle("hx-gone", t > 4.8);
+    timed.forEach((el) => {
+      const on = t >= +el.dataset.at;
+      if (chat.contains(el)) { el.classList.toggle("hx-gone", !on); }
+      else { el.classList.toggle("hx-off", !on); }
+    });
+    spins.forEach(([el, a, b]) => { el.className = "hx-ico " + (t >= b ? "ok" : t >= a ? "spin" : ""); });
+    $("er-m").classList.toggle("hx-gone", t < 6.2);
+    const vis = CODE.filter(([at]) => !(at > 0 && t < at));
+    const sig = vis.map(([at]) => at > 0 && t - at < 0.25 ? "n" : at > 0 ? "a" : "").join();
+    if (sig !== shown) {
+      shown = sig;
+      let n = 0;
+      code.innerHTML = vis.map(([at, html]) => `<div class="hx-ln ${at > 0 ? "add" : ""}${at > 0 && t - at < 0.25 ? " new" : ""}"><b>${++n}</b><span>${html || " "}</span></div>`).join("");
+    }
+    const over = chat.scrollHeight - scroll.clientHeight;
+    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
+})();
+
+/* Enterprise: the audit log fills in as people act, and the admin exports it. */
+
+(() => {
+  const root = document.getElementById("ea");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 11, REST = 8.2;
+  // People are shown by their work address, as the console does; no names.
+  const PEOPLE = { A: ["admin@acme.com", "#7fb77e"], D: ["dev4@acme.com", "#82aaff"], O: ["owner@acme.com", "#e0b07a"], L: ["lead@acme.com", "#c792ea"] };
+  // [second it happens (0 = already there), who, what, action, when it shows as having happened]
+  const EVENTS = [
+    [7.0, "A", "Exported the audit log", "audit_log.exported"],
+    [5.0, "A", "Created the API key “CI pipeline”", "api_key.created"],
+    [4.0, "A", "Updated the Agent Rule “Use our design system”", "rule.updated"],
+    [3.0, "O", "Changed dev4@acme.com’s role to admin", "member.role_changed"],
+    [2.0, "D", "Accepted the invite", "member.joined"],
+    [1.0, "A", "Invited dev4@acme.com as developer", "member.invited"],
+    [0, "L", "Created the team “Payments”", "team.created", "Yesterday"],
+    [0, "A", "Made the workspace “billing” private", "workspace.visibility_changed", "Yesterday"],
+    [0, "O", "Verified the domain acme.com", "domain.verified", "2 days ago"],
+    [0, "L", "Created the Agent Rule “No secrets in code”", "rule.created", "3 days ago"],
+  ];
+  const log = $("ea-log"), ptr = $("ea-ptr"), btn = $("ea-export");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false, shown = -1;
+
+  function place(el) {
+    const s = root.getBoundingClientRect(), r = el.getBoundingClientRect();
+    ptr.style.left = (r.left - s.left + r.width * 0.55) + "px";
+    ptr.style.top = (r.top - s.top + r.height * 0.5) + "px";
+  }
+
+  function render() {
+    const vis = EVENTS.filter(([at]) => t >= at);
+    if (vis.length !== shown) {
+      const fresh = vis.length > shown && shown >= 0;
+      shown = vis.length;
+      log.innerHTML = vis.map(([at, who, what, action, when], i) => {
+        const [name, colour] = PEOPLE[who];
+        const ago = when || (t - at < 60 ? "Just now" : "");
+        return `<div class="en-ev${fresh && i === 0 ? " fresh" : ""}"><i style="background:${colour}">${name[0].toUpperCase()}</i><b>${name}<em>${ago}</em></b><small>${what}<code>${action}</code></small></div>`;
+      }).join("");
+    }
+    // The admin exports what they see.
+    const leg = t >= 5.8 && t < 7.6;
+    ptr.style.opacity = leg ? "1" : "0";
+    if (leg) { place(btn); }
+    btn.classList.toggle("hover", t >= 6.3 && t < 7.2);
+    btn.classList.toggle("press", t >= 6.85 && t < 7.0);
+    $("ea-toast").classList.toggle("hx-off", !(t >= 7.0 && t < 9.4));
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; shown = -1; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; shown = -1; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
+})();
+
+
+/* Enterprise: usage across the organisation, and by member. */
+
+(() => {
+  const root = document.getElementById("eu");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const LOOP = 9, REST = 4.6;
+  const STATS = [["eu-s1", 18420, ""], ["eu-s2", 9310, ""], ["eu-s3", 42, " of 50"], ["eu-s4", 61.2, "M"]];
+  const ROWS = [
+    ["dev1@acme.com", "developer", 1284, 642, "Just now"],
+    ["lead@acme.com", "admin", 1106, 571, "2 min ago"],
+    ["mobile@acme.com", "developer", 987, 498, "10 min ago"],
+    ["data@acme.com", "developer", 912, 455, "1 hour ago"],
+    ["dev4@acme.com", "admin", 846, 412, "Today"],
+    ["web@acme.com", "developer", 803, 391, "Yesterday"],
+  ];
+  const fmt = (n) => n.toLocaleString("en-US");
+  const line = $("eu-line"), area = $("eu-area"), rows = $("eu-rows");
+  const reveal = $("eu-reveal");
+  rows.innerHTML = ROWS.map(([who, role, req, cr, when], i) =>
+    `<div class="en-row" data-i="${i}"><span>${i + 1}</span><b>${who}</b><em>${role}</em><span>${fmt(req)}</span><span>${fmt(cr)}</span><small>${when}</small></div>`).join("");
+  const rowEls = [...rows.children];
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false;
+
+  function render() {
+    const k = Math.min(1, Math.max(0, (t - 0.2) / 1.3));
+    const ease = 1 - Math.pow(1 - k, 3);
+    STATS.forEach(([id, n, unit]) => {
+      const v = n * ease;
+      $(id).textContent = (unit === "M" ? v.toFixed(1) : fmt(Math.round(v))) + unit;
+    });
+    const d = Math.min(1, Math.max(0, (t - 0.6) / 2.0));
+    // The chart draws itself left to right.
+    reveal.setAttribute("width", String(600 * d));
+    area.style.opacity = String(Math.min(1, Math.max(0, (t - 1.2) / 1.2)));
+    rowEls.forEach((el, i) => el.classList.toggle("hx-off", t < 2.4 + i * 0.18));
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  t = REST; render();
+  if (still) { return; }
+  const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
+  } else { go(); }
+})();

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CloudeIDE for Enterprise</title>
+<meta name="description" content="CloudeIDE for your whole company: one set of rules for every agent, members, roles and teams, an audit log of every action, and usage by member." />
+<link rel="canonical" href="https://cloudeide.com/enterprise.html" />
+<meta name="theme-color" content="#0d0c0b" />
+
+<!-- Open Graph / social preview -->
+<meta property="og:site_name" content="CloudeIDE" />
+<meta property="og:title" content="CloudeIDE for Enterprise" />
+<meta property="og:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
+<meta property="og:image" content="https://cloudeide.com/assets/og.png" />
+<meta property="og:url" content="https://cloudeide.com/enterprise.html" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CloudeIDE for Enterprise" />
+<meta name="twitter:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
+<meta name="twitter:image" content="https://cloudeide.com/assets/og.png" />
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/logo-180.png" />
+<link rel="manifest" href="site.webmanifest" />
+<link rel="stylesheet" href="styles.css" />
+
+<script>
+  /*
+    Content is only hidden for the reveal animation once we know the script
+    that un-hides it is actually running, and even then not for long.
+
+    Everything below the hero is `.reveal`, which starts at opacity 0 and is
+    turned on by script.js. That file is loaded at the end of the body, behind
+    two films — so on a slow connection it can arrive late or not at all, and
+    the page sits there blank with its content present but invisible. A page
+    with no animation is a far better failure than a page with no content.
+  */
+  (function () {
+    var root = document.documentElement;
+    root.classList.add("js");
+    setTimeout(function () {
+      if (!window.__revealReady) root.classList.remove("js");
+    }, 2500);
+  })();
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html#top" aria-label="CloudeIDE home">
+      <img src="assets/logo.svg" alt="" width="22" height="22" />
+      <span>CloudeIDE</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="features.html">Product</a>
+      <a href="enterprise.html" aria-current="page">Enterprise</a>
+    </nav>
+
+    <!--
+      One button, and it is Download.
+      
+      There were two, and the other one opened a browser build of the editor.
+      That build is gone: it could not open a folder on your machine, could
+      not run a terminal, and could not receive the sign-in it offered, so
+      everything the page promises below was true of one of them and not the
+      other. A page with two front doors where one leads somewhere smaller is
+      a page that has to explain itself.
+    -->
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="https://api.cloudeide.com/app/signin">Sign in</a>
+      <a class="btn btn-primary" href="index.html#desktop"><span class="btn-mark" aria-hidden="true"><img src="assets/logo.svg" alt="" width="14" height="14" /></span>Download</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+    <a href="features.html">Product</a>
+    <a href="enterprise.html">Enterprise</a>
+    <a href="index.html#desktop">Download</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!--
+    For companies. Only what the admin console does today: Agent Rules,
+    members and roles, teams, workspaces, the audit log, usage, seats and API
+    keys. Single sign-on, SCIM and IP allowlists can be set up in the console
+    but are not enforced yet, so they are listed as coming, not as done.
+  -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <p class="hero-kicker">Enterprise</p>
+      <h1>Your coding agent, for the whole company.</h1>
+      <p class="hero-sub">Your rules in every agent, the right access for every person, and a record of everything.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:support@cloudeide.com?subject=CloudeIDE%20Enterprise">Contact sales</a>
+        <a class="btn btn-secondary" href="index.html#desktop">Download</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="t2s" id="features" aria-label="CloudeIDE for teams">
+    <div class="t2-wrap">
+      <article class="t2" id="rules">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>One set of rules for every agent.</strong></p>
+          <a class="t2-link" href="#admin">Learn about Agent Rules <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual">
+          <div class="hx hx--rules" id="er" role="img" aria-label="CloudeIDE for Enterprise: an admin adds the Agent Rule Use our design system in the console. A member then asks their agent for a Pay now button, and it builds it with the company's Button component and theme colour, as the rule asks.">
+            <div class="en-web">
+              <div class="en-url"><span class="hx-dots"><i></i><i></i><i></i></span><span>cloudeide.com/app/enterprise</span></div>
+              <div class="en-app">
+                <div class="en-side">
+                  <div class="en-org"><i>A</i>Acme</div>
+                  <div class="en-group">Organization</div>
+                  <div class="en-nav">Overview</div><div class="en-nav">Members</div><div class="en-nav">Teams</div><div class="en-nav">Workspaces</div><div class="en-nav on">Agent Rules</div>
+                  <div class="en-group">Access &amp; security</div>
+                  <div class="en-nav">SSO &amp; Directory</div><div class="en-nav">Security Policy</div><div class="en-nav">Audit Log</div>
+                  <div class="en-group">Usage &amp; billing</div>
+                  <div class="en-nav">Usage</div><div class="en-nav">Billing</div><div class="en-nav">API</div>
+                </div>
+                <div class="en-main">
+                  <div class="en-h"><div><h3>Agent Rules</h3><p>Every member's agent follows these, in every project.</p></div></div>
+                  <div class="en-form">
+                    <div class="en-field"><small>Title</small><div class="en-input"><span id="er-t1"></span><span class="hx-caret" id="er-c1"></span></div></div>
+                    <div class="en-field"><small>Rule</small><div class="en-input tall"><span id="er-t2"></span><span class="hx-caret hx-gone" id="er-c2"></span></div></div>
+                    <div class="en-form-f">Required for everyone<span class="hx-btn pri" id="er-save">Save rule</span></div>
+                  </div>
+                  <div class="en-rules">
+                    <div class="en-rule fresh hx-gone" id="er-new"><b>Use our design system</b><small>Build UI with components from @acme/ui. Never write raw hex colours.</small><em>Required</em></div>
+                    <div class="en-rule"><b>Write tests for new code</b><small>Every new function gets a test beside it.</small><em>Required</em></div>
+                    <div class="en-rule"><b>No secrets in code</b><small>Read keys from the environment, never from a file in the repo.</small><em>Required</em></div>
+                    <div class="en-rule"><b>Explain database changes</b><small>Say what a migration does before writing it.</small><em>On</em></div>
+                  </div>
+                  <div class="en-toast hx-off" id="er-toast"><b>✓ Saved.</b> Every member's agent follows it from their next message.</div>
+                </div>
+              </div>
+            </div>
+            <div class="hx-win en-hide" id="er-win">
+              <div class="hx-bar"><span class="hx-dots"><i></i><i></i><i></i></span><span class="hx-bar-t">billing — CloudeIDE</span></div>
+              <div class="hx-grid">
+                <div class="hx-col">
+                  <div class="hx-title">Pay now button</div>
+                  <div class="hx-scroll" id="er-scroll">
+                    <div class="hx-chat" id="er-chat">
+                      <div class="hx-you"><span id="er-typed"></span><span class="hx-caret" id="er-caret"></span></div>
+                      <div class="hx-steps">
+                        <div class="hx-step" data-at="5.1">Read <span>src/pages/Invoice.tsx</span></div>
+                        <div class="hx-step" data-at="5.4">Searched <span>@acme/ui</span> · Button</div>
+                        <div class="hx-step" data-at="5.7">Thought 2s</div>
+                      </div>
+                      <div class="hx-chip" data-at="6.0"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 1h6l3 3v9h-9z"/></svg><span class="nm">src/pages/Invoice.tsx</span> <span class="n"><span class="hx-add">+4</span></span><span class="hx-ico" data-spin="6.0:7.0"></span></div>
+                      <div class="hx-say" data-at="7.3">Added a Pay now button with <code>Button</code> from <code>@acme/ui</code>, in the theme's primary colour, as your organisation's rules ask.</div>
+                    </div>
+                  </div>
+                  <div class="hx-keep hx-off" data-at="7.8"><span class="f">1 file changed <span class="hx-add">+4</span></span><span class="hx-btn pri">Keep</span><span class="hx-btn">Undo</span></div>
+                  <div class="hx-input"><span class="ph">Plan, search, build anything…</span><div class="meta"><span>Agent ⌄</span><span>Sonnet 5 ⌄</span><span>↑</span></div></div>
+                </div>
+                <div class="hx-col">
+                  <div class="hx-tabs"><div class="hx-tab on"><i>TS</i>Invoice.tsx<span class="m hx-gone" id="er-m">M</span></div></div>
+                  <div class="hx-crumb">src › pages › Invoice.tsx</div>
+                  <div class="hx-code" id="er-code"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="t2 t2--flip" id="audit">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>Every action on record.</strong></p>
+          <a class="t2-link" href="#admin">See what admins control <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual">
+          <div class="hx hx--audit" id="ea" role="img" aria-label="CloudeIDE for Enterprise: the audit log fills in as people act. A member is invited and accepts, a role changes, an Agent Rule is updated and an API key is created, and the admin exports the log.">
+            <div class="en-web">
+              <div class="en-url"><span class="hx-dots"><i></i><i></i><i></i></span><span>cloudeide.com/app/enterprise</span></div>
+              <div class="en-app">
+                <div class="en-side">
+                  <div class="en-org"><i>A</i>Acme</div>
+                  <div class="en-group">Organization</div>
+                  <div class="en-nav">Overview</div><div class="en-nav">Members</div><div class="en-nav">Teams</div><div class="en-nav">Workspaces</div><div class="en-nav">Agent Rules</div>
+                  <div class="en-group">Access &amp; security</div>
+                  <div class="en-nav">SSO &amp; Directory</div><div class="en-nav">Security Policy</div><div class="en-nav on">Audit Log</div>
+                  <div class="en-group">Usage &amp; billing</div>
+                  <div class="en-nav">Usage</div><div class="en-nav">Billing</div><div class="en-nav">API</div>
+                </div>
+                <div class="en-main">
+                  <div class="en-h"><div><h3>Audit Log</h3><p>Who did what, and when.</p></div></div>
+                  <div class="en-filters"><span>All actions ⌄</span><span>All members ⌄</span><span>Last 30 days ⌄</span><b class="hx-btn" id="ea-export">Export CSV</b></div>
+                  <div class="en-log" id="ea-log"></div>
+                  <div class="en-toast hx-off" id="ea-toast"><b>✓ Exported.</b> audit-log.csv, with every event in this view.</div>
+                </div>
+              </div>
+            </div>
+            <svg class="pl-ptr" id="ea-ptr" viewBox="0 0 18 22" style="opacity:0;left:700px;top:420px"><path d="M2 1.5v16.8l4.4-4.1 2.9 6.6 2.8-1.2-2.9-6.5h6.1z" fill="#f2f2f0" stroke="#0d0c0b" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </article>
+
+      <article class="t2" id="usage">
+        <div class="t2-copy">
+          <p class="t2-text"><strong>See how your team uses it.</strong></p>
+          <a class="t2-link" href="#admin">Learn about usage <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="t2-visual">
+          <div class="hx hx--usage" id="eu" role="img" aria-label="CloudeIDE for Enterprise: the usage page shows agent requests, credits used, active members and AI tokens for the last 30 days, a chart of active members per day, and usage by member.">
+            <div class="en-web">
+              <div class="en-url"><span class="hx-dots"><i></i><i></i><i></i></span><span>cloudeide.com/app/enterprise</span></div>
+              <div class="en-app">
+                <div class="en-side">
+                  <div class="en-org"><i>A</i>Acme</div>
+                  <div class="en-group">Organization</div>
+                  <div class="en-nav">Overview</div><div class="en-nav">Members</div><div class="en-nav">Teams</div><div class="en-nav">Workspaces</div><div class="en-nav">Agent Rules</div>
+                  <div class="en-group">Access &amp; security</div>
+                  <div class="en-nav">SSO &amp; Directory</div><div class="en-nav">Security Policy</div><div class="en-nav">Audit Log</div>
+                  <div class="en-group">Usage &amp; billing</div>
+                  <div class="en-nav on">Usage</div><div class="en-nav">Billing</div><div class="en-nav">API</div>
+                </div>
+                <div class="en-main">
+                  <div class="en-h"><div><h3>Usage</h3><p>Last 30 days, across the organisation.</p></div></div>
+                  <div class="en-stats">
+                    <div class="en-stat"><small>Agent requests</small><b id="eu-s1">18,420</b></div>
+                    <div class="en-stat"><small>Credits used</small><b id="eu-s2">9,310</b></div>
+                    <div class="en-stat"><small>Active members</small><b id="eu-s3">42 of 50</b></div>
+                    <div class="en-stat"><small>AI tokens</small><b id="eu-s4">61.2M</b></div>
+                  </div>
+                  <div class="en-chart"><small>Active members per day</small>
+                    <svg viewBox="0 0 600 140" preserveAspectRatio="none" aria-hidden="true"><defs><clipPath id="eu-clip"><rect id="eu-reveal" x="0" y="0" width="600" height="140"/></clipPath><linearGradient id="eu-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fb56b" stop-opacity="0.28"/><stop offset="1" stop-color="#3fb56b" stop-opacity="0"/></linearGradient></defs><path id="eu-area" clip-path="url(#eu-clip)" d="M0.0 78.2 L20.7 73.5 L41.4 74.5 L62.1 54.2 L82.8 62.4 L103.4 121.4 L124.1 128.0 L144.8 58.4 L165.5 48.4 L186.2 55.0 L206.9 56.2 L227.6 45.1 L248.3 108.0 L269.0 103.9 L289.7 52.8 L310.3 53.0 L331.0 34.5 L351.7 46.3 L372.4 35.6 L393.1 88.6 L413.8 98.6 L434.5 38.1 L455.2 45.4 L475.9 36.5 L496.6 40.5 L517.2 36.3 L537.9 91.5 L558.6 83.3 L579.3 33.9 L600.0 28.0 L600 140 L0 140 Z" fill="url(#eu-g)"/><path id="eu-line" clip-path="url(#eu-clip)" vector-effect="non-scaling-stroke" d="M0.0 78.2 L20.7 73.5 L41.4 74.5 L62.1 54.2 L82.8 62.4 L103.4 121.4 L124.1 128.0 L144.8 58.4 L165.5 48.4 L186.2 55.0 L206.9 56.2 L227.6 45.1 L248.3 108.0 L269.0 103.9 L289.7 52.8 L310.3 53.0 L331.0 34.5 L351.7 46.3 L372.4 35.6 L393.1 88.6 L413.8 98.6 L434.5 38.1 L455.2 45.4 L475.9 36.5 L496.6 40.5 L517.2 36.3 L537.9 91.5 L558.6 83.3 L579.3 33.9 L600.0 28.0" fill="none" stroke="#3fb56b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="en-table">
+                    <div class="en-row en-row--head"><span>#</span><b>Member</b><em>Role</em><span>Requests</span><span>Credits</span><small>Last used</small></div>
+                    <div id="eu-rows"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section en-list" id="admin">
+    <div class="wrap">
+      <h2>Everything an admin needs</h2>
+      <div class="en-grid">
+        <div><h3>Agent Rules</h3><p>One set of instructions that every member's agent follows, in every project.</p></div>
+        <div><h3>Members and roles</h3><p>Owner, admin, billing, developer and viewer. Invite, suspend or remove anyone.</p></div>
+        <div><h3>Teams and workspaces</h3><p>Group people into teams, and choose who can see which projects.</p></div>
+        <div><h3>Audit log</h3><p>Every invite, role change, rule and key, with who did it and when. Export it any time.</p></div>
+        <div><h3>Usage</h3><p>See how each member uses the agent, across the whole organisation.</p></div>
+        <div><h3>Seats and billing</h3><p>Add seats as you grow, with one bill for the company.</p></div>
+        <div><h3>API keys</h3><p>Keys for your own tools and pipelines, created and revoked by admins.</p></div>
+        <div><h3>Verified domains</h3><p>Prove you own your company's domain.</p></div>
+      </div>
+      <p class="en-soon"><span>Coming soon</span>Single sign-on with SAML and OIDC · SCIM provisioning · IP allowlists</p>
+    </div>
+  </section>
+
+  <section class="section en-cta">
+    <div class="wrap">
+      <h2>Bring CloudeIDE to your team.</h2>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:support@cloudeide.com?subject=CloudeIDE%20Enterprise">Contact sales</a>
+        <a class="btn btn-secondary" href="index.html#desktop">Download</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <!--
+    Four columns of places you can actually go, the way every product page
+    lays out its footer, and nothing that is not there yet: no docs, no
+    blog, no social accounts. Every link is a section of this page, a page
+    of the dashboard, a download, or one of the three policies.
+  -->
+  <div class="wrap">
+    <div class="footer-grid">
+      <nav class="footer-col" aria-label="Product">
+        <h2 class="footer-head">Product</h2>
+        <a href="features.html#planning">Planning</a>
+        <a href="features.html#agent">Agent</a>
+        <a href="features.html#review">Reviewing changes</a>
+        <a href="features.html#checks">Checks its work</a>
+        <a href="features.html#tab">Tab</a>
+        <a href="features.html#pr">Pull requests</a>
+        <a href="features.html#teams">Team rules</a>
+        <a href="enterprise.html">Enterprise</a>
+      </nav>
+      <nav class="footer-col" aria-label="Account">
+        <h2 class="footer-head">Account</h2>
+        <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+        <a href="https://api.cloudeide.com/app/signup">Create an account</a>
+        <a href="https://api.cloudeide.com/app/">Dashboard</a>
+        <a href="https://api.cloudeide.com/app/settings/billing">Billing</a>
+        <a href="https://api.cloudeide.com/app/settings/credits">Credits</a>
+      </nav>
+      <nav class="footer-col" aria-label="Download">
+        <h2 class="footer-head">Download</h2>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb">Linux (.deb)</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.tar.gz">Linux (.tar.gz)</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip">Windows</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-darwin-arm64.zip">macOS (Apple Silicon)</a>
+        <a href="https://github.com/laxmansubedi7/cloudevs/releases">All releases</a>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2 class="footer-head">Legal</h2>
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="data-use.html">Data Use Policy</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.svg" alt="" width="18" height="18" />
+        <span>CloudeIDE</span>
+      </a>
+      <span class="footer-copy">© <span id="year">2026</span> CloudeIDE</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
