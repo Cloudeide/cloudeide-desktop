@@ -282,7 +282,7 @@ for (const row of document.querySelectorAll("[data-download]")) {
   if (!links.length) return;
   const ua = navigator.userAgent;
   const platform = navigator.userAgentData?.platform ?? navigator.platform ?? "";
-  const base = "https://github.com/laxmansubedi7/cloudevs/releases/latest/download/";
+  const base = "https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/";
   let file = "";
   let name = "";
   if (!onPhone && !/mac/i.test(platform) && !/Mac OS X/i.test(ua)) {

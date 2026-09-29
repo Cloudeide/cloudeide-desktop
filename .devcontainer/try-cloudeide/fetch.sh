@@ -12,7 +12,7 @@ sudo apt-get install -y --no-install-recommends \
 	libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgbm1 \
 	libgtk-3-0 libasound2 libxkbfile1 libsecret-1-0 xdg-utils
 
-repo="${GITHUB_REPOSITORY:-laxmansubedi7/cloudevs}"
+repo="${GITHUB_REPOSITORY:-Cloudeide/cloudeide-desktop}"
 
 rm -rf ~/dl && mkdir -p ~/dl
 echo "--- the latest release: the file the download button gives people ---"

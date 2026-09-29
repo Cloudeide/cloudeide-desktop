@@ -23,9 +23,9 @@ with an Apply button.
 
 | | |
 |---|---|
-| **Windows** | [CloudeIDE-win32-x64.zip](https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-win32-x64.zip) |
+| **Windows** | [CloudeIDE-win32-x64.zip](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-win32-x64.zip) |
 | **macOS** | Apple Silicon — building; not published yet |
-| **Linux** | [.deb](https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.deb) · [.tar.gz](https://github.com/laxmansubedi7/cloudevs/releases/latest/download/CloudeIDE-linux-x64.tar.gz) |
+| **Linux** | [.deb](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.deb) · [.tar.gz](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.tar.gz) |
 
 Sign in from inside the app. There is no key to paste and no key to lose —
 the agent runs on your CloudeIDE account.
