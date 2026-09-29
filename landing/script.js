@@ -186,6 +186,28 @@ if (films.length) {
   });
 }
 
+/*
+ * Phones and tablets. CloudeIDE is a desktop app, so a phone is shown the
+ * Mac button (the most common desktop) and, on a tap, told to open the page
+ * on a computer instead of silently downloading a file it cannot open.
+ *
+ * "Desktop site" mode on Android reports a Linux PC with no "Android" in the
+ * user agent, and an iPad reports a Mac; the ARM platform string and touch
+ * points give both away.
+ */
+const onPhone = (() => {
+  const ua = navigator.userAgent;
+  // Both, because in desktop mode one can still say Android and the other ARM.
+  const platform = [navigator.userAgentData?.platform, navigator.platform].filter(Boolean).join(" ");
+  if (navigator.userAgentData?.mobile) return true;
+  if (/android|ios/i.test(platform)) return true;
+  if (/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
+  if (/linux/i.test(platform) && /arm|aarch/i.test(platform)) return true;
+  if (/Linux/i.test(ua) && !/CrOS/i.test(ua) && navigator.maxTouchPoints > 1) return true;
+  if (/mac/i.test(platform) && navigator.maxTouchPoints > 1) return true;
+  return false;
+})();
+
 /* --------------------------------------------------------------- download --
  *
  * The button is whichever platform the visitor is on; the other two become
@@ -206,7 +228,7 @@ if (films.length) {
 for (const row of document.querySelectorAll("[data-download]")) {
   const ua = navigator.userAgent;
   const platform = navigator.userAgentData?.platform ?? navigator.platform ?? "";
-  const here = /mac/i.test(platform) || /Mac OS X/i.test(ua)
+  const here = onPhone || /mac/i.test(platform) || /Mac OS X/i.test(ua)
     ? "mac"
     : /win/i.test(platform) || /Windows/i.test(ua)
       ? "windows"
@@ -263,7 +285,7 @@ for (const row of document.querySelectorAll("[data-download]")) {
   const base = "https://github.com/laxmansubedi7/cloudevs/releases/latest/download/";
   let file = "";
   let name = "";
-  if (!/mac/i.test(platform) && !/Mac OS X/i.test(ua)) {
+  if (!onPhone && !/mac/i.test(platform) && !/Mac OS X/i.test(ua)) {
     if (/win/i.test(platform) || /Windows/i.test(ua)) {
       file = "CloudeIDE-win32-x64.zip";
       name = "Windows";
@@ -1369,4 +1391,51 @@ for (const row of document.querySelectorAll("[data-download]")) {
   if ("IntersectionObserver" in window) {
     new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { go(); } else { running = false; } }), { threshold: 0.2 }).observe(root);
   } else { go(); }
+})();
+
+/* On a phone, a download button explains itself instead of doing nothing visible. */
+
+(() => {
+  if (!onPhone) return;
+  let sheet = null;
+  const open = (href) => {
+    if (!sheet) {
+      sheet = document.createElement("div");
+      sheet.className = "phone-sheet";
+      sheet.setAttribute("role", "dialog");
+      sheet.setAttribute("aria-modal", "true");
+      sheet.setAttribute("aria-labelledby", "phone-sheet-title");
+      sheet.innerHTML =
+        '<div class="phone-sheet-card">' +
+        '<h2 id="phone-sheet-title">CloudeIDE is a desktop app</h2>' +
+        "<p>Open <b>cloudeide.com</b> on your Mac, Windows or Linux computer to download it.</p>" +
+        '<div class="phone-sheet-actions">' +
+        '<button type="button" class="btn btn-primary" data-copy-link>Copy link</button>' +
+        '<button type="button" class="btn btn-secondary" data-close>Close</button>' +
+        "</div>" +
+        '<a class="phone-sheet-anyway" data-anyway href="#">Download the file anyway</a>' +
+        "</div>";
+      document.body.appendChild(sheet);
+      sheet.addEventListener("click", (e) => {
+        const t = e.target;
+        if (t === sheet || t.closest("[data-close]")) sheet.hidden = true;
+        if (t.closest("[data-copy-link]")) {
+          const btn = t.closest("[data-copy-link]");
+          navigator.clipboard?.writeText("https://cloudeide.com/").then(
+            () => { btn.textContent = "Copied"; },
+            () => { btn.textContent = "cloudeide.com"; },
+          );
+        }
+      });
+    }
+    sheet.querySelector("[data-anyway]").href = href;
+    sheet.querySelector("[data-copy-link]").textContent = "Copy link";
+    sheet.hidden = false;
+  };
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href*="/releases/latest/download/"]');
+    if (!link || link.hasAttribute("data-anyway")) return;
+    e.preventDefault();
+    open(link.href);
+  });
 })();
