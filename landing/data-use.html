@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Data Use Policy — CloudeIDE</title>
-<meta name="description" content="Exactly what data CloudeIDE sends to its AI provider, what it stores, and what never leaves your browser." />
+<meta name="description" content="Exactly what data CloudeIDE sends to AI providers, what it stores, and what stays on your computer." />
 <link rel="canonical" href="https://cloudeide.com/data-use.html" />
 <!-- Deliberately no robots meta: these three are in sitemap.xml, so a
      "noindex" here told Google to index them and not to index them at the
@@ -55,107 +55,115 @@
         Back to CloudeIDE
       </a>
       <h1>Data Use Policy</h1>
-      <p class="updated">Last updated: August 5, 2026</p>
+      <p class="updated">Last updated: September 29, 2026</p>
     </div>
   </div>
 
   <div class="wrap">
     <div class="legal-body">
       <p class="intro">
-        This page explains, specifically, what happens to your code and your data as you use CloudeIDE — what
-        stays on your machine, what we send to our AI provider, and what we store on our servers. It's a
-        companion to our <a href="privacy.html">Privacy Policy</a>, focused entirely on data flow rather than legal
-        terms.
+        This page explains, specifically, what happens to your code and your data as you use CloudeIDE: what
+        stays on your computer, what we send to AI providers, and what we store on our servers. It is a companion
+        to our <a href="privacy.html">Privacy Policy</a>, focused on data flow rather than legal terms.
       </p>
-
       <section class="legal-section">
-        <h2>1. Your workspace stays in your browser</h2>
+        <h2>1. Your code stays on your computer</h2>
         <p>
-          The files and folders you create in the editor are stored in your browser's local storage. They are not
-          uploaded to our servers as a matter of course, and we do not have a copy of your project sitting in a
-          database somewhere. Clearing your browser's site data for CloudeIDE removes your local workspace
-          entirely — we recommend exporting or pushing anything you want to keep.
+          CloudeIDE is a desktop application built on the open-source VS Code. The folders you open and the files you edit stay on your own computer. We do not keep a copy of your project, and nothing is uploaded in the background.
+        </p>
+        <p>
+          Your code leaves your computer only in the three cases described below: when you ask the agent to do something, when you deploy, and when you use GitHub from the app.
         </p>
       </section>
-
       <section class="legal-section">
-        <h2>2. What the AI assistant actually sees</h2>
+        <h2>2. What the agent sends</h2>
         <p>
-          Nothing is sent to the AI assistant until you send a message. When you do, we attach exactly what the
-          interface shows you at that moment — your typed message, plus either the current text selection or the
-          active file's contents, depending on what you've chosen to include. We do not scan, upload, or send your
-          entire project in the background.
+          Nothing is sent until you send a message. To do what you ask, the agent reads what the task needs, such as files, search results, editor errors and the output of commands it runs, and includes those in its requests to the AI model. It does not send your whole project at once, but over a task it may read many files. Keep secrets out of files the agent works on, and review what it runs.
         </p>
-        <p>That request goes to two places:</p>
+        <p>
+          Each request goes to two places:
+        </p>
         <ul>
-          <li><strong>Our backend</strong>, which authenticates the request, checks your plan's usage limit, and forwards it to our AI provider.</li>
-          <li><strong>Anthropic</strong> (the provider of the Claude models), which generates the response you see streamed back into the panel.</li>
+          <li><strong>Our servers</strong>, which check that you are signed in, that your plan and credits allow the request, and then forward it to the model you chose.</li>
+          <li><strong>The AI provider</strong> for that model: Anthropic for Claude models, OpenAI for GPT models. It generates the reply that streams back into the app.</li>
         </ul>
       </section>
-
       <section class="legal-section">
         <h2>3. What we store on our servers</h2>
-        <p>Server-side, we keep only what's needed to make the product work across sessions and to bill accurately:</p>
+        <p>
+          We keep only what the product needs to work and to bill accurately:
+        </p>
         <ul>
-          <li><strong>Account data</strong> — your name, email, and hashed password.</li>
-          <li><strong>AI conversation history</strong> — the text of your messages to the assistant and its replies, so your conversation is still there next time you sign in.</li>
-          <li><strong>Usage metering</strong> — a running count of credits spent against your plan's monthly allowance. We store the count, not a log of every request's content beyond the conversation history above.</li>
-          <li><strong>Billing records</strong> — your plan, subscription status, and transaction identifiers from our payment providers. We never see or store your full card number.</li>
+          <li><strong>Account data</strong>: your name, email address and a hashed password, or the identity from Google or GitHub if you sign in with them.</li>
+          <li><strong>Conversation history</strong>: the text of your messages to the agent and its replies, so a conversation is still there next time. It is kept for up to 90 days, and you can clear it at any time.</li>
+          <li><strong>Usage records</strong>: for each request, the model used, the number of tokens, the credits charged and the time. Not the content.</li>
+          <li><strong>Billing records</strong>: your plan, subscription status and transaction identifiers. We never see or store your full card number.</li>
+          <li><strong>API tokens</strong> you create for the CLI or for signing in to the app, stored only as a hash.</li>
         </ul>
       </section>
-
       <section class="legal-section">
-        <h2>4. Model training</h2>
+        <h2>4. When you deploy</h2>
         <p>
-          We do not use your code or conversations to train our own models — we don't train any models. On
-          Anthropic's side, code and messages sent through their commercial API are handled under Anthropic's own
-          API terms, which (as of this writing) do not use API customer content to train their models by default.
-          Review <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noreferrer">Anthropic's privacy policy</a>
-          directly for their current practice, since it governs their side of this independently of CloudeIDE.
+          Deploying is optional. When you or the agent deploy a project, its source is uploaded to our servers, built in an isolated sandbox, and the built site is published on our hosting so it can be reached at its address. We keep the build output for each deployment, its build log, and the domains you add, so you can roll back and manage them.
+        </p>
+        <p>
+          Environment variables you set for a deployment are stored with our cloud provider's secrets service, not in our database. The agent can see a variable's name but never its secret value.
         </p>
       </section>
-
       <section class="legal-section">
-        <h2>5. Sub-processors</h2>
-        <p>Third parties that touch your data, and what they see:</p>
+        <h2>5. When you connect GitHub</h2>
+        <p>
+          If you connect a GitHub account, we store the access token GitHub gives us so the app can import repositories, commit and open pull requests on your behalf. You can disconnect it at any time, which deletes the token.
+        </p>
+      </section>
+      <section class="legal-section">
+        <h2>6. Teams and organizations</h2>
+        <p>
+          If you use CloudeIDE through an organization, its administrators can see, for each member, how many agent requests they made, how many credits they used and when they last used it, along with an audit log of administrative actions such as invites, role changes and rule changes. They cannot see your code or your conversations. The organization's Agent Rules are sent with your requests so the agent follows them.
+        </p>
+      </section>
+      <section class="legal-section">
+        <h2>7. Model training</h2>
+        <p>
+          We do not train AI models on your code or conversations. Anthropic and OpenAI handle content sent through their commercial APIs under their own API terms, which, as of this writing, do not use API content to train their models by default. Review each provider's policy for their current practice.
+        </p>
+      </section>
+      <section class="legal-section">
+        <h2>8. Sub-processors</h2>
+        <p>
+          Third parties that handle your data, and what they see:
+        </p>
         <ul>
-          <li><strong>Anthropic</strong> — the content of AI assistant requests (see §2), to generate responses.</li>
-          <li><strong>PayPal</strong> — your payment details, to process subscription charges. We receive only a transaction status back.</li>
-          <li><strong>Our cloud hosting provider</strong> — encrypted-at-rest storage for account data, conversation history, and billing records described in §3.</li>
+          <li><strong>Anthropic</strong> and <strong>OpenAI</strong>: the content of agent requests (see §2), to generate replies.</li>
+          <li><strong>Our cloud hosting and infrastructure providers</strong>: storage for the data in §3, and the sandboxes, storage and delivery network used for deployments (see §4).</li>
+          <li><strong>PayPal</strong>: your payment details, to process payments. We receive only a transaction status.</li>
+          <li><strong>Google</strong> and <strong>GitHub</strong>: only if you choose to sign in with them or connect GitHub.</li>
+          <li><strong>Open VSX</strong>: the extension marketplace the app uses. When you browse or install extensions, your requests go to Open VSX.</li>
         </ul>
       </section>
-
       <section class="legal-section">
-        <h2>6. How long we keep it</h2>
+        <h2>9. How long we keep it</h2>
         <p>
-          Account data, conversation history, and billing records are kept for as long as your account is active.
-          Deleting your account removes them, except where we're required to retain billing records for tax or
-          accounting purposes. Your local workspace is retained only in your own browser, for as long as you keep
-          it there.
+          Conversation history is kept for up to 90 days. Account data, usage and billing records, deployments and their logs are kept for as long as your account is active. Deleting your account removes them, except billing records we must keep for tax or accounting purposes.
         </p>
       </section>
-
       <section class="legal-section">
-        <h2>7. Your controls</h2>
+        <h2>10. Your controls</h2>
         <ul>
-          <li>Clear a browser tab's local storage to remove your local workspace.</li>
-          <li>Start a new conversation in the AI panel at any time — it doesn't carry old context forward once cleared.</li>
-          <li>Request export or deletion of your account data by contacting us at <a href="mailto:support@cloudeide.com">support@cloudeide.com</a>.</li>
+          <li>Choose which folder the app opens, and review or undo every change the agent makes.</li>
+          <li>Clear your conversation history from the app at any time.</li>
+          <li>Disconnect GitHub, revoke API tokens and delete deployments from your dashboard.</li>
+          <li>Request an export or deletion of your account data by contacting us at <a href="mailto:support@cloudeide.com">support@cloudeide.com</a>.</li>
         </ul>
       </section>
-
       <section class="legal-section">
-        <h2>8. Changes to this policy</h2>
+        <h2>11. Changes to this policy</h2>
         <p>
-          If how we handle data changes in a way that affects what's described above, we'll update this page and
-          the "Last updated" date, and where the change is material, we'll say so more prominently.
+          If how we handle data changes in a way that affects what is described above, we will update this page and the "Last updated" date, and where the change is material, we will say so more prominently.
         </p>
       </section>
-
       <p class="legal-note">
-        This page reflects how CloudeIDE is architected today; it is a template and has not been reviewed by a
-        lawyer. Re-verify it against the actual production system (and applicable law, e.g. GDPR/CCPA) before
-        relying on it, and update it if the architecture changes.
+        This page describes how CloudeIDE works today. It has not been reviewed by a lawyer; confirm it against applicable law (for example GDPR and CCPA) before relying on it.
       </p>
     </div>
   </div>
