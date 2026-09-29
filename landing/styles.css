@@ -3478,7 +3478,7 @@ a:hover > .learn-arrow {
 .t2--flip { grid-template-columns: minmax(0, 2.2fr) minmax(230px, 0.55fr); padding: 20px 44px 20px 20px; }
 .t2--flip .t2-copy { order: 2; }
 .t2-copy { min-width: 0; }
-.t2-text { margin: 0; color: var(--text-secondary); font-size: 22px; line-height: 1.38; letter-spacing: -0.015em; font-weight: 500; max-width: 26ch; }
+.t2-text { margin: 0; color: var(--text-secondary); font-size: 19px; line-height: 1.42; letter-spacing: -0.012em; font-weight: 500; max-width: 30ch; }
 .t2-text strong { display: block; color: var(--text-primary); font-weight: 500; }
 .t2-link { display: inline-flex; gap: 6px; margin-top: 20px; color: var(--text-primary); font-size: 15px; font-weight: 500; text-decoration: none; }
 .t2-link span { transition: transform 0.2s var(--ease); }
@@ -3499,7 +3499,7 @@ a:hover > .learn-arrow {
 @media (max-width: 960px) {
   .t2, .t2--flip { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 28px 20px 20px; }
   .t2--flip .t2-copy { order: 0; }
-  .t2-text { font-size: 19px; max-width: none; }
+  .t2-text { font-size: 18px; max-width: 34ch; }
   .t2-shot { height: 560px; padding: 24px 0 0 20px; }
 }
 
