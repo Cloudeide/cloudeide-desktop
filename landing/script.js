@@ -612,203 +612,120 @@ for (const row of document.querySelectorAll("[data-download]")) {
   } else { go(); }
 })();
 
-/* The codebase demo: the agent explores the project and changes five files together. */
+/* The Edit Here demo: select a function, press Cmd+I, say what to change. */
 
 (() => {
-  const root = document.getElementById("cb");
+  const root = document.getElementById("ie");
   if (!root) return;
   const $ = (id) => document.getElementById(id);
-  const LOOP = 17, REST = 12.4;
-  const TASK = "Sign people out after 30 days without activity, everywhere we check a login.";
+  const LOOP = 13, REST = 8.4;
+  const ASK = "Make this async and add a 5 second timeout";
 
-  // The project: [depth, kind, name, key, icon]. kind: d = open folder, c = closed folder, f = file.
-  const TREE = [
-    [0, "d", "db"], [1, "d", "migrations"],
-    [2, "f", "0041_invoices.sql", "mig41", "sql"], [2, "f", "0042_last_seen.sql", "mig", "sql"],
-    [0, "d", "src"],
-    [1, "d", "api"], [2, "f", "invoices.ts", "inv"], [2, "f", "socket.ts", "sock"], [2, "f", "users.ts", "users"],
-    [1, "d", "auth"], [2, "f", "login.ts", "login"], [2, "f", "oauth.ts", "oauth"], [2, "f", "session.ts", "ses"], [2, "f", "token.ts", "token"],
-    [1, "d", "jobs"], [2, "f", "cleanup.ts", "clean"], [2, "f", "emails.ts", "emails"],
-    [1, "d", "middleware"], [2, "f", "rateLimit.ts", "rate"], [2, "f", "requireUser.ts", "req"],
-    [1, "d", "pages"], [2, "f", "Login.tsx", "loginp", "tsx"], [2, "f", "Settings.tsx", "settings", "tsx"],
-    [1, "c", "lib"],
-    [0, "f", "package.json", "pkg", "json"],
+  const BEFORE = [
+    'import { api } from "./client";',
+    '',
+    'export function loadOrders(userId) {',
+    '  return fetch(`/api/users/${userId}/orders`)',
+    '    .then((res) => res.json())',
+    '    .then((data) => data.orders)',
+    '    .catch(() => []);',
+    '}',
   ];
-  // What the agent reads, in order: [second, file key or null for a search, line].
-  const READS = [
-    [1.6, null, 'Searched <span>session</span> · 9 results'],
-    [1.8, "ses", 'Read <span>src/auth/session.ts</span>'],
-    [1.95, "login", 'Read <span>src/auth/login.ts</span>'],
-    [2.1, "oauth", 'Read <span>src/auth/oauth.ts</span>'],
-    [2.25, "token", 'Read <span>src/auth/token.ts</span>'],
-    [2.4, null, 'Searched <span>requireUser</span> · 6 results'],
-    [2.55, "req", 'Read <span>src/middleware/requireUser.ts</span>'],
-    [2.7, "rate", 'Read <span>src/middleware/rateLimit.ts</span>'],
-    [2.85, "sock", 'Read <span>src/api/socket.ts</span>'],
-    [3.0, "users", 'Read <span>src/api/users.ts</span>'],
-    [3.15, "inv", 'Read <span>src/api/invoices.ts</span>'],
-    [3.3, null, 'Searched <span>expires</span> · 4 results'],
-    [3.45, "clean", 'Read <span>src/jobs/cleanup.ts</span>'],
-    [3.6, "emails", 'Read <span>src/jobs/emails.ts</span>'],
-    [3.75, "loginp", 'Read <span>src/pages/Login.tsx</span>'],
-    [3.9, "mig41", 'Read <span>db/migrations/0041_invoices.sql</span>'],
-    [4.05, "pkg", 'Read <span>package.json</span>'],
+  const AFTER = [
+    'export async function loadOrders(userId: string) {',
+    '  try {',
+    '    const res = await fetch(`/api/users/${userId}/orders`, {',
+    '      signal: AbortSignal.timeout(5000),',
+    '    });',
+    '    const data = await res.json();',
+    '    return data.orders;',
+    '  } catch {',
+    '    return [];',
+    '  }',
+    '}',
   ];
-  const EXPLORED = 4.4;
+  const TAIL = [
+    '',
+    'export function cancelOrder(id: string) {',
+    '  return api.post(`/orders/${id}/cancel`);',
+    '}',
+  ];
 
-  // Each file: [when the line appears (0 = already there; "dX" = removed at X), html].
-  const MIG = [
-    [6.0, '<span class="k">ALTER TABLE</span> sessions'],
-    [6.15, '  <span class="k">ADD COLUMN</span> last_seen <span class="t">timestamptz</span> <span class="k">NOT NULL DEFAULT</span> <span class="f">now</span>();'],
-    [6.25, ''],
-    [6.35, '<span class="k">CREATE INDEX</span> sessions_last_seen <span class="k">ON</span> sessions (last_seen);'],
-  ];
-  const SES = [
-    [0, '<span class="k">import</span> { db } <span class="k">from</span> <span class="s">"../lib/db"</span>;'],
-    [6.8, '<span class="k">export const</span> IDLE_DAYS = <span class="nu">30</span>;'],
-    [6.9, '<span class="k">const</span> DAY = <span class="nu">86_400_000</span>;'],
-    [0, ''],
-    [0, '<span class="k">export async function</span> <span class="f">getSession</span>(token) {'],
-    [0, '  <span class="k">const</span> session = <span class="k">await</span> db.sessions.<span class="f">find</span>(token);'],
-    ["d7.1", '  <span class="k">if</span> (!session) <span class="k">return null</span>;'],
-    [7.1, '  <span class="k">if</span> (!session || <span class="f">isIdle</span>(session)) <span class="k">return null</span>;'],
-    [7.3, '  <span class="k">await</span> db.sessions.<span class="f">touch</span>(token);'],
-    [0, '  <span class="k">return</span> session;'],
-    [0, '}'],
-    [7.5, ''],
-    [7.55, '<span class="k">export function</span> <span class="f">isIdle</span>(session) {'],
-    [7.7, '  <span class="k">const</span> idle = Date.<span class="f">now</span>() - session.lastSeen;'],
-    [7.85, '  <span class="k">return</span> idle &gt; IDLE_DAYS * DAY;'],
-    [7.9, '}'],
-  ];
-  const REQ = [
-    ["d8.4", '<span class="k">import</span> { db } <span class="k">from</span> <span class="s">"../lib/db"</span>;'],
-    [8.4, '<span class="k">import</span> { getSession } <span class="k">from</span> <span class="s">"../auth/session"</span>;'],
-    [0, ''],
-    [0, '<span class="k">export async function</span> <span class="f">requireUser</span>(req, res, next) {'],
-    ["d8.6", '  <span class="k">const</span> session = <span class="k">await</span> db.sessions.<span class="f">find</span>(req.cookies.sid);'],
-    [8.6, '  <span class="k">const</span> session = <span class="k">await</span> <span class="f">getSession</span>(req.cookies.sid);'],
-    [0, '  <span class="k">if</span> (!session) <span class="k">return</span> res.<span class="f">sendStatus</span>(<span class="nu">401</span>);'],
-    [0, '  req.user = session.user;'],
-    [0, '  <span class="f">next</span>();'],
-    [0, '}'],
-  ];
-  const SOCK = [
-    [0, '<span class="k">import</span> { verify } <span class="k">from</span> <span class="s">"../auth/token"</span>;'],
-    [9.1, '<span class="k">import</span> { getSession } <span class="k">from</span> <span class="s">"../auth/session"</span>;'],
-    [0, ''],
-    [0, 'io.<span class="f">use</span>(<span class="k">async</span> (socket, next) =&gt; {'],
-    [0, '  <span class="k">const</span> token = socket.handshake.auth.token;'],
-    ["d9.3", '  <span class="k">if</span> (!<span class="f">verify</span>(token)) <span class="k">return</span> <span class="f">next</span>(<span class="k">new</span> <span class="f">Error</span>(<span class="s">"Signed out"</span>));'],
-    [9.3, '  <span class="k">if</span> (!<span class="f">verify</span>(token) || !(<span class="k">await</span> <span class="f">getSession</span>(token))) {'],
-    [9.4, '    <span class="k">return</span> <span class="f">next</span>(<span class="k">new</span> <span class="f">Error</span>(<span class="s">"Signed out"</span>));'],
-    [9.45, '  }'],
-    [0, '  <span class="f">next</span>();'],
-    [0, '});'],
-  ];
-  const CLEAN = [
-    [0, '<span class="k">import</span> { db } <span class="k">from</span> <span class="s">"../lib/db"</span>;'],
-    [9.8, '<span class="k">import</span> { IDLE_DAYS } <span class="k">from</span> <span class="s">"../auth/session"</span>;'],
-    [0, ''],
-    [0, '<span class="k">export async function</span> <span class="f">cleanup</span>() {'],
-    [0, '  <span class="k">await</span> db.invites.<span class="f">deleteExpired</span>();'],
-    [9.95, '  <span class="c">// Sessions nobody has used in IDLE_DAYS days.</span>'],
-    [10.05, '  <span class="k">await</span> db.sessions.<span class="f">deleteIdle</span>(IDLE_DAYS);'],
-    [0, '}'],
-  ];
-  // Which file is open when, and when each one is changed.
-  const FILES = [
-    { key: "mig", name: "0042_last_seen.sql", icon: "SQL", path: "db › migrations › 0042_last_seen.sql", lines: MIG, from: 5.9, to: 6.6, mark: "U" },
-    { key: "ses", name: "session.ts", icon: "TS", path: "src › auth › session.ts", lines: SES, from: 6.6, to: 8.2, mark: "M" },
-    { key: "req", name: "requireUser.ts", icon: "TS", path: "src › middleware › requireUser.ts", lines: REQ, from: 8.2, to: 9.0, mark: "M" },
-    { key: "sock", name: "socket.ts", icon: "TS", path: "src › api › socket.ts", lines: SOCK, from: 9.0, to: 9.7, mark: "M" },
-    { key: "clean", name: "cleanup.ts", icon: "TS", path: "src › jobs › cleanup.ts", lines: CLEAN, from: 9.7, to: 10.4, mark: "M" },
-  ];
-  // Before the first edit the session file is open, being read; once it is
-  // done, back to it for review.
-  const openKey = (t) => t >= 11.2 ? "ses" : t < 5.9 ? "ses0" : (FILES.find((f) => t >= f.from && t < f.to) || FILES[FILES.length - 1]).key;
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function hl(src) {
+    let h = esc(src);
+    h = h.replace(/(`[^`]*`|"[^"]*")/g, '<i class="s">$1</i>');
+    h = h.replace(/\b(import|from|export|async|function|return|await|const|try|catch)\b(?![^<]*<\/i>)/g, '<i class="k">$1</i>');
+    h = h.replace(/\b([A-Za-z_]+)(?=\()(?![^<]*<\/i>)/g, '<i class="f">$1</i>');
+    h = h.replace(/\b(\d+)\b(?![^<]*<\/i>)/g, '<i class="nu">$1</i>');
+    return h.replace(/<i class/g, '<em class').replace(/<\/i>/g, "</em>");
+  }
+  const line = (no, src, cls = "") => `<div class="hx-ln ${cls}"><b>${no}</b><span>${hl(src) || " "}</span></div>`;
 
-  const tree = $("cb-tree"), code = $("cb-code"), chat = $("cb-chat"), scroll = $("cb-scroll"), lines = $("cb-lines");
-  tree.innerHTML = TREE.map(([d, k, name, key, icon]) => {
-    const chev = k === "f" ? "" : k === "d" ? "▾" : "▸";
-    const ic = k === "f" ? `<span class="ic ${icon || ""}">${icon === "sql" ? "SQL" : icon === "json" ? "{}" : icon === "tsx" ? "TSX" : "TS"}</span>` : "";
-    return `<div class="cb-row ${k === "f" ? "" : "dir"}"${key ? ` data-key="${key}"` : ""} style="padding-left:${10 + d * 14}px"><span class="chev">${chev}</span>${ic}<span>${name}</span><span class="b"></span></div>`;
-  }).join("");
-  const rows = Object.fromEntries([...tree.querySelectorAll("[data-key]")].map((el) => [el.dataset.key, el]));
-  lines.innerHTML = READS.map(([, , l]) => `<div>${l}</div>`).join("");
-  const lineEls = [...lines.children];
-
-  const timed = [...root.querySelectorAll("[data-at]")];
-  const spins = [...root.querySelectorAll("[data-spin]")].map((el) => [el, ...el.dataset.spin.split(":").map(Number)]);
+  const code = $("ie-code"), ptr = $("ie-ptr"), key = $("ie-key");
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let t = 0, last = 0, running = false, shown = "";
+  let t = 0, last = 0, running = false, drawn = "";
 
-  function renderEditor() {
-    const key = openKey(t);
-    const file = key === "ses0" ? { ...FILES[1], key: "ses" } : FILES.find((f) => f.key === key);
-    const tabs = (key === "ses0" ? [FILES[1]] : FILES.filter((f) => t >= f.from)).map((f) =>
-      `<div class="hx-tab${f.key === file.key ? " on" : ""}"><i>${f.icon}</i>${f.name}${t >= f.from ? `<span class="${f.mark === "U" ? "u" : "m"}">${f.mark}</span>` : ""}</div>`).join("");
-    const vis = [];
-    for (const [at, html] of file.lines) {
-      const removed = typeof at === "string";
-      const when = removed ? +at.slice(1) : at;
-      if (!removed && at > 0 && t < at) { continue; }
-      vis.push([removed ? (t >= when ? "del" : "") : (at > 0 ? "add" : ""), html, !removed && at > 0 && t - at < 0.25]);
-    }
-    const sig = key + vis.map((v) => v[0] + (v[2] ? "n" : "")).join("") + tabs;
-    if (sig === shown) { return; }
-    shown = sig;
-    const strip = $("cb-tabs");
-    strip.innerHTML = `<div class="cb-tabs-in">${tabs}</div>`;
-    // Keep the open tab in view, as the editor does, even where the window
-    // runs off the edge of the painting.
-    const on = strip.querySelector(".on");
-    const shift = on ? Math.max(0, on.getBoundingClientRect().right - root.getBoundingClientRect().right + 12) : 0;
-    strip.firstChild.style.transform = `translateX(${-shift}px)`;
-    $("cb-crumb").textContent = file.path;
-    let n = 0;
-    code.innerHTML = vis.map(([kind, html, fresh]) =>
-      `<div class="hx-ln ${kind}${fresh ? " new" : ""}"><b>${kind === "del" ? "" : ++n}</b><span>${html || " "}</span></div>`).join("");
+  function at(el, fx, fy) {
+    const s = root.getBoundingClientRect(), r = el.getBoundingClientRect();
+    return [r.left - s.left + r.width * fx, r.top - s.top + r.height * fy];
   }
 
   function render() {
-    const typed = Math.max(0, Math.min(TASK.length, Math.round(((t - 0.2) / 1.1) * TASK.length)));
-    $("cb-typed").textContent = TASK.slice(0, typed);
-    $("cb-caret").classList.toggle("hx-gone", t > 1.35);
+    const typed = Math.max(0, Math.min(ASK.length, Math.round(((t - 2.9) / 1.3) * ASK.length)));
+    const box = t >= 2.6 && t < 9.2;
+    const sent = t >= 4.4;
+    const working = t >= 4.4 && t < 7.2;
+    const decide = t >= 7.2 && t < 9.2;
+    const kept = t >= 9.15;
+    const sel = t >= 1.0 && t < 5.6 ? Math.min(6, Math.floor((t - 1.0) / 0.1) + 1) : 0;
+    const shown = t >= 5.6 ? Math.min(AFTER.length, Math.floor((t - 5.6) / 0.13) + 1) : 0;
 
-    timed.forEach((el) => {
-      const on = t >= +el.dataset.at;
-      if (chat.contains(el)) { el.classList.toggle("hx-gone", !on); }
-      else { el.classList.toggle("hx-off", !on); }
-    });
-    spins.forEach(([el, a, b]) => { el.className = "hx-ico " + (t >= b ? "ok" : t >= a ? "spin" : ""); });
-
-    // Exploring: the latest lines scroll past, then it folds into one line.
-    const read = READS.filter(([at]) => t >= at);
-    const files = read.filter(([, k]) => k).length, searches = read.length - files;
-    lineEls.forEach((el, i) => el.classList.toggle("hx-gone", i >= read.length));
-    lines.style.transform = `translateY(${-Math.max(0, read.length - 4) * 19.5}px)`;
-    const shut = t >= EXPLORED;
-    $("cb-explore").classList.toggle("shut", shut);
-    $("cb-exico").className = "hx-ico " + (shut ? "ok" : "spin");
-    $("cb-exhead").innerHTML = shut ? `Explored <b>${files} files</b> · ${searches} searches` : `Exploring · <b>${files} files</b>`;
-
-    // The tree: the file being read lights up; changed files are marked.
-    const current = t < EXPLORED ? read.filter(([, k]) => k).pop() : null;
-    for (const [key, el] of Object.entries(rows)) {
-      el.classList.toggle("reading", !!current && current[1] === key && t - current[0] < 0.3);
-      const f = FILES.find((x) => x.key === key);
-      const changed = f && t >= f.from;
-      el.classList.toggle("editing", !!f && t >= f.from && t < f.to);
-      el.classList.toggle("m", !!changed && f.mark === "M");
-      el.classList.toggle("u", !!changed && f.mark === "U");
-      el.querySelector(".b").textContent = changed ? f.mark : "";
-      if (key === "mig") { el.classList.toggle("hx-gone", t < 5.9); }
+    const key8 = [typed, box, sent, working, decide, kept, sel, shown].join("|");
+    if (key8 !== drawn) {
+      drawn = key8;
+      let html = line(1, BEFORE[0]) + line(2, BEFORE[1]);
+      if (box) {
+        const q = typed ? esc(ASK.slice(0, typed)) + (sent ? "" : '<span class="hx-caret"></span>') : '<span class="ph">Edit selected code…</span><span class="hx-caret"></span>';
+        const st = working ? '<span class="st"><span class="hx-ico spin"></span>Editing 6 lines…</span>' : decide ? '<span class="st"><span class="hx-add">+11</span> <span class="hx-del">−6</span></span>' : '<span>Sonnet 5 ⌄</span>';
+        const r = decide ? '<span class="r"><span class="hx-btn pri" id="ie-keep">Keep</span><span class="hx-btn">Discard</span></span>' : '<span class="r">Esc to close</span>';
+        html += `<div class="ie-box"><div class="q">${q}</div><div class="m">${st}${r}</div></div>`;
+      }
+      let no = 3;
+      if (kept) {
+        AFTER.forEach((l) => { html += line(no++, l, "kept"); });
+      } else {
+        BEFORE.slice(2).forEach((l, i) => { html += line(shown ? "" : no++, l, shown ? "del" : i < sel ? "sel" : ""); });
+        AFTER.slice(0, shown).forEach((l) => { html += line(no++, l, "add new"); });
+      }
+      TAIL.forEach((l) => { html += line(no++, l); });
+      code.innerHTML = html;
     }
 
-    renderEditor();
-    const over = chat.scrollHeight - scroll.clientHeight;
-    chat.style.transform = `translateY(${-Math.max(0, over)}px)`;
+    // The key, pressed.
+    const keyOn = t >= 1.9 && t < 2.9;
+    key.classList.toggle("on", keyOn);
+    key.classList.toggle("down", t >= 2.25 && t < 2.42);
+    const first = code.children[2];
+    if (keyOn && first) {
+      const [x, y] = at(first, 0, 0);
+      key.style.left = (x + 150) + "px"; key.style.top = (y - 64) + "px";
+    }
+
+    // The pointer: drags across the function, then presses Keep.
+    const drag = t >= 0.5 && t < 1.9, press = t >= 7.9 && t < 9.4;
+    ptr.style.opacity = drag || press ? "1" : "0";
+    const rows = code.querySelectorAll(".hx-ln");
+    if (drag && rows[2] && rows[7]) {
+      const [x, y] = t < 1.0 ? at(rows[2], 0, 0.6) : at(rows[7], 0, 0.6);
+      ptr.style.left = (x + (t < 1.0 ? 54 : 70)) + "px"; ptr.style.top = y + "px";
+    }
+    const keep = $("ie-keep");
+    if (press && keep) {
+      const [x, y] = at(keep, 0.5, 0.6);
+      ptr.style.left = x + "px"; ptr.style.top = y + "px";
+      keep.classList.toggle("press", t >= 8.9 && t < 9.05);
+    }
   }
 
   function frame(now) {
@@ -819,8 +736,10 @@ for (const row of document.querySelectorAll("[data-download]")) {
     requestAnimationFrame(frame);
   }
 
-  // At rest, and for anyone who asked for less motion: the finished change.
+  // At rest, and for anyone who asked for less motion: the new code, waiting for Keep.
   t = REST; render();
+  const pin = new URLSearchParams(location.search).get("t");
+  if (pin) { t = +pin; render(); return; }
   if (still) { return; }
   const go = () => { if (running) { return; } running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); };
   if ("IntersectionObserver" in window) {
