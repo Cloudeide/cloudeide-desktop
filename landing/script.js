@@ -1358,3 +1358,18 @@ for (const row of document.querySelectorAll("[data-download]")) {
     open(link.href);
   });
 })();
+
+/* The brand film: fetched when it nears the screen, played while it is on it. */
+(() => {
+  const v = document.getElementById("filmVideo");
+  if (!v) return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let loaded = false;
+  const load = () => { if (loaded) return; loaded = true; v.querySelectorAll("source").forEach((s) => { s.src = s.dataset.src; }); v.load(); };
+  if (!("IntersectionObserver" in window)) { load(); v.play().catch(() => {}); return; }
+  new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { load(); } }), { rootMargin: "600px 0px" }).observe(v);
+  let visible = false;
+  const play = () => { if (visible) v.play().catch(() => {}); };
+  v.addEventListener("canplay", play);
+  new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; if (visible) { load(); play(); } else { v.pause(); } }), { threshold: 0.35 }).observe(v);
+})();

@@ -479,6 +479,21 @@
   </section>
 
   <!--
+    The brand film, twenty seconds and silent, just before the download it
+    ends on. It loads only when it comes near the screen, plays while it is
+    on screen, and stays on its last frame for anyone who asked for less
+    motion.
+  -->
+  <section class="film" id="film" aria-label="CloudeIDE film">
+    <div class="film-wrap">
+      <video class="film-video" id="filmVideo" muted loop playsinline preload="none" poster="assets/brand-film.jpg" aria-label="A fast montage of code, networks, servers and light, with the words Code is changing the world, Learn, Build, Create, Innovate, The future is being coded, ending on CloudeIDE, Build what's next.">
+        <source data-src="assets/brand-film.webm" type="video/webm">
+        <source data-src="assets/brand-film.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <!--
     The download, last and plain: the platform that matches the visitor is the
     button, the other two are links beside it (script.js), and every link works
     with no script. Linux gets the .deb first because browser sign-in returns

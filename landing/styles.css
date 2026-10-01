@@ -4027,3 +4027,9 @@ a:hover > .learn-arrow {
 @media (max-width: 1080px) { .pc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .pc-two { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
 @media (max-width: 600px) { .pc-grid { grid-template-columns: minmax(0, 1fr); } .pc-plans { padding: 32px 0 72px; } }
+
+/* ===================================================== brand film ======= */
+.film { padding: 24px 0 8px; }
+.film-wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+.film-video { display: block; width: 100%; aspect-ratio: 1920 / 840; border-radius: var(--radius-xl); background: #000; border: 1px solid var(--border); object-fit: cover; }
+@media (max-width: 600px) { .film-wrap { padding: 0 12px; } .film-video { border-radius: var(--radius-lg); } }
