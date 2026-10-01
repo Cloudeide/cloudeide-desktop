@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CloudeIDE Pricing</title>
+<meta name="description" content="CloudeIDE pricing: Free, Pro at $19.99 a month, Business at $49 a month, and Enterprise. One credit is one dollar of usage, and hosting is included." />
+<link rel="canonical" href="https://cloudeide.com/pricing.html" />
+<meta name="theme-color" content="#0d0c0b" />
+
+<!-- Open Graph / social preview -->
+<meta property="og:site_name" content="CloudeIDE" />
+<meta property="og:title" content="CloudeIDE Pricing" />
+<meta property="og:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
+<meta property="og:image" content="https://cloudeide.com/assets/og.png" />
+<meta property="og:url" content="https://cloudeide.com/pricing.html" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CloudeIDE Pricing" />
+<meta name="twitter:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
+<meta name="twitter:image" content="https://cloudeide.com/assets/og.png" />
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/logo-180.png" />
+<link rel="manifest" href="site.webmanifest" />
+<link rel="stylesheet" href="styles.css" />
+
+<script>
+  /*
+    Content is only hidden for the reveal animation once we know the script
+    that un-hides it is actually running, and even then not for long.
+
+    Everything below the hero is `.reveal`, which starts at opacity 0 and is
+    turned on by script.js. That file is loaded at the end of the body, behind
+    two films — so on a slow connection it can arrive late or not at all, and
+    the page sits there blank with its content present but invisible. A page
+    with no animation is a far better failure than a page with no content.
+  */
+  (function () {
+    var root = document.documentElement;
+    root.classList.add("js");
+    setTimeout(function () {
+      if (!window.__revealReady) root.classList.remove("js");
+    }, 2500);
+  })();
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html#top" aria-label="CloudeIDE home">
+      <img src="assets/logo.svg" alt="" width="22" height="22" />
+      <span>CloudeIDE</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="features.html">Product</a>
+      <a href="enterprise.html">Enterprise</a>
+      <a href="pricing.html" aria-current="page">Pricing</a>
+    </nav>
+
+    <!--
+      One button, and it is Download.
+      
+      There were two, and the other one opened a browser build of the editor.
+      That build is gone: it could not open a folder on your machine, could
+      not run a terminal, and could not receive the sign-in it offered, so
+      everything the page promises below was true of one of them and not the
+      other. A page with two front doors where one leads somewhere smaller is
+      a page that has to explain itself.
+    -->
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="https://api.cloudeide.com/app/signin">Sign in</a>
+      <a class="btn btn-primary" href="index.html#desktop"><span class="btn-mark" aria-hidden="true"><img src="assets/logo.svg" alt="" width="14" height="14" /></span>Download</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+    <a href="features.html">Product</a>
+    <a href="enterprise.html">Enterprise</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="index.html#desktop">Download</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!--
+    Pricing. Every figure here is the server's: plan prices, monthly credits,
+    which models each allowance covers, deploy limits and the per-model
+    rates all come from api-server/src/lib/planCatalog.ts, and the credit
+    rules from credits.ts. Change them there first.
+  -->
+  <section class="hero pc-hero" id="top">
+    <div class="wrap">
+      <h1>Pricing</h1>
+      <p class="hero-sub">One credit is one dollar of usage. Every plan has the whole editor and agent; plans differ in credits, models and hosting.</p>
+    </div>
+  </section>
+
+  <section class="pc-plans" aria-label="Plans">
+    <div class="wrap pc-wrap">
+      <div class="pc-grid">
+        <article class="pc-card">
+          <h2>Free</h2>
+          <p class="pc-who">For trying it out</p>
+          <p class="pc-price">$0</p>
+          <p class="pc-lead">Includes:</p>
+          <ul>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>The editor and the agent</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>2 credits a month</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Haiku 4.5 and GPT-5.6 Luna on the plan</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Every other model with credits you buy</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>14 days of hosting: 5 deploys a day, 100 MB</span></li>
+          </ul>
+          <a class="btn btn-secondary pc-cta" href="index.html#desktop">Download</a>
+        </article>
+        <article class="pc-card pc-card--on">
+          <h2>Pro</h2>
+          <p class="pc-who">For developers shipping every day</p>
+          <p class="pc-price">$19.99<small>/mo.</small></p>
+          <p class="pc-lead">Everything in Free, plus:</p>
+          <ul>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>18 credits a month</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Sonnet 5, Haiku 4.5, GPT-5.6 Terra and Luna on the plan</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Opus 5.5, Opus 5 and GPT-5.6 Sol with credits</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Hosting with no time limit</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>50 deploys a day, 5 GB of storage</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Your own domain, previews and roll back</span></li>
+          </ul>
+          <a class="btn btn-primary pc-cta" href="https://api.cloudeide.com/app/settings/billing">Get Pro</a>
+        </article>
+        <article class="pc-card">
+          <h2>Business</h2>
+          <p class="pc-who">For heavy use and small teams</p>
+          <p class="pc-price">$49<small>/mo.</small></p>
+          <p class="pc-lead">Everything in Pro, plus:</p>
+          <ul>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>49 credits a month</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Every model on the plan, Opus 5.5 and GPT-5.6 Sol too</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>200 deploys a day, 25 GB of storage</span></li>
+          </ul>
+          <a class="btn btn-secondary pc-cta" href="https://api.cloudeide.com/app/settings/billing">Get Business</a>
+        </article>
+        <article class="pc-card">
+          <h2>Enterprise</h2>
+          <p class="pc-who">For organisations</p>
+          <p class="pc-price">Custom</p>
+          <p class="pc-lead">Everything in Business, plus:</p>
+          <ul>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Agent Rules every member's agent follows</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Members, roles, teams and workspaces</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Audit log of every admin action</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Usage for each member</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>Seats and one bill for the company</span></li>
+            <li><svg class="pc-ck" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg><span>API keys and verified domains</span></li>
+          </ul>
+          <a class="btn btn-secondary pc-cta" href="mailto:support@cloudeide.com?subject=CloudeIDE%20Enterprise">Contact sales</a>
+        </article>
+      </div>
+      <p class="pc-note">Prices in US dollars, billed monthly. Need more? Buy credits any time, from $5.</p>
+    </div>
+  </section>
+
+  <section class="section pc-credits" id="credits">
+    <div class="wrap pc-wrap pc-two">
+      <div>
+        <h2>How credits work</h2>
+        <p>Your plan's credits are used first, then credits you buy. Each model uses credits at its own rate.</p>
+        <p>Hosting uses the same credits: each deploy is 0.05 credits, and storage is included up to your plan's limit.</p>
+      </div>
+      <div class="pc-table-wrap">
+        <table class="pc-table">
+          <thead><tr><th>Model</th><th>Credits per million tokens</th></tr></thead>
+          <tbody>
+            <tr><td>Haiku 4.5</td><td>3</td></tr>
+            <tr><td>GPT-5.6 Luna</td><td>3.5</td></tr>
+            <tr><td>GPT-5.6 Terra</td><td>9</td></tr>
+            <tr><td>Sonnet 5</td><td>10</td></tr>
+            <tr><td>Opus 5.5</td><td>12.8</td></tr>
+            <tr><td>Opus 5</td><td>16</td></tr>
+            <tr><td>GPT-5.6 Sol</td><td>17.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pc-faq" id="faq">
+    <div class="wrap pc-wrap pc-two">
+      <h2>Questions and answers</h2>
+      <div class="pc-qs">
+        <details class="pc-q">
+          <summary>What is a credit?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>One credit is one US dollar of usage. Each model uses credits at its own rate, per million tokens, shown above. Expensive models use your credits faster; cheap ones make them last.</p>
+        </details>
+        <details class="pc-q">
+          <summary>What happens when my plan's credits run out?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>The agent carries on with credits you have bought. When both are used up it stops until your plan renews or you buy more. It never charges you more than you have.</p>
+        </details>
+        <details class="pc-q">
+          <summary>Do credits I buy expire?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>No. Credits you buy stay in your account until you use them. Your plan's credits renew every month.</p>
+        </details>
+        <details class="pc-q">
+          <summary>Is hosting included?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>Yes. You can deploy from the editor on every plan, with a preview link first, production when you allow it, your own domain and roll back. Each deploy uses 0.05 credits, and storage is included up to your plan's limit. On Free, hosting is a 14-day trial.</p>
+        </details>
+        <details class="pc-q">
+          <summary>Can I change my plan?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>Yes. Upgrade or change plans from Plan and billing in your account.</p>
+        </details>
+        <details class="pc-q">
+          <summary>How does CloudeIDE use my code?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>Your files stay on your computer. What the agent reads to do a job is sent to the model that answers it. The <a href="data-use.html">Data Use Policy</a> has the details.</p>
+        </details>
+        <details class="pc-q">
+          <summary>Where can I ask more questions?<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5l4 4 4-4"/></svg></summary>
+          <p>Write to <a href="mailto:support@cloudeide.com">support@cloudeide.com</a>.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section en-cta pc-end">
+    <div class="wrap">
+      <h2>Get started with CloudeIDE.</h2>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="index.html#desktop">Download</a>
+        <a class="btn btn-secondary" href="mailto:support@cloudeide.com?subject=CloudeIDE%20Enterprise">Contact sales</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <!--
+    Four columns of places you can actually go, the way every product page
+    lays out its footer, and nothing that is not there yet: no docs, no
+    blog, no social accounts. Every link is a section of this page, a page
+    of the dashboard, a download, or one of the three policies.
+  -->
+  <div class="wrap">
+    <div class="footer-grid">
+      <nav class="footer-col" aria-label="Product">
+        <h2 class="footer-head">Product</h2>
+        <a href="features.html#planning">Planning</a>
+        <a href="features.html#agent">Agent</a>
+        <a href="features.html#review">Reviewing changes</a>
+        <a href="features.html#checks">Checks its work</a>
+        <a href="features.html#tab">Tab</a>
+        <a href="features.html#pr">Pull requests</a>
+        <a href="features.html#teams">Team rules</a>
+        <a href="enterprise.html">Enterprise</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+      <nav class="footer-col" aria-label="Account">
+        <h2 class="footer-head">Account</h2>
+        <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+        <a href="https://api.cloudeide.com/app/signup">Create an account</a>
+        <a href="https://api.cloudeide.com/app/">Dashboard</a>
+        <a href="https://api.cloudeide.com/app/settings/billing">Billing</a>
+        <a href="https://api.cloudeide.com/app/settings/credits">Credits</a>
+      </nav>
+      <nav class="footer-col" aria-label="Download">
+        <h2 class="footer-head">Download</h2>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.deb">Linux (.deb)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.tar.gz">Linux (.tar.gz)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-win32-x64.zip">Windows</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-darwin-arm64.zip">macOS (Apple Silicon)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases">All releases</a>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2 class="footer-head">Legal</h2>
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="data-use.html">Data Use Policy</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.svg" alt="" width="18" height="18" />
+        <span>CloudeIDE</span>
+      </a>
+      <span class="footer-copy">© <span id="year">2026</span> CloudeIDE</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

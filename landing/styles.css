@@ -3981,3 +3981,45 @@ a:hover > .learn-arrow {
 .phone-sheet-actions { display: flex; gap: 8px; margin-top: 18px; }
 .phone-sheet-actions .btn { flex: 1; justify-content: center; }
 .phone-sheet-anyway { display: block; margin-top: 14px; text-align: center; font-size: 13px; color: var(--text-tertiary); }
+
+/* ==================================================== pricing page ======= */
+.pc-hero { text-align: center; padding-bottom: 8px; }
+.pc-hero h1 { margin-left: auto; margin-right: auto; }
+.pc-hero .hero-sub { margin-left: auto; margin-right: auto; max-width: 560px; }
+.pc-wrap { max-width: 1240px; }
+.pc-plans { padding: 48px 0 96px; }
+.pc-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.pc-card { display: flex; flex-direction: column; padding: 24px 22px 22px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.pc-card--on { border-color: var(--border-strong); background: var(--panel-raised); }
+.pc-card h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.pc-who { margin: 4px 0 0; font-size: 13.5px; color: var(--text-tertiary); }
+.pc-price { margin: 22px 0 0; font-size: 34px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-primary); }
+.pc-price small { margin-left: 3px; font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-tertiary); }
+.pc-lead { margin: 24px 0 10px; font-size: 13.5px; color: var(--text-secondary); }
+.pc-card ul { list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 9px; }
+.pc-card li { display: flex; gap: 9px; font-size: 14px; line-height: 1.45; color: var(--text-primary); }
+.pc-ck { flex: none; margin-top: 3px; color: var(--text-secondary); }
+.pc-cta { margin-top: auto; align-self: flex-start; }
+.pc-note { margin: 22px 0 0; text-align: center; font-size: 13.5px; color: var(--text-tertiary); }
+.pc-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 48px; align-items: start; }
+.pc-credits h2, .pc-faq h2 { margin: 0; font-size: clamp(26px, 3vw, 34px); letter-spacing: -0.02em; font-weight: 600; }
+.pc-credits p { margin: 16px 0 0; max-width: 420px; font-size: 15px; line-height: 1.6; color: var(--text-secondary); }
+.pc-table-wrap { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.pc-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.pc-table th { text-align: left; font-weight: 500; font-size: 12.5px; color: var(--text-tertiary); padding: 12px 18px; background: var(--panel); border-bottom: 1px solid var(--border); }
+.pc-table td { padding: 12px 18px; color: var(--text-primary); }
+.pc-table tr + tr td { border-top: 1px solid var(--border); }
+.pc-table td:last-child, .pc-table th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.pc-qs { border-top: 1px solid var(--border); }
+.pc-q { border-bottom: 1px solid var(--border); }
+.pc-q summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 2px; font-size: 15px; color: var(--text-primary); }
+.pc-q summary::-webkit-details-marker { display: none; }
+.pc-q summary svg { flex: none; color: var(--text-tertiary); transition: transform 0.2s var(--ease); }
+.pc-q[open] summary svg { transform: rotate(180deg); }
+.pc-q p { margin: 0 0 18px; padding-right: 30px; font-size: 14.5px; line-height: 1.6; color: var(--text-secondary); }
+.pc-q a { color: var(--text-primary); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+.pc-end { text-align: center; }
+.pc-end .hero-actions { justify-content: center; }
+@media (max-width: 1080px) { .pc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .pc-two { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+@media (max-width: 600px) { .pc-grid { grid-template-columns: minmax(0, 1fr); } .pc-plans { padding: 32px 0 72px; } }
