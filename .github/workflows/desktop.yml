@@ -170,6 +170,7 @@ jobs:
       # say which command was stuck. The `--version` probe that run introduced
       # is gone: a window on screen proves more than it did.
       - name: Start it and take a picture
+        if: matrix.arch == 'arm64'
         id: smoke
         timeout-minutes: 15
         run: |
@@ -272,7 +273,7 @@ jobs:
           tag="v${{ steps.package.outputs.version }}"
           asset="CloudeIDE-linux-x64.tar.gz"
           cp "${{ steps.package.outputs.name }}.tar.gz" "$asset"
-          notes="Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app"
+          notes="Windows: run CloudeIDE-win32-x64-setup.exe. It installs for your user, with a Start menu entry and a desktop shortcut if you want one; the .zip runs without installing. The installer is not signed yet, so Windows may say it protected your PC: choose More info, then Run anyway. macOS: open the .dmg for your Mac (arm64 for Apple silicon, x64 for Intel) and drag CloudeIDE into Applications. The app is not notarized yet, so the first time right-click it and choose Open; from a terminal, xattr -dr com.apple.quarantine /Applications/CloudeIDE.app does the same. Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing."
           title="CloudeIDE ${{ steps.package.outputs.version }}"
           # A release that already exists gets its title and notes brought up
           # to date too, not only its files: rebuilding the same version used to
@@ -383,6 +384,21 @@ jobs:
           # 403. build/lib/fetch.ts sends this token when it is set.
           GITHUB_TOKEN: ${{ github.token }}
 
+      # A real installer, not only a zip. The Inno Setup script VS Code ships
+      # (build/win32/code.iss) installs for the current user — no admin
+      # prompt — and adds a Start menu entry, an optional desktop shortcut,
+      # "Open with CloudeIDE" and an uninstaller, the way any Windows app
+      # does. The updater it needs goes into tools\ first. It is not signed:
+      # that needs a code-signing certificate, and until there is one Windows
+      # shows its "protected your PC" screen once, with Run anyway under More
+      # info.
+      - name: Build the installer
+        run: |
+          npm run gulp vscode-win32-x64-inno-updater
+          npm run gulp vscode-win32-x64-user-setup
+        env:
+          NODE_OPTIONS: --max-old-space-size=12288
+
       - name: Package
         id: package
         shell: pwsh
@@ -405,6 +421,14 @@ jobs:
           Get-ChildItem $built | Select-Object -First 20 -ExpandProperty Name
           Write-Output "--- the binary ---"
           Get-Item (Join-Path $built 'CloudeIDE.exe') | Select-Object Name, Length
+          $setup = Get-ChildItem '.build/win32-x64/user-setup' -Filter '*.exe' -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $setup) {
+            Write-Output "::error::the installer step produced no .exe"
+            exit 1
+          }
+          Copy-Item $setup.FullName "$name-setup.exe"
+          Write-Output "--- the installer ---"
+          Get-Item "$name-setup.exe" | Select-Object Name, Length
 
       # No virtual screen here: the runner has a session of its own, so the
       # application is started into it and the desktop is copied off with the
@@ -497,7 +521,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cloudeide-win32-x64
-          path: ${{ steps.package.outputs.name }}.zip
+          path: |
+            ${{ steps.package.outputs.name }}.zip
+            ${{ steps.package.outputs.name }}-setup.exe
           retention-days: 14
 
       - name: Publish a release
@@ -510,21 +536,24 @@ jobs:
           tag="v${{ steps.package.outputs.version }}"
           asset="CloudeIDE-win32-x64.zip"
           cp "${{ steps.package.outputs.name }}.zip" "$asset"
-          notes="Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app"
+          cp "${{ steps.package.outputs.name }}-setup.exe" CloudeIDE-win32-x64-setup.exe
+          notes="Windows: run CloudeIDE-win32-x64-setup.exe. It installs for your user, with a Start menu entry and a desktop shortcut if you want one; the .zip runs without installing. The installer is not signed yet, so Windows may say it protected your PC: choose More info, then Run anyway. macOS: open the .dmg for your Mac (arm64 for Apple silicon, x64 for Intel) and drag CloudeIDE into Applications. The app is not notarized yet, so the first time right-click it and choose Open; from a terminal, xattr -dr com.apple.quarantine /Applications/CloudeIDE.app does the same. Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing."
           title="CloudeIDE ${{ steps.package.outputs.version }}"
           # A release that already exists gets its title and notes brought up
           # to date too, not only its files: rebuilding the same version used to
           # replace every download and leave notes that predated half of them.
           gh release create "$tag" --title "$title" --notes "$notes" \
             || gh release edit "$tag" --title "$title" --notes "$notes"
-          gh release upload "$tag" "$asset" --clobber
+          gh release upload "$tag" "$asset" CloudeIDE-win32-x64-setup.exe --clobber
 
-  # macOS, and Apple Silicon only to begin with.
+  # macOS, for Apple silicon and for Intel.
   #
-  # One unknown at a time is how Linux and then Windows got here, and this is
-  # the third. Every MacBook sold since late 2020 is Apple Silicon, so arm64 is
-  # the one that matters; darwin-x64 is a `vscode-darwin-x64` away once this is
-  # known to work, and is only worth adding for an older Intel machine.
+  # Apple silicon came first, one unknown at a time, as Linux and Windows
+  # did. Intel Macs are still in use and had nothing they could run, so the
+  # same job now builds both, side by side: arm64 natively, and x64 on the
+  # same Apple-silicon runner, which compiles for Intel as a cross target.
+  # The Intel build is not started here — the runner has no Rosetta to run
+  # it — so it is checked by its bundle and its signature instead.
   #
   # Nothing here is signed with an Apple certificate, and none is needed. The
   # $99-a-year Developer Program buys notarization — the absence of the "cannot
@@ -543,6 +572,10 @@ jobs:
     needs: linux
     runs-on: macos-latest
     timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x64]
 
     steps:
       - uses: actions/checkout@v4
@@ -581,7 +614,7 @@ jobs:
           echo "::error::npm ci failed three times"
           exit 1
         env:
-          npm_config_arch: arm64
+          npm_config_arch: ${{ matrix.arch }}
           # @vscode/ripgrep's postinstall downloads its binary from the GitHub
           # API, which answers unauthenticated callers from a shared runner IP
           # with 403 once that IP's hourly budget is spent — it is what failed
@@ -600,7 +633,7 @@ jobs:
       # a Mac. On this runner the compile alone took 58 minutes of run 38,
       # which then ran out of time; bundling takes a few.
       - name: Build
-        run: npm run gulp vscode-darwin-arm64
+        run: npm run gulp vscode-darwin-${{ matrix.arch }}
         env:
           # 12 GB, like the others. A 6 GB ceiling was tried on the theory that
           # the slowness was swap: run 32 took 1 h 44 min with it against
@@ -616,7 +649,7 @@ jobs:
         id: package
         run: |
           set -euo pipefail
-          built="../VSCode-darwin-arm64"
+          built="../VSCode-darwin-${{ matrix.arch }}"
           app="${built}/CloudeIDE.app"
           test -d "$app" || { echo "::error::the build produced no CloudeIDE.app"; ls -la "$built" 2>/dev/null; exit 1; }
 
@@ -633,13 +666,26 @@ jobs:
           codesign --verify --deep --strict "$app" && echo "ad-hoc signature verifies"
 
           version="$(node -p "require('./package.json').version")"
-          name="CloudeIDE-darwin-arm64-${version}"
+          name="CloudeIDE-darwin-${{ matrix.arch }}-${version}"
 
           # ditto, not zip. An .app bundle is full of symlinks — every Electron
           # framework is a tree of them — and plain zip follows them, producing
           # an archive several times the size that unpacks into an application
           # whose signature no longer verifies.
           ditto -c -k --sequesterRsrc --keepParent "$app" "${name}.zip"
+
+          # And a disk image, which is how a Mac app is expected to arrive:
+          # it opens to the app beside a link to Applications, and installing
+          # is dragging one onto the other. ditto again, so the bundle's
+          # symlinks and signature come through intact.
+          staging="$(mktemp -d)"
+          ditto "$app" "${staging}/CloudeIDE.app"
+          ln -s /Applications "${staging}/Applications"
+          hdiutil create -volname "CloudeIDE" -srcfolder "$staging" -ov -format UDZO "${name}.dmg"
+          hdiutil verify "${name}.dmg"
+          ls -lh "${name}.dmg"
+          echo "--- the binary's architecture ---"
+          lipo -archs "${app}/Contents/MacOS/$(ls "${app}/Contents/MacOS" | head -1)" || true
 
           echo "name=${name}" >> "$GITHUB_OUTPUT"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
@@ -650,6 +696,7 @@ jobs:
           ls -l "${app}/Contents/MacOS"
 
       - name: Write the project
+        if: matrix.arch == 'arm64'
         run: build/cloudeide/sample-project.sh /tmp/ws
 
       # Started and photographed, as on the other two platforms. The runner has
@@ -708,7 +755,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cloudeide-macos-screenshot
+          name: cloudeide-macos-${{ matrix.arch }}-screenshot
           path: |
             /tmp/desktop.png
             /tmp/app.log
@@ -717,8 +764,10 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cloudeide-darwin-arm64
-          path: ${{ steps.package.outputs.name }}.zip
+          name: cloudeide-darwin-${{ matrix.arch }}
+          path: |
+            ${{ steps.package.outputs.name }}.zip
+            ${{ steps.package.outputs.name }}.dmg
           retention-days: 14
 
       - name: Publish a release
@@ -728,13 +777,14 @@ jobs:
         run: |
           set -euo pipefail
           tag="v${{ steps.package.outputs.version }}"
-          asset="CloudeIDE-darwin-arm64.zip"
+          asset="CloudeIDE-darwin-${{ matrix.arch }}.zip"
           cp "${{ steps.package.outputs.name }}.zip" "$asset"
-          notes="Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing. Windows: unzip and run CloudeIDE.exe. macOS (Apple Silicon): unzip, move CloudeIDE.app to Applications, then right-click it and choose Open the first time. The build is not notarized, so a double-click is refused once. Same thing from a terminal: xattr -dr com.apple.quarantine /Applications/CloudeIDE.app"
+          cp "${{ steps.package.outputs.name }}.dmg" "CloudeIDE-darwin-${{ matrix.arch }}.dmg"
+          notes="Windows: run CloudeIDE-win32-x64-setup.exe. It installs for your user, with a Start menu entry and a desktop shortcut if you want one; the .zip runs without installing. The installer is not signed yet, so Windows may say it protected your PC: choose More info, then Run anyway. macOS: open the .dmg for your Mac (arm64 for Apple silicon, x64 for Intel) and drag CloudeIDE into Applications. The app is not notarized yet, so the first time right-click it and choose Open; from a terminal, xattr -dr com.apple.quarantine /Applications/CloudeIDE.app does the same. Linux: install the .deb (sudo apt install ./CloudeIDE-linux-x64.deb) so browser sign-in can return to the app; the .tar.gz runs without installing."
           title="CloudeIDE ${{ steps.package.outputs.version }}"
           # A release that already exists gets its title and notes brought up
           # to date too, not only its files: rebuilding the same version used to
           # replace every download and leave notes that predated half of them.
           gh release create "$tag" --title "$title" --notes "$notes" \
             || gh release edit "$tag" --title "$title" --notes "$notes"
-          gh release upload "$tag" "$asset" --clobber
+          gh release upload "$tag" "$asset" "CloudeIDE-darwin-${{ matrix.arch }}.dmg" --clobber
