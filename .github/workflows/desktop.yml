@@ -170,7 +170,6 @@ jobs:
       # say which command was stuck. The `--version` probe that run introduced
       # is gone: a window on screen proves more than it did.
       - name: Start it and take a picture
-        if: matrix.arch == 'arm64'
         id: smoke
         timeout-minutes: 15
         run: |
@@ -705,6 +704,7 @@ jobs:
       # of this is allowed to fail the job. The package is the deliverable; the
       # picture is evidence about it.
       - name: Start it and take a picture
+        if: matrix.arch == 'arm64'
         id: smoke
         timeout-minutes: 15
         run: |
