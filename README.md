@@ -23,8 +23,8 @@ with an Apply button.
 
 | | |
 |---|---|
-| **Windows** | [CloudeIDE-win32-x64.zip](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-win32-x64.zip) |
-| **macOS** | Apple Silicon — building; not published yet |
+| **Windows** | [Installer (.exe)](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-win32-x64-setup.exe) · [.zip](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-win32-x64.zip) |
+| **macOS** | [Apple silicon (.dmg)](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-darwin-arm64.dmg) · [Intel (.dmg)](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-darwin-x64.dmg) |
 | **Linux** | [.deb](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.deb) · [.tar.gz](https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.tar.gz) |
 
 Sign in from inside the app. There is no key to paste and no key to lose —

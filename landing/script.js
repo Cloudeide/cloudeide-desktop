@@ -287,7 +287,7 @@ for (const row of document.querySelectorAll("[data-download]")) {
   let name = "";
   if (!onPhone && !/mac/i.test(platform) && !/Mac OS X/i.test(ua)) {
     if (/win/i.test(platform) || /Windows/i.test(ua)) {
-      file = "CloudeIDE-win32-x64.zip";
+      file = "CloudeIDE-win32-x64-setup.exe";
       name = "Windows";
     } else if ((/linux|cros/i.test(platform) || /Linux|CrOS/i.test(ua)) && !/Android/i.test(ua)) {
       file = "CloudeIDE-linux-x64.deb";
