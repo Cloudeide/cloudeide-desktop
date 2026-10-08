@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CloudeIDE for iPhone</title>
+<meta name="description" content="CloudeIDE for iPhone is coming soon: start an agent from your phone, watch every step, get notified when it is done, and review and deploy from anywhere." />
+<link rel="canonical" href="https://cloudeide.com/ios.html" />
+<meta name="theme-color" content="#0d0c0b" />
+
+<!-- Open Graph / social preview -->
+<meta property="og:site_name" content="CloudeIDE" />
+<meta property="og:title" content="CloudeIDE for iPhone" />
+<meta property="og:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
+<meta property="og:image" content="https://cloudeide.com/assets/og.png" />
+<meta property="og:url" content="https://cloudeide.com/ios.html" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CloudeIDE for iPhone" />
+<meta name="twitter:description" content="Works directly with your codebase. It plans, changes every file a job touches, runs your tests, and nothing lands until you keep it. Built on VS Code." />
+<meta name="twitter:image" content="https://cloudeide.com/assets/og.png" />
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/logo-180.png" />
+<link rel="manifest" href="site.webmanifest" />
+<link rel="stylesheet" href="styles.css" />
+
+<script>
+  /*
+    Content is only hidden for the reveal animation once we know the script
+    that un-hides it is actually running, and even then not for long.
+
+    Everything below the hero is `.reveal`, which starts at opacity 0 and is
+    turned on by script.js. That file is loaded at the end of the body, behind
+    two films — so on a slow connection it can arrive late or not at all, and
+    the page sits there blank with its content present but invisible. A page
+    with no animation is a far better failure than a page with no content.
+  */
+  (function () {
+    var root = document.documentElement;
+    root.classList.add("js");
+    setTimeout(function () {
+      if (!window.__revealReady) root.classList.remove("js");
+    }, 2500);
+  })();
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html#top" aria-label="CloudeIDE home">
+      <img src="assets/logo.svg" alt="" width="22" height="22" />
+      <span>CloudeIDE</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="features.html">Product</a>
+      <a href="enterprise.html">Enterprise</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="ios.html" aria-current="page">iOS<span class="nav-soon">Soon</span></a>
+    </nav>
+
+    <!--
+      One button, and it is Download.
+      
+      There were two, and the other one opened a browser build of the editor.
+      That build is gone: it could not open a folder on your machine, could
+      not run a terminal, and could not receive the sign-in it offered, so
+      everything the page promises below was true of one of them and not the
+      other. A page with two front doors where one leads somewhere smaller is
+      a page that has to explain itself.
+    -->
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="https://api.cloudeide.com/app/signin">Sign in</a>
+      <a class="btn btn-primary" href="index.html#desktop"><span class="btn-mark" aria-hidden="true"><img src="assets/logo.svg" alt="" width="14" height="14" /></span>Download</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+    <a href="features.html">Product</a>
+    <a href="enterprise.html">Enterprise</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="ios.html">iOS (coming soon)</a>
+    <a href="index.html#desktop">Download</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!--
+    CloudeIDE for iPhone, which does not exist yet. The page says so first,
+    in the badge and in the last section, and every screen on it is a design
+    for the app rather than a picture of one.
+  -->
+  <section class="hero io-hero" id="top">
+    <div class="wrap">
+      <p class="io-soon"><span></span>Coming soon</p>
+      <h1>CloudeIDE for iPhone.</h1>
+      <p class="hero-sub">Start an agent from your phone, watch every step it takes, and ship when it is ready.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="index.html#desktop">Get the desktop app</a>
+      </div>
+    </div>
+    <div class="wrap io-wrap">
+      <div class="io-panel io-panel--hero" style="background-image:url('assets/paint/hero.jpg')"><div class="io-phone io-phone--hero"><div class="io-screen"><div class="io-status"><b>9:41</b><span class="io-isl"></span><i><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".45"/></svg></i></div>
+  <div class="io-top"><span class="io-back">‹</span><div><b>acme-app</b><small>agent/pricing · Sonnet 5</small></div><span class="io-dots">···</span></div>
+  <div class="io-chat">
+    <div class="io-you">Add a pricing page with monthly and yearly plans.</div>
+    <div class="io-steps">
+      <div><span class="io-ok"></span>Read 8 files</div>
+      <div><span class="io-ok"></span>Searched <code>PlanCard</code> · 3 results</div>
+      <div><span class="io-ok"></span>Created <code>PricingPage.tsx</code> <em class="p">+22</em></div>
+      <div><span class="io-ok"></span>Edited <code>App.tsx</code>, <code>Nav.tsx</code> <em class="p">+3</em> <em class="m">−1</em></div>
+      <div><span class="io-ok"></span>Ran tests · 6 passed</div>
+      <div class="no"><span class="io-no"></span>Lint: 1 warning left in <code>Nav.tsx</code></div>
+    </div>
+    <p class="io-say">Done. Pricing is at <code>/pricing</code> with a monthly and yearly toggle. 5 files changed.</p>
+    <div class="io-acts"><span class="pri">Review changes</span><span>Deploy preview</span></div>
+  </div>
+  <div class="io-compose"><span>Ask for a change…</span><i class="io-mic"></i></div>
+<span class="io-home"></span></div></div></div>
+    </div>
+  </section>
+
+  <section class="io-sec">
+    <div class="wrap io-wrap">
+      <div class="io-copy">
+        <p class="io-k">Your projects</p>
+        <h2>Every project, one tap away.</h2>
+        <p>See what each agent is doing at a glance: working, live, waiting on you, or idle. Tap one to pick up where it is.</p>
+      </div>
+      <div class="io-panel" style="background-image:url('assets/paint/plan.jpg')"><div class="io-phone "><div class="io-screen"><div class="io-status"><b>9:41</b><span class="io-isl"></span><i><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".45"/></svg></i></div>
+  <div class="io-big">Projects</div>
+  <div class="io-search">Search</div>
+  <div class="io-list">
+    <div class="io-row"><span class="io-av">A</span><div><b>acme-app</b><small>Cloudeide/acme-app</small></div><em class="io-tag work"><span class="io-spin"></span>Working</em></div>
+    <div class="io-row"><span class="io-av">L</span><div><b>landing</b><small>acme.com</small></div><em class="io-tag live">Live</em></div>
+    <div class="io-row"><span class="io-av">M</span><div><b>mobile-web</b><small>Cloudeide/mobile-web</small></div><em class="io-tag ask">Needs you</em></div>
+    <div class="io-row"><span class="io-av">S</span><div><b>api-server</b><small>Updated 2h ago</small></div><em class="io-tag">Idle</em></div>
+  </div>
+  <div class="io-new">+ New task</div>
+<span class="io-home"></span></div></div></div>
+    </div>
+  </section>
+  <section class="io-sec io-sec--flip">
+    <div class="wrap io-wrap">
+      <div class="io-copy">
+        <p class="io-k">Start anywhere</p>
+        <h2>Say it, or type it.</h2>
+        <p>Describe the job in a sentence or out loud, pick a model, and the agent starts. On the train, in a queue, between meetings.</p>
+      </div>
+      <div class="io-panel" style="background-image:url('assets/paint/code.jpg')"><div class="io-phone "><div class="io-screen"><div class="io-status"><b>9:41</b><span class="io-isl"></span><i><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".45"/></svg></i></div>
+  <div class="io-top"><span class="io-back">‹</span><div><b>New task</b><small>acme-app</small></div><span class="io-dots"></span></div>
+  <div class="io-sheet">
+    <p class="io-dict">Make the checkout button bigger on phones, and keep it above the fold<span class="io-car"></span></p>
+    <div class="io-wave"><i style="height:6px"></i><i style="height:14px"></i><i style="height:22px"></i><i style="height:12px"></i><i style="height:30px"></i><i style="height:18px"></i><i style="height:26px"></i><i style="height:10px"></i><i style="height:20px"></i><i style="height:34px"></i><i style="height:16px"></i><i style="height:24px"></i><i style="height:8px"></i><i style="height:28px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:10px"></i><i style="height:6px"></i></div>
+    <div class="io-chips"><span>Opus 5.5 ⌄</span><span>Agent ⌄</span><span class="io-send">↑</span></div>
+  </div>
+  <div class="io-micbig"><i></i></div>
+<span class="io-home"></span></div></div></div>
+    </div>
+  </section>
+  <section class="io-sec">
+    <div class="wrap io-wrap">
+      <div class="io-copy">
+        <p class="io-k">Stay in the loop</p>
+        <h2>It tells you when it is done.</h2>
+        <p>A notification when the work is finished, when the agent has a question, and when a preview is live. You do not need to keep the app open.</p>
+      </div>
+      <div class="io-panel" style="background-image:url('assets/paint/review.jpg')"><div class="io-phone io-phone--lock"><div class="io-screen"><div class="io-status"><b>9:41</b><span class="io-isl"></span><i><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".45"/></svg></i></div>
+  <div class="io-lock">
+    <small>Thursday 8 October</small>
+    <b>9:41</b>
+  </div>
+  <div class="io-notes">
+    <div class="io-note"><div class="io-nh"><span class="io-app"></span>CloudeIDE<em>now</em></div><b>Agent finished · Pricing page</b><p>5 files · <span class="p">+25</span> <span class="m">−1</span> · 6 tests passed</p></div>
+    <div class="io-note"><div class="io-nh"><span class="io-app"></span>CloudeIDE<em>2m ago</em></div><b>Needs your answer · mobile-web</b><p>Monthly only, or monthly and yearly?</p></div>
+    <div class="io-note"><div class="io-nh"><span class="io-app"></span>CloudeIDE<em>9m ago</em></div><b>Preview is live · landing</b><p>acme-app-preview.cloudeide.app</p></div>
+  </div>
+<span class="io-home"></span></div></div></div>
+    </div>
+  </section>
+  <section class="io-sec io-sec--flip">
+    <div class="wrap io-wrap">
+      <div class="io-copy">
+        <p class="io-k">Review and ship</p>
+        <h2>Review, merge and deploy from your phone.</h2>
+        <p>Read what changed, line by line. Merge the pull request, open the preview, and allow production with one tap.</p>
+      </div>
+      <div class="io-panel" style="background-image:url('assets/paint/ship.jpg')"><div class="io-phone "><div class="io-screen"><div class="io-status"><b>9:41</b><span class="io-isl"></span><i><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".45"/></svg></i></div>
+  <div class="io-top"><span class="io-back">‹</span><div><b>Pull request #42</b><small>agent/pricing → main</small></div><span class="io-dots">···</span></div>
+  <div class="io-pr">
+    <div class="io-files"><div><code>PricingPage.tsx</code><em class="p">+22</em></div><div><code>App.tsx</code><em class="p">+2</em></div><div><code>Nav.tsx</code><span><em class="p">+1</em> <em class="m">−1</em></span></div></div>
+    <div class="io-diff"><div class="d">- &lt;a href="#pricing"&gt;Pricing&lt;/a&gt;</div><div class="a">+ &lt;Link to="/pricing"&gt;Pricing&lt;/Link&gt;</div></div>
+    <div class="io-check"><span class="io-ok"></span>All checks passed</div>
+    <div class="io-merge">Merge pull request</div>
+    <div class="io-lab">DEPLOYMENTS</div>
+    <div class="io-dep"><span class="io-ok"></span><div><b>Preview</b><small>acme-app-preview.cloudeide.app</small></div><em>Open ↗</em></div>
+    <div class="io-dep"><span class="io-spin"></span><div><b>Production</b><small>acme.com</small></div><span class="io-allow">Allow</span></div>
+  </div>
+<span class="io-home"></span></div></div></div>
+    </div>
+  </section>
+
+  <section class="section io-where">
+    <div class="wrap io-wrap">
+      <p class="io-k">Where your code lives</p>
+      <h2>In your repository, not on your phone.</h2>
+      <div class="io-flow">
+        <div><b>Your iPhone</b><p>Where you ask, watch and approve.</p></div>
+        <span>→</span>
+        <div><b>The agent</b><p>Reads, writes and tests the code.</p></div>
+        <span>→</span>
+        <div><b>Your GitHub repository</b><p>On its own branch, as a pull request. Nothing reaches main until you merge.</p></div>
+        <span>→</span>
+        <div><b>Live</b><p>A preview link first, production when you allow it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section en-cta io-end">
+    <div class="wrap">
+      <p class="io-soon"><span></span>Coming soon</p>
+      <h2>CloudeIDE for iPhone is on its way.</h2>
+      <p class="io-endp">The desktop app is ready today, on Mac, Windows and Linux.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="index.html#desktop">Download</a>
+        <a class="btn btn-secondary" href="features.html">Learn about CloudeIDE</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <!--
+    Four columns of places you can actually go, the way every product page
+    lays out its footer, and nothing that is not there yet: no docs, no
+    blog, no social accounts. Every link is a section of this page, a page
+    of the dashboard, a download, or one of the three policies.
+  -->
+  <div class="wrap">
+    <div class="footer-grid">
+      <nav class="footer-col" aria-label="Product">
+        <h2 class="footer-head">Product</h2>
+        <a href="features.html#planning">Planning</a>
+        <a href="features.html#agent">Agent</a>
+        <a href="features.html#review">Reviewing changes</a>
+        <a href="features.html#checks">Checks its work</a>
+        <a href="features.html#tab">Tab</a>
+        <a href="features.html#pr">Pull requests</a>
+        <a href="features.html#teams">Team rules</a>
+        <a href="enterprise.html">Enterprise</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="ios.html">iOS (coming soon)</a>
+      </nav>
+      <nav class="footer-col" aria-label="Account">
+        <h2 class="footer-head">Account</h2>
+        <a href="https://api.cloudeide.com/app/signin">Sign in</a>
+        <a href="https://api.cloudeide.com/app/signup">Create an account</a>
+        <a href="https://api.cloudeide.com/app/">Dashboard</a>
+        <a href="https://api.cloudeide.com/app/settings/billing">Billing</a>
+        <a href="https://api.cloudeide.com/app/settings/credits">Credits</a>
+      </nav>
+      <nav class="footer-col" aria-label="Download">
+        <h2 class="footer-head">Download</h2>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.deb">Linux (.deb)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-linux-x64.tar.gz">Linux (.tar.gz)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-win32-x64-setup.exe">Windows</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-darwin-arm64.dmg">macOS (Apple silicon)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases/latest/download/CloudeIDE-darwin-x64.dmg">macOS (Intel)</a>
+        <a href="https://github.com/Cloudeide/cloudeide-desktop/releases">All releases</a>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2 class="footer-head">Legal</h2>
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="data-use.html">Data Use Policy</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.svg" alt="" width="18" height="18" />
+        <span>CloudeIDE</span>
+      </a>
+      <span class="footer-copy">© <span id="year">2026</span> CloudeIDE</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
