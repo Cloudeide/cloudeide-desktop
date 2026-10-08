@@ -132,6 +132,92 @@
     </div>
   </section>
 
+  <!--
+    Connecting the phone to the computer you already use: the same account on
+    both, a code to approve once on the computer, and from then on the phone
+    drives the agent running there. Drawn and animated in the page; at rest,
+    and for anyone who asked for less motion, it shows the finished state.
+  -->
+  <section class="io-sec io-connect">
+    <div class="wrap io-wrap">
+      <div class="io-copy">
+        <p class="io-k">Already on your computer?</p>
+        <h2>Sign in with the same account.</h2>
+        <p>Your computer shows up on your phone. Approve it once with a code, and the agent on your Mac or PC takes work from your iPhone, wherever you are.</p>
+      </div>
+      <div class="io-panel cn-panel" style="background-image:url('assets/paint/rules.jpg')">
+        <div class="cn-fit" id="cnFit">
+          <div class="cn-stage" id="cn" role="img" aria-label="A MacBook running CloudeIDE and an iPhone. You sign in on the iPhone with the same email, pick the MacBook from your computers, and approve a six-digit code on the Mac. Then you ask from the phone for an FAQ on the pricing page, and the agent on the Mac creates the file, runs the tests and reports back to the phone.">
+            <div class="cn-mac">
+              <div class="cn-lid"><div class="cn-scr">
+                <div class="cn-bar"><span class="cn-dots"><i></i><i></i><i></i></span><span class="cn-title">acme-app — CloudeIDE</span></div>
+                <div class="cn-ide">
+                  <div class="cn-tree">
+                    <div class="d">src</div><div class="d i1">pages</div><div class="i2">Home.tsx</div><div class="i2 on" id="cn-pp">PricingPage.tsx</div><div class="i2 cn-new" id="cn-faqf">FAQ.tsx<em>U</em></div><div class="i1">App.tsx</div><div>package.json</div>
+                  </div>
+                  <div class="cn-code" id="cn-code"></div>
+                  <div class="cn-side">
+                    <div class="cn-side-h">Agent</div>
+                    <div class="cn-from" id="cn-from"><small>From iPhone</small>Add an FAQ to the pricing page.</div>
+                    <div class="cn-ms" id="cn-ms"></div>
+                  </div>
+                </div>
+                <div class="cn-modal" id="cn-modal">
+                  <b>Connect iPhone?</b>
+                  <p>An iPhone signed in as you@acme.com wants to control this computer.</p>
+                  <div class="cn-code6">482 913</div>
+                  <div class="cn-btns"><span>Deny</span><span class="pri" id="cn-allow">Allow</span></div>
+                </div>
+                <div class="cn-toast" id="cn-toast"><span class="io-ok"></span>iPhone connected</div>
+              </div></div>
+              <div class="cn-base"><i></i></div>
+            </div>
+
+            <svg class="cn-link" id="cn-link" viewBox="0 0 980 580" preserveAspectRatio="none" aria-hidden="true">
+              <path id="cn-path" d="M 742 330 C 700 330, 690 250, 640 250" />
+              <circle r="4" id="cn-p1"/><circle r="4" id="cn-p2"/><circle r="4" id="cn-p3"/>
+            </svg>
+
+            <div class="io-phone cn-phone"><div class="io-screen"><div class="io-status"><b>9:41</b><span class="io-isl"></span><i><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="currentColor" opacity=".45"/></svg></i></div>
+              <div class="cn-v" data-v="signin">
+                <div class="cn-brand"><span class="io-app"></span></div>
+                <b class="cn-h">Sign in to CloudeIDE</b>
+                <p class="cn-sub">Use the account on your computer.</p>
+                <div class="cn-field"><span id="cn-email"></span><i class="cn-car"></i></div>
+                <div class="cn-cta" id="cn-cont">Continue</div>
+              </div>
+              <div class="cn-v" data-v="devices">
+                <b class="cn-h2">Your computers</b>
+                <div class="cn-dev on" id="cn-dev"><span class="cn-ic"></span><div><b>MacBook Pro</b><small>acme-app is open</small></div><em class="io-tag live">Online</em></div>
+                <div class="cn-dev"><span class="cn-ic pc"></span><div><b>Studio PC</b><small>Last seen yesterday</small></div><em class="io-tag">Offline</em></div>
+                <p class="cn-note">Keep CloudeIDE open on your computer to work from here.</p>
+              </div>
+              <div class="cn-v" data-v="code">
+                <b class="cn-h2">Approve on your MacBook</b>
+                <p class="cn-sub">Check that this code shows on your Mac, then choose Allow there.</p>
+                <div class="cn-big6">482 913</div>
+                <div class="cn-wait"><span class="io-spin"></span>Waiting for your Mac</div>
+              </div>
+              <div class="cn-v" data-v="chat">
+                <div class="io-top"><span class="io-back">‹</span><div><b>MacBook Pro</b><small>acme-app · connected</small></div><span class="io-dots">···</span></div>
+                <div class="cn-chat">
+                  <div class="io-you" id="cn-you">Add an FAQ to the pricing page.</div>
+                  <div class="io-steps cn-steps" id="cn-steps"></div>
+                  <p class="io-say" id="cn-done">Done on your MacBook. <code>FAQ.tsx</code> is on the pricing page, 8 tests pass.</p>
+                </div>
+                <div class="io-compose"><span id="cn-typed">Ask for a change…</span><i class="io-mic"></i></div>
+              </div>
+              <span class="cn-tap" id="cn-tap"></span>
+            </div></div>
+
+            <svg class="pl-ptr cn-ptr" id="cn-ptr" viewBox="0 0 18 22" aria-hidden="true"><path d="M2 1.5v16.8l4.4-4.1 2.9 6.6 2.8-1.2-2.9-6.5h6.1z" fill="#f2f2f0" stroke="#0d0c0b" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <section class="io-sec">
     <div class="wrap io-wrap">
       <div class="io-copy">
@@ -209,6 +295,25 @@
     <div class="io-dep"><span class="io-spin"></span><div><b>Production</b><small>acme.com</small></div><span class="io-allow">Allow</span></div>
   </div>
 <span class="io-home"></span></div></div></div>
+    </div>
+  </section>
+
+  <!--
+    What the first version does, and nothing it does not: five things, the
+    rest after people have used it and said what they need.
+  -->
+  <section class="section io-v1">
+    <div class="wrap io-wrap">
+      <p class="io-k">The first version</p>
+      <h2>Five things, done well.</h2>
+      <p class="io-v1p">The first iPhone app does what you need away from your desk, and nothing else. What comes next depends on what you ask for.</p>
+      <div class="v1-grid">
+        <div class="v1-card v1c-1"><div class="v1-vis"><div class="v1-b me">What does useTheme do?</div><div class="v1-b">It reads the saved theme, applies it to the page, and updates it when you switch.</div></div><h3>Chat</h3><p>Ask about any project, or anything at all, with the models on your plan.</p></div>
+        <div class="v1-card v1c-2"><div class="v1-vis"><div class="v1-wave"><i style="height:8px"></i><i style="height:18px"></i><i style="height:30px"></i><i style="height:14px"></i><i style="height:36px"></i><i style="height:22px"></i><i style="height:10px"></i><i style="height:28px"></i><i style="height:16px"></i><i style="height:34px"></i><i style="height:12px"></i><i style="height:24px"></i><i style="height:8px"></i><i style="height:20px"></i></div><div class="v1-mic"></div></div><h3>New task, typed or spoken</h3><p>Describe the job, or say it, and the agent starts.</p></div>
+        <div class="v1-card v1c-3"><div class="v1-vis"><div class="v1-l"><span class="io-ok"></span>Read 4 files</div><div class="v1-l"><span class="io-ok"></span>Created <code>FAQ.tsx</code> <em class="p">+34</em></div><div class="v1-l"><span class="io-ok"></span>Ran tests · 8 passed</div><div class="v1-l warn"><span class="io-no"></span>1 lint warning left</div></div><h3>Live activity</h3><p>Every step the agent takes, and anything it could not do.</p></div>
+        <div class="v1-card v1c-4"><div class="v1-vis"><div class="v1-n"><div><span class="io-app"></span>CLOUDEIDE<em>now</em></div><b>Agent finished · Pricing FAQ</b><p>2 files · <span class="p">+36</span> · 8 tests passed</p></div></div><h3>Notifications</h3><p>When the work is done, when it has a question, when a preview is live.</p></div>
+        <div class="v1-card v1c-5"><div class="v1-vis"><div class="v1-diff"><div class="a">+ &lt;FAQ items={questions} /&gt;</div><div class="d">- {/* FAQ coming */}</div></div><div class="v1-dep"><span>Production · acme.com</span><b>Allow</b></div></div><h3>Review and deploy</h3><p>Read the changes, keep or undo them, and ship to a preview or to production.</p></div>
+      </div>
     </div>
   </section>
 

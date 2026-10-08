@@ -1373,3 +1373,123 @@ for (const row of document.querySelectorAll("[data-download]")) {
   v.addEventListener("canplay", play);
   new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; if (visible) { load(); play(); } else { v.pause(); } }), { threshold: 0.35 }).observe(v);
 })();
+
+/* The iOS page: an iPhone connects to the Mac you already use, then drives it. */
+(() => {
+  const root = document.getElementById("cn");
+  if (!root) return;
+  const $ = (id) => document.getElementById(id);
+  const fit = $("cnFit"), panel = fit.parentElement;
+  // Wide: the whole desk. Narrow: zoom in on the phone and the Mac's agent
+  // panel beside it, so the phone stays readable.
+  const scale = () => {
+    const W = panel.clientWidth, Hh = panel.clientHeight;
+    if (W >= 700) { const s = Math.min(1, (W - 24) / 980, (Hh - 20) / 580); fit.style.transform = `translate(-50%, -50%) scale(${s})`; return; }
+    const s = Math.min(W / 520, (Hh - 10) / 580), shift = (980 * s - W) / 2 + 6;
+    fit.style.transform = `translate(calc(-50% - ${shift}px), -50%) scale(${s})`;
+  };
+  scale(); addEventListener("resize", scale);
+
+  const LOOP = 15.5, REST = 13.4;
+  const EMAIL = "you@acme.com", ASK = "Add an FAQ to the pricing page.";
+  const views = [...root.querySelectorAll(".cn-v")];
+  const BASE = [
+    ['<span class="k">export function</span> <span class="f">PricingPage</span>() {', 0],
+    ['  <span class="k">return</span> (', 0],
+    ['    &lt;<span class="t">section</span> className=<span class="s">"pricing"</span>&gt;', 0],
+    ['      &lt;<span class="t">PlanCards</span> /&gt;', 0],
+    ['      &lt;<span class="t">FAQ</span> items={questions} /&gt;', 10.6],
+    ['    &lt;/<span class="t">section</span>&gt;', 0],
+    ['  );', 0],
+    ['}', 0],
+    ['', 0],
+    ['<span class="k">const</span> questions = [', 9.8],
+    ['  { q: <span class="s">"Can I change plans?"</span>, a: <span class="s">"Yes, any time."</span> },', 10.0],
+    ['  { q: <span class="s">"Do credits expire?"</span>, a: <span class="s">"Bought ones never do."</span> },', 10.2],
+    ['];', 10.3],
+  ];
+  const STEPS = [[9.3, "Read 4 files"], [10.1, 'Created <code>FAQ.tsx</code> <em class="p">+34</em>'], [10.7, 'Edited <code>PricingPage.tsx</code> <em class="p">+2</em>'], [11.6, "Ran tests · 8 passed"]];
+  const ptr = $("cn-ptr"), tap = $("cn-tap"), link = $("cn-link"), path = $("cn-path");
+  const dots = [$("cn-p1"), $("cn-p2"), $("cn-p3")];
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t = 0, last = 0, running = false, drawn = "", tapped = -1;
+
+  function tapAt(el, id) {
+    if (tapped === id) return; tapped = id;
+    const s = root.getBoundingClientRect(), r = el.getBoundingClientRect(), k = s.width / 980;
+    const host = tap.parentElement.getBoundingClientRect();
+    tap.style.left = ((r.left + r.width / 2 - host.left) / k) + "px"; tap.style.top = ((r.top + r.height / 2 - host.top) / k) + "px";
+    tap.classList.remove("on"); void tap.offsetWidth; tap.classList.add("on");
+  }
+
+  function render() {
+    const view = t < 2.6 ? "signin" : t < 4.4 ? "devices" : t < 6.4 ? "code" : "chat";
+    views.forEach((v) => v.classList.toggle("on", v.dataset.v === view));
+    const em = Math.max(0, Math.min(EMAIL.length, Math.round((t - 0.4) / 1.2 * EMAIL.length)));
+    $("cn-email").textContent = EMAIL.slice(0, em);
+    $("cn-cont").classList.toggle("press", t >= 2.1 && t < 2.3);
+    $("cn-dev").classList.toggle("press", t >= 3.8 && t < 4.0);
+    if (t >= 2.1 && t < 2.3) tapAt($("cn-cont"), 1);
+    if (t >= 3.8 && t < 4.0) tapAt($("cn-dev"), 2);
+    if (t >= 8.0 && t < 8.2) tapAt($("cn-typed"), 3);
+    if (t < 1) tapped = -1;
+
+    // The Mac: approve, then work.
+    $("cn-modal").classList.toggle("on", t >= 4.6 && t < 6.25);
+    const allow = $("cn-allow");
+    allow.classList.toggle("press", t >= 5.85 && t < 6.0);
+    const showPtr = t >= 4.9 && t < 6.3;
+    ptr.style.opacity = showPtr ? "1" : "0";
+    if (showPtr) {
+      const s = root.getBoundingClientRect(), r = allow.getBoundingClientRect(), k = s.width / 980;
+      const p = Math.min(1, Math.max(0, (t - 4.9) / 0.8)), e = 1 - Math.pow(1 - p, 3);
+      const tx = (r.left - s.left + r.width * 0.5) / k, ty = (r.top - s.top + r.height * 0.6) / k;
+      ptr.style.left = (tx + 160 * (1 - e)) + "px"; ptr.style.top = (ty + 110 * (1 - e)) + "px";
+    }
+    $("cn-toast").classList.toggle("on", t >= 6.25 && t < 7.8);
+    link.classList.toggle("on", t >= 6.25);
+    $("cn-from").classList.toggle("cn-hide", t < 8.8);
+    $("cn-faqf").classList.toggle("cn-hide", t < 10.1);
+
+    // Packets: phone to Mac when the task is sent, Mac to phone as steps come back.
+    const L = path.getTotalLength();
+    dots.forEach((d, i) => {
+      let f = -1;
+      if (t >= 8.2 && t < 9.0) f = 1 - Math.min(1, (t - 8.2 - i * 0.12) / 0.6);
+      else if (t >= 9.3 && t < 12.2) f = ((t - 9.3) * 0.9 + i * 0.33) % 1;
+      if (f < 0 || f > 1) { d.style.opacity = 0; return; }
+      const pt = path.getPointAtLength(L * f); d.setAttribute("cx", pt.x); d.setAttribute("cy", pt.y); d.style.opacity = 1;
+    });
+
+    const typed = Math.max(0, Math.min(ASK.length, Math.round((t - 6.8) / 1.0 * ASK.length)));
+    const sent = t >= 8.1;
+    const shownSteps = STEPS.filter(([a]) => t >= a).length;
+    const lines = BASE.filter(([, a]) => t >= a);
+    const key = [view, typed, sent, shownSteps, lines.length, t >= 12.0].join("|");
+    if (key !== drawn) {
+      drawn = key;
+      $("cn-typed").innerHTML = view === "chat" && !sent && typed > 0 ? ASK.slice(0, typed) + '<i class="cn-car"></i>' : "Ask for a change…";
+      $("cn-you").classList.toggle("cn-gone", !sent);
+      $("cn-steps").classList.toggle("cn-gone", shownSteps === 0);
+      $("cn-steps").innerHTML = STEPS.slice(0, shownSteps).map(([, s]) => `<div><span class="io-ok"></span>${s}</div>`).join("");
+      $("cn-ms").innerHTML = STEPS.slice(0, shownSteps).map(([, s]) => `<div><span class="io-ok"></span>${s}</div>`).join("");
+      $("cn-done").classList.toggle("cn-gone", t < 12.0);
+      $("cn-code").innerHTML = lines.map(([l, a], i) => `<div class="${a > 0 ? "add" : ""}"><b>${i + 1}</b><span>${l}</span></div>`).join("");
+    }
+  }
+
+  function frame(now) {
+    if (!running) return;
+    t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+    if (t > LOOP) { t = 0; drawn = ""; }
+    render(); requestAnimationFrame(frame);
+  }
+  t = REST; render();
+  const pin = new URLSearchParams(location.search).get("t");
+  if (pin) { t = +pin; render(); return; }
+  if (still) return;
+  const go = () => { if (running) return; running = true; t = 0; drawn = ""; last = performance.now(); requestAnimationFrame(frame); };
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.25 }).observe(root);
+  } else { go(); }
+})();
