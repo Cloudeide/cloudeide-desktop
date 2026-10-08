@@ -3675,7 +3675,7 @@ a:hover > .learn-arrow {
   .hx-tab .u { color: #7fb77e; font-size: 11px; margin-left: 2px; }
 
 
-  .hx--hero { height: 680px; background-image: url("assets/paint/hero.jpg"); }
+  .hx--hero { height: 680px; background-image: url("assets/paint/peaks.jpg"); background-position: 55% 35%; }
   /* Room around the window, so the peaks above it and the spire beside it show. */
   .hx--hero .hx-win { left: 96px; top: 104px; width: max(1180px, calc(100% - 96px)); }
   .hx--plan { height: 680px; border-radius: 12px; background-image: url("assets/paint/plan.jpg"); }
@@ -3940,7 +3940,7 @@ a:hover > .learn-arrow {
     .en-row em, .en-row small { display: none; }
   }
   /* ── the ship demo (dp-) ───────────────────────────────────────────── */
-  .hx--ship { height: 680px; border-radius: 12px; background-image: url("assets/paint/ship.jpg"); background-position: left top; }
+  .hx--ship { height: 680px; border-radius: 12px; background-image: url("assets/paint/peaks.jpg"); background-position: 80% center; }
   .hx--ship .hx-win { left: 52px; top: 52px; width: max(1080px, calc(100% - 52px)); }
   .hx--ship .hx-grid { grid-template-columns: 370px minmax(0, 1fr); }
   .dp-right { position: relative; min-height: 0; }
