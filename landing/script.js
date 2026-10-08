@@ -1493,3 +1493,48 @@ for (const row of document.querySelectorAll("[data-download]")) {
     new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); else running = false; }), { threshold: 0.25 }).observe(root);
   } else { go(); }
 })();
+
+/* The iOS page's phones: each plays a short scene while it is on screen. */
+(() => {
+  const phones = document.querySelectorAll(".io-phone[data-loop]");
+  if (!phones.length) return;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  phones.forEach((ph) => {
+    const LOOP = +ph.dataset.loop;
+    const items = [...ph.querySelectorAll("[data-at]")];
+    const swaps = [...ph.querySelectorAll("[data-swap]")];
+    const screen = ph.querySelector(".io-screen"), tapr = ph.querySelector(".io-tapr");
+    const taps = (ph.dataset.taps || "").split(";").filter(Boolean).map((x) => { const [sel, at] = x.split("@"); return { el: ph.querySelector(sel), at: +at }; });
+    let t = 0, prev = 0, last = 0, running = false;
+    const render = () => {
+      items.forEach((el) => el.classList.toggle("io-in", t >= +el.dataset.at));
+      swaps.forEach((el) => el.classList.toggle("io-swapped", t >= +el.dataset.swap));
+      taps.forEach(({ el, at }) => {
+        if (!el) return;
+        el.classList.toggle("press", t >= at && t < at + 0.16);
+        if (tapr && prev < at && t >= at) {
+          const s = screen.getBoundingClientRect(), r = el.getBoundingClientRect(), k = s.width / screen.offsetWidth || 1;
+          tapr.style.left = (r.left + r.width / 2 - s.left) / k + "px"; tapr.style.top = (r.top + r.height / 2 - s.top) / k + "px";
+          tapr.classList.remove("on"); void tapr.offsetWidth; tapr.classList.add("on");
+        }
+      });
+      prev = t;
+    };
+    t = LOOP; render();
+    if (still) return;
+    ph.classList.add("io-anim");
+    const frame = (now) => {
+      if (!running) return;
+      t += Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
+      if (t > LOOP) { t = 0; prev = 0; }
+      render(); requestAnimationFrame(frame);
+    };
+    const pin = new URLSearchParams(location.search).get("t");
+    if (pin) { t = +pin; render(); return; }
+    if (!("IntersectionObserver" in window)) { running = true; t = 0; last = performance.now(); requestAnimationFrame(frame); return; }
+    new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting && !running) { running = true; t = 0; prev = 0; render(); last = performance.now(); requestAnimationFrame(frame); }
+      else if (!e.isIntersecting) { running = false; t = LOOP; render(); }
+    }), { threshold: 0.3 }).observe(ph);
+  });
+})();

@@ -4306,3 +4306,32 @@ a:hover > .learn-arrow {
 @media (max-width: 600px) { .cn-panel { height: 460px; } }
 @media (prefers-reduced-motion: reduce) { .v1-wave i { animation: none; } }
 .io-brand { justify-content: center; }
+
+/* ── iOS page: the phones play short scenes, and the paintings drift ─── */
+.io-panel::before { content: ""; position: absolute; inset: 0; background: inherit; animation: io-ken 22s ease-in-out infinite alternate; }
+.io-panel > .io-phone, .io-panel > .cn-fit { z-index: 1; }
+.io-panel > .io-phone { position: relative; animation: io-float 7s ease-in-out infinite; }
+@keyframes io-ken { from { transform: scale(1.02); } to { transform: scale(1.1) translate(-1.5%, -1%); } }
+@keyframes io-float { 50% { translate: 0 -8px; } }
+.io-phone[data-loop] .io-screen::before { content: ""; position: absolute; inset: -20%; z-index: 4; pointer-events: none; background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.07) 48%, rgba(255, 255, 255, 0.02) 52%, transparent 60%); transform: translateX(-70%); animation: io-glare 9s ease-in-out infinite; }
+@keyframes io-glare { 0%, 70% { transform: translateX(-70%); } 85%, 100% { transform: translateX(70%); } }
+.io-anim [data-at] { opacity: 0; transform: translateY(8px); filter: blur(3px); transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease; }
+.io-anim [data-at].io-in { opacity: 1; transform: none; filter: none; }
+.io-anim .io-drop[data-at] { transform: translateY(-18px) scale(0.97); }
+.io-anim .io-drop[data-at].io-in { transform: none; }
+.io-anim .w[data-at] { display: inline; transform: none; filter: blur(4px); }
+.io-anim .w[data-at].io-in { filter: none; opacity: 1; }
+.io-steps .io-spin { display: inline-block; vertical-align: -2px; margin-right: 8px; width: 12px; height: 12px; }
+.sw .io-ok { display: none; } .sw.io-swapped .io-ok { display: inline-block; } .sw.io-swapped .io-spin { display: none; }
+.io-dep.sw .io-ok { display: none; } .io-dep.sw.io-swapped .io-ok { display: block; }
+.sw2 .b { display: none; } .sw2.io-swapped .a { display: none; } .sw2.io-swapped .b { display: inline; }
+.io-tag.sw2.io-swapped { color: #5fbf7f; background: rgba(95, 191, 127, 0.12); } .io-tag.sw2.io-swapped .io-spin { display: none; }
+.io-merge.sw2 { transition: background 0.3s, color 0.3s, transform 0.12s; } .io-merge.sw2.io-swapped { background: #5fbf7f; color: #04140a; }
+.io-allow.sw2 { transition: background 0.3s; } .io-allow.sw2.io-swapped { background: #5fbf7f; }
+.io-started { margin: 14px 14px 0; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; background: #121110; border: 1px solid rgba(95, 191, 127, 0.3); font-size: 12.5px; color: #e6e3de; }
+.io-tapr { position: absolute; z-index: 5; width: 46px; height: 46px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); transform: translate(-50%, -50%) scale(0.3); opacity: 0; pointer-events: none; }
+.io-tapr.on { animation: cn-tap 0.45s ease-out; }
+.io-phone .io-merge.press, .io-phone .io-allow.press, .io-phone .io-row.press, .io-phone .io-send.press { transform: scale(0.95); }
+.io-row, .io-send, .io-allow { transition: transform 0.12s; }
+@media (max-width: 600px) { .io-panel > .io-phone { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .io-panel::before, .io-panel > .io-phone, .io-phone[data-loop] .io-screen::before { animation: none; } }
