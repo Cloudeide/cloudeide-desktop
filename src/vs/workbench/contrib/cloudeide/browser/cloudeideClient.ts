@@ -5,6 +5,7 @@
 import { ISecretStorageService } from '../../../../platform/secrets/common/secrets.js';
 import { CloudeideDefaultServerUrl, CloudeideTokenSecret } from '../../../../platform/agentHost/common/agentService.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+import type { ComputerInfo, InboxMessage, PairingRequest } from './cloudeideRemote.js';
 
 /**
  * Talks to a CloudeIDE server.
@@ -821,5 +822,39 @@ export class CloudeideClient {
 	 */
 	async revokeToken(id: string): Promise<void> {
 		await this.request(`/tokens/${encodeURIComponent(id)}`, { method: 'DELETE' });
+	}
+
+	// ── Remote Control ────────────────────────────────────────────────────────
+	//
+	// A phone sending work to this window, through the server. The rules —
+	// whose computer, which phones were allowed — are the server's; these
+	// only carry the calls. See cloudeideRemote.ts.
+
+	async remoteRegister(info: ComputerInfo): Promise<void> {
+		await this.request('/remote/computers', { method: 'POST', body: JSON.stringify(info) });
+	}
+
+	async remoteHeartbeat(publicId: string): Promise<{ pending: PairingRequest[] }> {
+		const body = await this.request<{ pending?: PairingRequest[] }>(
+			`/remote/computers/${encodeURIComponent(publicId)}/heartbeat`, { method: 'POST' });
+		return { pending: body.pending ?? [] };
+	}
+
+	async remoteDecide(pairingId: number, allow: boolean): Promise<void> {
+		await this.request(`/remote/pairings/${pairingId}/decide`, { method: 'POST', body: JSON.stringify({ allow }) });
+	}
+
+	/** Waits on the server for up to 25 s when there is nothing new, which is the point. */
+	async remoteInbox(publicId: string, after: number): Promise<InboxMessage[]> {
+		const body = await this.request<{ messages?: InboxMessage[] }>(
+			`/remote/computers/${encodeURIComponent(publicId)}/inbox?after=${after}`);
+		return body.messages ?? [];
+	}
+
+	async remoteSend(publicId: string, kind: string, body: unknown): Promise<void> {
+		await this.request(`/remote/computers/${encodeURIComponent(publicId)}/outbox`, {
+			method: 'POST',
+			body: JSON.stringify({ kind, body }),
+		});
 	}
 }

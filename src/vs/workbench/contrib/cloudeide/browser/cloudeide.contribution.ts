@@ -435,6 +435,12 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 			description: localize('cloudeide.tab.disabledLanguages',
 				"Languages Tab stays quiet in, by language id — for example \"markdown\" or \"plaintext\"."),
 		},
+		'cloudeide.remoteControl.enabled': {
+			type: 'boolean',
+			default: true,
+			description: localize('cloudeide.remoteControl.enabled',
+				"Let the CloudeIDE phone app send tasks to this window. Each phone has to be allowed here once, with a code shown on both screens."),
+		},
 		'cloudeide.environment': {
 			type: 'string',
 			enum: ['development', 'preview', 'production'],

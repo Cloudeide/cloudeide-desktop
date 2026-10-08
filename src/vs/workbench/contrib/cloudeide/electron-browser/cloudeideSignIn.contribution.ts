@@ -3,6 +3,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
+import { CloudeideRemoteControlContribution } from '../browser/cloudeideRemoteControl.js';
 import { CloudeideSignInContribution } from '../browser/cloudeideSignIn.js';
 
 /*
@@ -23,4 +24,17 @@ registerWorkbenchContribution2(
 	CloudeideSignInContribution.ID,
 	CloudeideSignInContribution,
 	WorkbenchPhase.BlockRestore,
+);
+
+/*
+ * Remote Control: tasks from the phone app, run in this window's chat.
+ *
+ * Here and not in the common contribution for the same reason as the door:
+ * the web build has no folder on a computer of its own for a phone to send
+ * work to. After restore — the chat it hands tasks to has to be there first.
+ */
+registerWorkbenchContribution2(
+	CloudeideRemoteControlContribution.ID,
+	CloudeideRemoteControlContribution,
+	WorkbenchPhase.AfterRestored,
 );
