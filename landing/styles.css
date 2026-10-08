@@ -4038,3 +4038,7 @@ a:hover > .learn-arrow {
 .film-wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
 .film-video { display: block; width: 100%; aspect-ratio: 1920 / 840; border-radius: var(--radius-xl); background: #000; border: 1px solid var(--border); object-fit: cover; }
 @media (max-width: 600px) { .film-wrap { padding: 0 12px; } .film-video { border-radius: var(--radius-lg); } }
+
+/* The name above the headline, so the first thing read is whose page this is. */
+.hero-brand { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-primary); }
+.hero-brand img { width: 26px; height: 26px; }
