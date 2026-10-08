@@ -4190,10 +4190,9 @@ a:hover > .learn-arrow {
 .cn-fit { position: absolute; left: 50%; top: 50%; width: 980px; height: 580px; transform: translate(-50%, -50%); transform-origin: center center; }
 .cn-stage { position: relative; width: 980px; height: 580px; }
 .cn-mac { position: absolute; left: 30px; top: 40px; width: 720px; }
-.cn-lid { width: 720px; height: 450px; border-radius: 18px 18px 6px 6px; padding: 14px; background: linear-gradient(160deg, #2b2a28, #0e0e0d 45%, #222120); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07) inset, 0 40px 80px rgba(0, 0, 0, 0.5); }
-.cn-scr { position: relative; width: 100%; height: 100%; border-radius: 6px; background: #151413; overflow: hidden; display: flex; flex-direction: column; font-size: 11px; color: #e6e3de; }
-.cn-base { width: 820px; height: 18px; margin-left: -50px; border-radius: 0 0 16px 16px; background: linear-gradient(#c9c7c3, #8f8d89 60%, #5d5b58); position: relative; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45); }
-.cn-base i { position: absolute; left: 50%; top: 0; width: 120px; height: 7px; transform: translateX(-50%); border-radius: 0 0 8px 8px; background: #7d7b77; }
+.cn-lid { width: 720px; height: 450px; border-radius: 14px; background: #151413; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 40px 80px rgba(0, 0, 0, 0.55); }
+.cn-scr { position: relative; width: 100%; height: 100%; border-radius: 14px; background: #151413; overflow: hidden; display: flex; flex-direction: column; font-size: 11px; color: #e6e3de; }
+/* Just the window, like the app on the home page: no laptop body around it. */
 .cn-bar { height: 26px; flex: none; display: flex; align-items: center; padding: 0 10px; background: #1b1a18; border-bottom: 1px solid rgba(242, 242, 240, 0.08); }
 .cn-dots { display: flex; gap: 5px; } .cn-dots i { width: 8px; height: 8px; border-radius: 50%; background: #3b3834; display: block; }
 .cn-title { flex: 1; text-align: center; color: #6e6963; font-size: 10.5px; padding-right: 30px; }
