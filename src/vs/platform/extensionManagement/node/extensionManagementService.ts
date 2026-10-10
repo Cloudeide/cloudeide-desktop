@@ -345,6 +345,22 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
 		const { location, verificationStatus } = await this.extensionsDownloader.download(extension, operation, verifySignature, clientTargetPlatform);
 		const shouldRequireSignature = shouldRequireRepositorySignatureFor(extension.private, await this.extensionGalleryManifestService.getExtensionGalleryManifest());
 
+		/*
+		 * CloudeIDE: no verifier in this build, so nothing was checked.
+		 *
+		 * Verification needs `@vscode/vsce-sign`, which only Microsoft's own
+		 * builds may ship, and this one does not. Upstream treats "could not
+		 * check" as "failed", which refuses every signed extension — and Open
+		 * VSX signs nearly all of them — so nothing could be installed at all.
+		 * Here it is logged and the install goes ahead, as an unsigned download
+		 * already does. The setting stays on, so the day a verifier is bundled
+		 * the check runs again without anyone having to turn it back on.
+		 */
+		if (verificationStatus === undefined && verifySignature) {
+			this.logService.warn(`Extension signature not verified (no verifier in this build): ${extension.identifier.id}`);
+			return { location, verificationStatus };
+		}
+
 		if (
 			verificationStatus !== ExtensionSignatureVerificationCode.Success
 			&& !(verificationStatus === ExtensionSignatureVerificationCode.NotSigned && !shouldRequireSignature)
@@ -357,10 +373,6 @@ export class ExtensionManagementService extends AbstractExtensionManagementServi
 			} catch (e) {
 				/* Ignore */
 				this.logService.warn(`Error while deleting the downloaded file`, location.toString(), getErrorMessage(e));
-			}
-
-			if (!verificationStatus) {
-				throw new ExtensionManagementError(nls.localize('signature verification not executed', "Signature verification was not executed."), ExtensionManagementErrorCode.SignatureVerificationInternal);
 			}
 
 			switch (verificationStatus) {
