@@ -4334,3 +4334,6 @@ a:hover > .learn-arrow {
 .io-row, .io-send, .io-allow { transition: transform 0.12s; }
 @media (max-width: 600px) { .io-panel > .io-phone { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .io-panel::before, .io-panel > .io-phone, .io-phone[data-loop] .io-screen::before { animation: none; } }
+
+/* Keys named in copy ("press Cmd+I"), drawn as keys. */
+.t2-text kbd { font: 600 0.86em/1 "JetBrains Mono", ui-monospace, monospace; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--panel-raised); color: var(--text-primary); white-space: nowrap; }
