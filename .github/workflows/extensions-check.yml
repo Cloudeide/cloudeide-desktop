@@ -1,0 +1,84 @@
+# Extension store check: can the released app find and install extensions?
+#
+# CloudeIDE uses Open VSX, not Microsoft's Marketplace (whose terms allow
+# only Microsoft's own products to use it). This checks the three things that
+# have to hold for the Extensions view to work, against the real store and
+# the real released app rather than a stand-in:
+#
+#   1. the released app's product.json (and this branch's) names Open VSX
+#   2. the search the Extensions view sends returns results
+#   3. the app's own command line installs an extension from it
+#
+# A few minutes; run by hand, or on any change to product.json.
+name: Extension store check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [cloudeide-branding]
+    paths:
+      - product.json
+      - .github/workflows/extensions-check.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: product.json
+          sparse-checkout-cone-mode: false
+
+      - name: Download the latest release for Linux
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo "$GITHUB_REPOSITORY" --pattern 'CloudeIDE-linux-x64.tar.gz'
+          tar -xzf CloudeIDE-linux-x64.tar.gz
+          ls VSCode-linux-x64/bin
+
+      - name: 1. Which store each product.json names
+        run: |
+          for f in product.json VSCode-linux-x64/resources/app/product.json; do
+            echo "== $f"
+            jq '.extensionsGallery | {serviceUrl, itemUrl}' "$f"
+            if jq -e '.extensionsGallery | tostring | test("marketplace.visualstudio.com")' "$f" >/dev/null; then
+              echo "::error::$f points at the Microsoft Marketplace"; exit 1
+            fi
+            jq -e '.extensionsGallery.serviceUrl == "https://open-vsx.org/vscode/gallery"' "$f" >/dev/null \
+              || { echo "::error::$f does not point at Open VSX"; exit 1; }
+          done
+
+      - name: 2. Search, the way the Extensions view does
+        run: |
+          SERVICE=$(jq -r .extensionsGallery.serviceUrl VSCode-linux-x64/resources/app/product.json)
+          for term in prettier python eslint; do
+            curl -sSf -X POST "$SERVICE/extensionquery" \
+              -H 'Content-Type: application/json' \
+              -H 'Accept: application/json;api-version=3.0-preview.1' \
+              -H 'X-Market-Client-Id: VSCode 1.139.0' \
+              -d "{\"filters\":[{\"criteria\":[{\"filterType\":8,\"value\":\"Microsoft.VisualStudio.Code\"},{\"filterType\":10,\"value\":\"$term\"},{\"filterType\":12,\"value\":\"4096\"}],\"pageNumber\":1,\"pageSize\":5,\"sortBy\":0,\"sortOrder\":0}],\"flags\":950}" \
+              > "q-$term.json"
+            n=$(jq '.results[0].extensions | length' "q-$term.json")
+            echo "== \"$term\": $n results"
+            jq -r '.results[0].extensions[] | "  \(.publisher.publisherName).\(.extensionName)  \(.versions[0].version)"' "q-$term.json"
+            [ "$n" -gt 0 ] || { echo "::error::no results for $term"; exit 1; }
+          done
+
+      - name: 3. Install with the released app
+        run: |
+          APP=VSCode-linux-x64/bin/cloudeide
+          ARGS="--user-data-dir $RUNNER_TEMP/ud --extensions-dir $RUNNER_TEMP/ext"
+          "$APP" --version
+          for id in esbenp.prettier-vscode redhat.vscode-yaml; do
+            "$APP" $ARGS --install-extension "$id"
+          done
+          echo "== installed"
+          "$APP" $ARGS --list-extensions --show-versions | tee installed.txt
+          grep -qi '^esbenp.prettier-vscode@' installed.txt || { echo "::error::prettier did not install"; exit 1; }
+          grep -qi '^redhat.vscode-yaml@' installed.txt || { echo "::error::yaml did not install"; exit 1; }
+          ls "$RUNNER_TEMP/ext"
